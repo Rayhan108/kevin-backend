@@ -53,6 +53,18 @@ const changePassword = catchAsync(async (req, res) => {
       data: result,
     });
   });
+const forgotPassword = catchAsync(async (req:Request, res:Response) => {
+    const { email}= req.body;
+  console.log("request body",email);
+    const result = await AuthServices.forgotPass(email);
+    
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Otp send succesfully!',
+      data: result,
+    });
+  });
   const refreshToken = catchAsync(async (req, res) => {
     const { refreshToken } = req.cookies;
     // console.log('refreshToken',req);
@@ -67,5 +79,5 @@ const changePassword = catchAsync(async (req, res) => {
   });
 
 export const AuthControllers = {
-  registerUser,userLogin,changePassword,refreshToken
+  registerUser,userLogin,changePassword,refreshToken,forgotPassword
 };

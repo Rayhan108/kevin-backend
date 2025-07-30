@@ -43,6 +43,10 @@ export const updateRegisterUserValidationSchema = z.object({
   }),
 });
 
+const forgotPasswordSchema = z.object({
+      body: z.object({ email: z.string().email("Invalid email address"),})
+ 
+});
 
 
 const changePasswordValidationSchema = z.object({
@@ -64,4 +68,5 @@ export const AuthValidation = {
   becomeContractorValidationSchema,
   changePasswordValidationSchema,
   refreshTokenValidationSchema,
+  forgotPasswordSchema
 };

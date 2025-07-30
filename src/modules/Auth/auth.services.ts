@@ -7,6 +7,7 @@ import config from '../../app/config';
 import { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { UserModel } from './auth.model';
+import { sendMail } from '../../app/utils/sendMail';
 // register new user
 const registeredUserIntoDB = async (payload: TUser) => {
   // console.log(payload);
@@ -137,9 +138,37 @@ const refreshToken = async (token: string) => {
   };
 };
 
+export const forgotPass = async (
+ email: string ,
+) => {
+// console.log("payload--->",payload);
+
+  // Optional: check if user exists
+ const user = await UserModel.findOne({ email: email });
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+
+  }
+
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  // Send OTP via email
+  await sendMail(
+    email,
+    'Your OTP Code',
+    `Your OTP code is: ${otp}. It will expire in 5 minutes.`
+  );
+
+
+//   throw new AppError(httpStatus.OK, 'OTP sent to email');
+};
+
+
+
 export const AuthServices = {
   registeredUserIntoDB,
   loginUser,
   changePassword,
   refreshToken,
+  forgotPass
 };
