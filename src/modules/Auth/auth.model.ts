@@ -24,6 +24,16 @@ firstName: { type: String, required: true },
       enum: UserStatus,
       default: 'in-progress',
     },
+      verification: {
+      code: {
+        type: String,
+        default: null,
+      },
+      expireDate: {
+        type: Date,
+        default: null,
+      },
+    },
     address: { type: String, required: true },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
@@ -50,8 +60,16 @@ userSchema.pre('save', async function (next) {
     user.password,
     Number(config.bcrypt_salt_rounds),
   );
+   if (this.isModified('verification.code') && this.verification?.code) {
+    this.verification.code = bcrypt.hashSync(this.verification.code,Number(config.bcrypt_salt_rounds));
+  }
   next();
 });
+
+userSchema.methods.compareVerificationCode = function (userPlaneCode: string) {
+  return bcrypt.compareSync(userPlaneCode, this.verification.code);
+};
+
 
 userSchema.post('save', function (doc, next) {
   doc.password = '';

@@ -31,7 +31,10 @@ export interface TUser{
   image?: string;
   email: string;
   phone: string;
-
+verification?: {
+    code: string;
+    expireDate: Date;
+  };
   password: string;
     passwordChangedAt?: Date;
   role: 'user' | 'contractor';

@@ -164,7 +164,6 @@ export const forgotPass = async (
 };
 
 
-
 export const AuthServices = {
   registeredUserIntoDB,
   loginUser,
