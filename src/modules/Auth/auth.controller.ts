@@ -4,25 +4,7 @@ import { AuthServices } from './auth.services';
 import { NextFunction, Request, Response } from 'express';
 import catchAsync from '../../app/utils/catchAsync';
 import config from '../../app/config';
-// const registerUser = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   // console.log(req);
-//   try {
-//     const result = await AuthServices.registeredUserIntoDB(req.body);
 
-//     sendResponse(res, {
-//       success: true,
-//       message: 'User registered successfully',
-//       statusCode: httpStatus.CREATED,
-//       data: result,
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 const registerUser = async (
   req: Request,
   res: Response,
@@ -31,7 +13,7 @@ const registerUser = async (
   try {
     
     const userPayload = req.body;
-console.log("userpayload--->",userPayload);
+// console.log("userpayload--->",userPayload);
     if (req.file) {
       // Store file path or URL
       userPayload.image = req.file.path; // or URL if you're uploading to cloud

@@ -6,8 +6,10 @@ import config from '../config';
 import catchAsync from '../utils/catchAsync';
 
 import AppError from '../../errors/AppError';
-import { TUserRole } from '../../modules/Auth/auth.interface';
-import { UserModel } from '../../modules/Auth/auth.model';
+import { TUserRole } from '../../modules/User/user.interface';
+import { UserModel } from '../../modules/User/user.model';
+
+
 
 
 const auth = (...requiredRoles: TUserRole[]) => {

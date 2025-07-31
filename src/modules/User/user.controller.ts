@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import catchAsync from '../../app/utils/catchAsync';
 import sendResponse from '../../app/utils/sendResponse';
 import { UserServices } from './user.services';
@@ -16,7 +16,7 @@ const changeStatus = catchAsync(async (req, res) => {
     data: result,
   });
 });
-const getSingleUser = catchAsync(async(req:Request,res:Response)=>{
+const getAllUser = catchAsync(async(req:Request,res:Response)=>{
 
   const result = await UserServices.getAllUserFromDB();
   sendResponse(res, {
@@ -27,7 +27,7 @@ const getSingleUser = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
-const getAllUser = catchAsync(async(req:Request,res:Response)=>{
+const getSingleUser = catchAsync(async(req:Request,res:Response)=>{
 
   const {userId}=req.params;
   const result = await UserServices.getSingleUserFromDB(userId);
@@ -39,6 +39,26 @@ const getAllUser = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
+const createContractor = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+//   console.log("create contractor-->",req.body);
+  try {
+    const result = await UserServices.updateUserToContractor(req.body);
+
+    sendResponse(res, {
+      success: true,
+      message: 'User registered successfully',
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const UserControllers = {
-  changeStatus,getSingleUser,getAllUser
+  changeStatus,getSingleUser,getAllUser,createContractor
 };

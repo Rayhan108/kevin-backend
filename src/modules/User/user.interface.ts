@@ -13,10 +13,13 @@ export type TCreateUserInput = {
   address: string;
 };
 export type TBecomeContractorInput = {
+     email: string;
   location: string;
   zip: string;
   companyName: string;
-  servicesYouProvide: string[];
+  noOfEmployee: string;
+  servicesYouProvide: string[];   
+  subServices: string[]; 
 };
 
 export interface TUser{
@@ -41,8 +44,9 @@ verification?: {
   location?:string;
   zip?:string;
   companyName?:string;
-   servicesYouProvide?: string[];
-   subServices?: string[];
+    noOfEmployee: string;
+  servicesYouProvide: string[];   
+  subServices: string[]; 
 
 }
 

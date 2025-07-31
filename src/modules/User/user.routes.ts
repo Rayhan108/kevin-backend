@@ -18,11 +18,11 @@ router.post(
 );
 router.post(
   '/create-contractor',
-  auth(USER_ROLE.contractor),
+  auth(USER_ROLE.user),
   validateRequest(userValidation.becomeContractorValidationSchema),
-  UserControllers.changeStatus,
+  UserControllers.createContractor,
 );
-router.get('/:userId',UserControllers.getSingleUser)
+router.get('/retrive/:userId',UserControllers.getSingleUser)
 router.get('/allUser',UserControllers.getAllUser)
 
 export const UserRoutes = router;
