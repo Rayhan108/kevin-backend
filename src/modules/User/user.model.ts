@@ -47,25 +47,17 @@ firstName: { type: String, required: true },
       type: [String],
       default: [],
     },
+    subServices: {
+      type: [String],
+      default: [],
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// userSchema.pre('save', async function (next) {
-//   // eslint-disable-next-line @typescript-eslint/no-this-alias
-//   const user = this;
-// //   console.log("user->",user);
-//   user.password = await bcrypt.hash(
-//     user.password,
-//     Number(config.bcrypt_salt_rounds),
-//   );
-//    if (this.isModified('verification.code') && this.verification?.code) {
-//     this.verification.code = bcrypt.hashSync(this.verification.code,Number(config.bcrypt_salt_rounds));
-//   }
-//   next();
-// });
+
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
     this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_rounds));

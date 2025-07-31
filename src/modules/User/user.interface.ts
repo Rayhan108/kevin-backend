@@ -24,7 +24,7 @@ export interface TUser{
     userId:string;
   firstName: string;
   lastName: string;
-  image?: string;
+  image: string;
   email: string;
   phone: string;
 verification?: {
@@ -42,6 +42,7 @@ verification?: {
   zip?:string;
   companyName?:string;
    servicesYouProvide?: string[];
+   subServices?: string[];
 
 }
 

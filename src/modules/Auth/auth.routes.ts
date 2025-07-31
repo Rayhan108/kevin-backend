@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import validateRequest from '../../app/middleware/validateRequest';
 
 import { AuthControllers } from './auth.controller';
@@ -6,12 +6,24 @@ import { AuthControllers } from './auth.controller';
 import auth from '../../app/middleware/auth';
 import { AuthValidation } from './auth.validation';
 import { USER_ROLE } from './auth.constant';
+import { upload } from '../../app/middleware/upload';
 
 const router = express.Router();
 
 router.post(
   '/register',
+     upload.single('image'),
+       (req: Request, res: Response, next: NextFunction) => {
+      // console.log("req--->",req.body);
+   if(req.body.data){
+         req.body = JSON.parse(req.body.data);
+   }
+        next();
+    },
+
   validateRequest(AuthValidation.registerUserValidationSchema),
+
+
   AuthControllers.registerUser,
 );
 router.post('/login',

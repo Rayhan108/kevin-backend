@@ -175,7 +175,7 @@ export const verifyOTP = async (email: string, otp: string) => {
 
   // ✅ Check OTP expiry
   if (!user.verification?.expireDate || user.verification.expireDate < new Date()) {
-    throw new AppError(httpStatus.UNAUTHORIZED, 'OTP has expired');
+    throw new AppError(httpStatus.UNAUTHORIZED, 'OTP has expired,resend Otp And try again');
   }
 
   // ✅ Compare OTP
