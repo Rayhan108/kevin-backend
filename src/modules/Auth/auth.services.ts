@@ -140,44 +140,60 @@ const refreshToken = async (token: string) => {
   };
 };
 
-export const forgotPass = async (
- email: string ,
-) => {
-// console.log("payload--->",payload);
+export const forgotPass = async (email: string) => {
+  const user = await UserModel.findOne({ email });
 
-  // Optional: check if user exists
- const user = await UserModel.findOne({ email: email });
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-
   }
 
+  // 1. Generate 6-digit OTP
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  // Send OTP via email
+  // 2. Save OTP + expiration to user object
+  user.verification = {
+    code: otp,
+    expireDate: new Date(Date.now() + 1 * 60 * 1000), // 1 minute expiry
+  };
+
+  // 3. Save user to trigger pre-save hook (which hashes the OTP)
+  await user.save();
+
+  // 4. Send email
   await sendMail(
     email,
     'Your OTP Code',
-    `Your OTP code is: ${otp}. It will expire in 5 minutes.`
+    `Your OTP code is: ${otp}. It will expire in 1 minute.`
   );
 
-
-//   throw new AppError(httpStatus.OK, 'OTP sent to email');
 };
-export const verifyOTP = async (
- email: string ,
-  otp: string ,
-) => {
-// console.log("payload--->",payload);
-
-  // Optional: check if user exists
- const user = await UserModel.findOne({ email: email});
+export const verifyOTP = async (email: string, otp: string) => {
+  const user = await UserModel.findOne({ email });
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
-
   }
-const matchOtp =user.compareVerificationCode(otp)
+
+  // ✅ Check OTP expiry
+  if (!user.verification?.expireDate || user.verification.expireDate < new Date()) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'OTP has expired');
+  }
+
+  // ✅ Compare OTP
+  const isMatch = user.compareVerificationCode(otp);
+  if (!isMatch) {
+    throw new AppError(httpStatus.UNAUTHORIZED, 'OTP not matched, try again');
+  }
+
+  // ✅ If successful, you can clear the OTP
+  user.verification = undefined;
+  await user.save();
+
+  return {
+    status: httpStatus.OK,
+    message: 'OTP verified successfully',
+  };
 };
+
 
 
 export const AuthServices = {
@@ -185,5 +201,6 @@ export const AuthServices = {
   loginUser,
   changePassword,
   refreshToken,
-  forgotPass
+  forgotPass,
+  verifyOTP
 };

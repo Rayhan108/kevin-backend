@@ -48,7 +48,14 @@ const forgotPasswordSchema = z.object({
  
 });
 
-
+export const verifyOtpSchema = z.object({ 
+  body: z.object({
+    email: z.string().email("Invalid email address"),
+    otp: z.string()
+      .length(6, "OTP must be exactly 6 digits")
+      .regex(/^\d+$/, "OTP must contain only digits"),
+  }),
+});
 const changePasswordValidationSchema = z.object({
   body: z.object({
     oldPassword: z.string().min(1, { message: 'Old password is required' }),
@@ -68,5 +75,6 @@ export const AuthValidation = {
   becomeContractorValidationSchema,
   changePasswordValidationSchema,
   refreshTokenValidationSchema,
-  forgotPasswordSchema
+  forgotPasswordSchema,
+  verifyOtpSchema
 };

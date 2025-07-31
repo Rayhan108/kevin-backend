@@ -65,6 +65,18 @@ const forgotPassword = catchAsync(async (req:Request, res:Response) => {
       data: result,
     });
   });
+const verifyYourOTP = catchAsync(async (req:Request, res:Response) => {
+    const { email,otp}= req.body;
+  // console.log("request body",req.body);
+    const result = await AuthServices.verifyOTP(email,otp);
+    
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Otp Verify succesfully!',
+      data: result,
+    });
+  });
   const refreshToken = catchAsync(async (req, res) => {
     const { refreshToken } = req.cookies;
     // console.log('refreshToken',req);
@@ -79,5 +91,5 @@ const forgotPassword = catchAsync(async (req:Request, res:Response) => {
   });
 
 export const AuthControllers = {
-  registerUser,userLogin,changePassword,refreshToken,forgotPassword
+  registerUser,userLogin,changePassword,refreshToken,forgotPassword,verifyYourOTP
 };

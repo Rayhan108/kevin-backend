@@ -60,7 +60,8 @@ export interface IUserMethods {
   compareVerificationCode(userPlaneCode: string): boolean;
 }
 
-export interface User extends Model<TUser> {
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface User extends Model<TUser,{},IUserMethods> {
   //instance methods for checking if the user exist
   isUserExistsByEmail(email: string): Promise<TUser>;
   isUserExistsById(id: string): Promise<TUser>;

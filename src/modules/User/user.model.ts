@@ -2,12 +2,12 @@ import { model, Schema } from 'mongoose';
 
 import bcrypt from 'bcrypt';
 import config from '../../app/config';
-import { TUser, User } from './user.interface';
+import { IUserMethods, TUser, User } from './user.interface';
 import { UserStatus } from '../Auth/auth.constant';
 
 
 
-const userSchema = new Schema<TUser, User>(
+const userSchema = new Schema<TUser, User,IUserMethods>(
   {
 firstName: { type: String, required: true },
     lastName: { type: String, required: true },
@@ -53,21 +53,34 @@ firstName: { type: String, required: true },
   }
 );
 
+// userSchema.pre('save', async function (next) {
+//   // eslint-disable-next-line @typescript-eslint/no-this-alias
+//   const user = this;
+// //   console.log("user->",user);
+//   user.password = await bcrypt.hash(
+//     user.password,
+//     Number(config.bcrypt_salt_rounds),
+//   );
+//    if (this.isModified('verification.code') && this.verification?.code) {
+//     this.verification.code = bcrypt.hashSync(this.verification.code,Number(config.bcrypt_salt_rounds));
+//   }
+//   next();
+// });
 userSchema.pre('save', async function (next) {
-  // eslint-disable-next-line @typescript-eslint/no-this-alias
-  const user = this;
-//   console.log("user->",user);
-  user.password = await bcrypt.hash(
-    user.password,
-    Number(config.bcrypt_salt_rounds),
-  );
-   if (this.isModified('verification.code') && this.verification?.code) {
-    this.verification.code = bcrypt.hashSync(this.verification.code,Number(config.bcrypt_salt_rounds));
+  if (this.isModified('password')) {
+    this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_rounds));
   }
+
+  // ✅ Always hash if verification.code exists and is not already hashed
+  if (this.verification?.code && !this.verification.code.startsWith('$2b$')) {
+    this.verification.code = bcrypt.hashSync(this.verification.code, Number(config.bcrypt_salt_rounds));
+  }
+
   next();
 });
 
 userSchema.methods.compareVerificationCode = function (userPlaneCode: string) {
+      if (!this.verification?.code) return false;
   return bcrypt.compareSync(userPlaneCode, this.verification.code);
 };
 
