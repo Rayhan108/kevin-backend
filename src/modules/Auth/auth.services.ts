@@ -1,13 +1,15 @@
 import AppError from '../../errors/AppError';
 
 import httpStatus from 'http-status';
-import { TLoginUser, TUser } from './auth.interface';
+import { TLoginUser,  } from './auth.interface';
 import { createToken, verifyToken } from './auth.utils';
 import config from '../../app/config';
 import { JwtPayload } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
-import { UserModel } from './auth.model';
+
 import { sendMail } from '../../app/utils/sendMail';
+import { TUser } from '../User/user.interface';
+import { UserModel } from '../User/user.model';
 // register new user
 const registeredUserIntoDB = async (payload: TUser) => {
   // console.log(payload);
@@ -161,6 +163,20 @@ export const forgotPass = async (
 
 
 //   throw new AppError(httpStatus.OK, 'OTP sent to email');
+};
+export const verifyOTP = async (
+ email: string ,
+  otp: string ,
+) => {
+// console.log("payload--->",payload);
+
+  // Optional: check if user exists
+ const user = await UserModel.findOne({ email: email});
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+
+  }
+const matchOtp =user.compareVerificationCode(otp)
 };
 
 
