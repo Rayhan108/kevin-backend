@@ -20,9 +20,16 @@ export const registerUserValidationSchema = z.object({
       password: z.string().min(6, { message: "Password must be at least 6 characters" }),
       address: z.string().min(1, { message: "Address is required" }),
       // ❌ image: z.string() ← remove this
-
+    report: z
+      .object({
+        reason: z.string().optional(),
+        feedback: z.string().optional(),
+        image: z.string().optional(),
+      })
+      .optional(),
+  }),
    })
-});
+
 
 
 

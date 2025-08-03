@@ -47,6 +47,25 @@ const changeProPic = catchAsync(
     });
   }
 );
+
+const addReport = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  // console.log("request",req.body);
+  const reportData = req.body.report;
+
+  const result = await UserServices.addReportToContractor(userId, reportData);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Report added to contractor successfully',
+    data: result,
+  });
+});
+
+
+
+
 const getAllUser = catchAsync(async(req:Request,res:Response)=>{
 
   const result = await UserServices.getAllUserFromDB();
@@ -91,5 +110,5 @@ const createContractor = async (
 };
 
 export const UserControllers = {
-  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic
+  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport
 };

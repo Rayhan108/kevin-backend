@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 
 import auth from '../../app/middleware/auth';
 import validateRequest from '../../app/middleware/validateRequest';
@@ -32,6 +32,16 @@ router.post(
   UserControllers.createContractor,
 );
 router.get('/retrive/:userId',UserControllers.getSingleUser)
+router.patch('/report/:userId',
+    upload.single('image'),
+       (req: Request, res: Response, next: NextFunction) => {
+      // console.log("req--->",req.body);
+   if(req.body.data){
+         req.body = JSON.parse(req.body.data);
+   }
+        next();
+    },
+  UserControllers.addReport)
 router.get('/allUser',UserControllers.getAllUser)
 
 export const UserRoutes = router;

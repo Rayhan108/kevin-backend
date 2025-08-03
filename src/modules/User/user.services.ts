@@ -57,7 +57,45 @@ const updateUserToContractor = async (payload: TBecomeContractorInput) => {
 
   return updatedUser;
 };
+const addReportToContractor = async (
+  userId: string,
+  report: {
+    reason?: string;
+    feedback?: string;
+    image?: string;
+  }
+) => {
+  // console.log("report--->",report);
+  // console.log("id--->",userId);
+  // First, find the user and check role
+  const user = await UserModel.findById(userId);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  if (user.role !== 'contractor') {
+    throw new AppError(httpStatus.CONFLICT,'Only contractors can be reported');
+  }
+
+  // Update the report field only
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        report, // this will overwrite any existing report object
+      },
+    },
+    { new: true }
+  );
+
+  return updatedUser;
+};
+
+
+
+
 
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture
+  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor
 };

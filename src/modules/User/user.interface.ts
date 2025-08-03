@@ -34,6 +34,11 @@ verification?: {
     code: string;
     expireDate: Date;
   };
+  report?:{
+    reason:string,
+    feedback:string,
+    image:string
+  };
   password: string;
     passwordChangedAt?: Date;
   role: 'user' | 'contractor';

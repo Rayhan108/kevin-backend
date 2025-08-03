@@ -25,6 +25,11 @@ firstName: { type: String, required: true },
       enum: UserStatus,
       default: 'in-progress',
     },
+    report:{
+    reason: { type: String, default: undefined },
+      feedback: { type: String, default: undefined },
+      image: { type: String, default: undefined },
+    },
       verification: {
       code: {
         type: String,
