@@ -13,7 +13,6 @@ const addRequestQuoteIntoDB = async (payload:TREquestQuote) => {
 
 // console.log("Pyload--->",payload);
   const result = await RequestQuoteModel.create(payload)
-
   return result;
 };
 
