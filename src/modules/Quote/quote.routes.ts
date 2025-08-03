@@ -1,0 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import express from 'express';
+
+import auth from '../../app/middleware/auth';
+import validateRequest from '../../app/middleware/validateRequest';
+
+import { USER_ROLE } from '../Auth/auth.constant';
+import { requestQuoteValudation } from './quote.validation';
+import { QuoteControllers } from './quote.controller';
+
+
+const router = express.Router();
+
+router.post('/addQuotes',
+
+  auth(USER_ROLE.user),
+  validateRequest(requestQuoteValudation.requestQuoteZodSchema),
+  QuoteControllers.createQuotes,
+
+);
+
+// router.get('/allUser',UserControllers.getAllUser)
+
+export const quoteRoutes = router;
