@@ -3,6 +3,8 @@ import catchAsync from '../../app/utils/catchAsync';
 import sendResponse from '../../app/utils/sendResponse';
 import { UserServices } from './user.services';
 import httpStatus from 'http-status';
+import AppError from '../../errors/AppError';
+import { TProfilePictureUpdatePayload } from './user.constant';
 
 const changeStatus = catchAsync(async (req, res) => {
   const id = req.params.id;
@@ -16,6 +18,35 @@ const changeStatus = catchAsync(async (req, res) => {
     data: result,
   });
 });
+const changeProPic = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+
+    // 🔍 Check if file is uploaded
+    if (!req.file) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Image file is required');
+    }
+
+    // 🖼️ Get file path or filename from multer
+    const imageUrl = req.file.path || req.file.filename;
+
+    // 🧾 Prepare typed payload
+    const payload: TProfilePictureUpdatePayload = {
+      image: imageUrl,
+    };
+
+    // 🔁 Update user's image field
+    const result = await UserServices.changeProfilePicture(id, payload);
+
+    // 📤 Send response
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Profile picture updated successfully',
+      data: result,
+    });
+  }
+);
 const getAllUser = catchAsync(async(req:Request,res:Response)=>{
 
   const result = await UserServices.getAllUserFromDB();
@@ -60,5 +91,5 @@ const createContractor = async (
 };
 
 export const UserControllers = {
-  changeStatus,getSingleUser,getAllUser,createContractor
+  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic
 };

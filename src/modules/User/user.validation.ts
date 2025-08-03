@@ -7,6 +7,11 @@ import { UserStatus } from '../Auth/auth.constant';
     status: z.enum([...UserStatus] as [string, ...string[]]),
   }),
 });
+ const changeProfilePictureValidationSchema = z.object({
+  body: z.object({
+    status: z.enum([...UserStatus] as [string, ...string[]]),
+  }),
+});
 
 
 
@@ -52,6 +57,7 @@ import { UserStatus } from '../Auth/auth.constant';
 
 export const userValidation = {
     changeStatusValidationSchema,
-    becomeContractorValidationSchema
+    becomeContractorValidationSchema,
+    changeProfilePictureValidationSchema
 
 }

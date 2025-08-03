@@ -6,6 +6,7 @@ import validateRequest from '../../app/middleware/validateRequest';
 import { userValidation } from './user.validation';
 import { USER_ROLE } from '../Auth/auth.constant';
 import { UserControllers } from './user.controller';
+import { upload } from '../../app/middleware/upload';
 
 
 const router = express.Router();
@@ -15,6 +16,14 @@ router.post(
   auth(USER_ROLE.user),
   validateRequest(userValidation.changeStatusValidationSchema),
   UserControllers.changeStatus,
+);
+router.patch(
+  '/change-profilePic/:id',
+       upload.single('image'),
+  
+  auth(USER_ROLE.user,USER_ROLE.contractor),
+  // validateRequest(userValidation.changeStatusValidationSchema),
+  UserControllers.changeProPic,
 );
 router.post(
   '/create-contractor',

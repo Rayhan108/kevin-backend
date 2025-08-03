@@ -8,6 +8,18 @@ const changeStatus = async (id: string, payload: { status: string }) => {
   });
   return result;
 };
+const changeProfilePicture = async (
+  id: string,
+  payload: { image: string }  // ✅ changed from status to image
+) => {
+  // console.log('payload--->', payload);
+
+  const result = await UserModel.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+
+  return result;
+}
 
 const getSingleUserFromDB = async(id:string)=>{
     const result = await UserModel.findById(id);
@@ -47,5 +59,5 @@ const updateUserToContractor = async (payload: TBecomeContractorInput) => {
 };
 
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor
+  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture
 };
