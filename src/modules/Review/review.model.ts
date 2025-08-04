@@ -9,6 +9,11 @@ const ReviewSchema: Schema = new Schema<IReview>({
     ref: 'User', 
     required: [true, 'User reference is required'] 
   },
+services: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Service', 
+    required: [true, 'Service reference is required'] 
+  },
   
   service: { 
     type: Number, 
