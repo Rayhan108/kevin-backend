@@ -3,6 +3,7 @@ import { AuthRoutes } from '../../modules/Auth/auth.routes';
 import { UserRoutes } from '../../modules/User/user.routes';
 import { quoteRoutes } from '../../modules/Quote/quote.routes';
 import { reviewRoutes } from '../../modules/Review/review.routes';
+import { servicesRoutes } from '../../modules/Services/services.routes';
 
 ;
 
@@ -24,6 +25,10 @@ const moduleRoutes = [
   {
     path:'/review',
     route: reviewRoutes,
+  },
+  {
+    path:'/service',
+    route: servicesRoutes,
   },
 
 ];
