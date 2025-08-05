@@ -13,7 +13,7 @@ const getAllReview = catchAsync(async(req:Request,res:Response)=>{
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'User retrived succesfully!',
+      message: 'Review retrived succesfully!',
       data: result,
     });
 
@@ -30,7 +30,7 @@ const createReview = async (
 
     sendResponse(res, {
       success: true,
-      message: 'Succesfully send quotes',
+      message: 'Review Sent Successfull',
       statusCode: httpStatus.CREATED,
       data: result,
     });

@@ -6,10 +6,10 @@ import { IReview } from './review.interface';
 const ReviewSchema: Schema = new Schema<IReview>({
   user: { 
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'User', 
+    ref:'User', 
     required: [true, 'User reference is required'] 
   },
-services: { 
+serviceId: { 
     type: mongoose.Schema.Types.ObjectId, 
     ref: 'Service', 
     required: [true, 'Service reference is required'] 
