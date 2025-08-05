@@ -55,6 +55,74 @@ const acceptProject = async (serviceId: string) => {
 
   return service;  // Return the updated service
 };
+const updateProjectStatusAsBooked = async (serviceId: string) => {
+  // Find the service by its _id
+  const service = await BookServiceModel.findById(serviceId);
+
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+  service.status = 'booked';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
+const updateProjectStatusOnTheWay = async (serviceId: string) => {
+  // Find the service by its _id
+  const service = await BookServiceModel.findById(serviceId);
+
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+  service.status = 'onTheWay';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
+const updateProjectStatusStarted = async (serviceId: string) => {
+  // Find the service by its _id
+  const service = await BookServiceModel.findById(serviceId);
+
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+  service.status = 'started';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
+const updateProjectStatusDone = async (serviceId: string) => {
+  // Find the service by its _id
+  const service = await BookServiceModel.findById(serviceId);
+
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+  service.status = 'done';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
 const rejectProject = async (serviceId: string) => {
   // Find the service by its _id
   const service = await BookServiceModel.findById(serviceId);
@@ -78,5 +146,4 @@ const rejectProject = async (serviceId: string) => {
 
 
 export const BookServices = {
-addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,acceptProject,rejectProject
-};
+addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,acceptProject,rejectProject,updateProjectStatusAsBooked,updateProjectStatusDone,updateProjectStatusStarted,updateProjectStatusOnTheWay}

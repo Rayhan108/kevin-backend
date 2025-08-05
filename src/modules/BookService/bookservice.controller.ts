@@ -67,6 +67,54 @@ const acceptSingleProject = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
+const updateStatusAsBooked = catchAsync(async(req:Request,res:Response)=>{
+  const {serviceId}=req.params;
+
+  const result = await BookServices.updateProjectStatusAsBooked(serviceId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Service is Booked succesfully!',
+      data: result,
+    });
+
+})
+const updateStatusAsOnTheWay = catchAsync(async(req:Request,res:Response)=>{
+  const {serviceId}=req.params;
+
+  const result = await BookServices.updateProjectStatusOnTheWay(serviceId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Contractor is on the way',
+      data: result,
+    });
+
+})
+const updateStatusAsStarted = catchAsync(async(req:Request,res:Response)=>{
+  const {serviceId}=req.params;
+
+  const result = await BookServices.updateProjectStatusStarted(serviceId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Contractor is started his work',
+      data: result,
+    });
+
+})
+const updateStatusAsFinished = catchAsync(async(req:Request,res:Response)=>{
+  const {serviceId}=req.params;
+
+  const result = await BookServices.updateProjectStatusDone(serviceId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Contractor is sfinished his work',
+      data: result,
+    });
+
+})
 const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
   const {serviceId}=req.params;
 
@@ -82,5 +130,5 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 
 export const BookServicesControllers = {
-createBookService,getSpecUserBookService,getAllBookedServices,acceptSingleProject,rejectSingleProject
+createBookService,getSpecUserBookService,getAllBookedServices,acceptSingleProject,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished
 };

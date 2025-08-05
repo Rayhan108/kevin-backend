@@ -25,6 +25,10 @@ router.post('/bookServices',
 router.get('/specUserBookServices/:userId',BookServicesControllers.getSpecUserBookService)
 router.patch('/acceptService/:serviceId',BookServicesControllers.acceptSingleProject)
 router.patch('/rejectService/:serviceId',BookServicesControllers.rejectSingleProject)
+router.patch('/booked/:serviceId',BookServicesControllers.updateStatusAsBooked)
+router.patch('/onTheWay/:serviceId',BookServicesControllers.updateStatusAsOnTheWay)
+router.patch('/started/:serviceId',BookServicesControllers.updateStatusAsStarted)
+router.patch('/done/:serviceId',BookServicesControllers.updateStatusAsFinished)
 router.get('/allBookedOrder',BookServicesControllers.getAllBookedServices)
 
 export const BookServicesRoutes = router;
