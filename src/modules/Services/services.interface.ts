@@ -1,18 +1,6 @@
 import mongoose, { Document, Types } from "mongoose";
 
 
-export interface IBookServices extends Document {
-  user: mongoose.Types.ObjectId; 
-  serviceName: string;       
-  zip: string;     
-  description?: string;   
-  dateRange: string; 
-  timeSlot:string;
-  exactDate: Date;
-  todoList:[];
-  status:'booked'|'onTheWay'|'started'|'done';
-  projectStatus:'accepted'|'rejected';
-}
 
 
 export type TReview ={

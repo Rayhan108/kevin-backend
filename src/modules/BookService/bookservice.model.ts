@@ -1,0 +1,39 @@
+import mongoose, { Schema } from 'mongoose';
+import { IBookServices } from './bookservice.interface';
+
+// Define the schema for the model
+const BookServicesSchema: Schema = new Schema(
+  {
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    serviceType: { type: String, required: true },
+    location: { type: String, required: true },
+    zip: { type: String, required: true },
+    projectDescription: { type: String },
+    dateRange: { type: String, required: true },
+    timeSlot: { type: String, required: true },
+    exactDate: { type: String, required: true },
+    exactTime: { type: String, required: true },
+    todoList: { type: [String], default: [] },
+    status: {
+      type: String,
+      enum: ['booked', 'onTheWay', 'started', 'done'],
+      default: 'booked',
+    },
+    projectStatus: {
+      type: String,
+      enum: ['accepted', 'rejected'],
+      default: 'accepted',
+    },
+  },
+  {
+    timestamps: true, // Automatically create createdAt and updatedAt fields
+  },
+);
+
+// Create and export the model
+const BookServices = mongoose.model<IBookServices>(
+  'BookServices',
+  BookServicesSchema,
+);
+
+export default BookServices;
