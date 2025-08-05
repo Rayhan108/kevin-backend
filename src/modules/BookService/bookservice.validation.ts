@@ -16,7 +16,7 @@ export const IBookServicesSchema = z.object({
   exactTime: z.string().min(1, { message: 'Exact time is required' }),
   todoList: z.array(z.string()).min(1, { message: 'At least one task is required' }), // Array of strings
   status: z.enum(['booked', 'onTheWay', 'started', 'done']), // Enum validation for status
-  projectStatus: z.enum(['accepted', 'rejected']), // Enum validation for projectStatus
+//   projectStatus: z.enum(['pending','accepted', 'rejected']), // Enum validation for projectStatus
     })
 
 });

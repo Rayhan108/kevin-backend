@@ -38,6 +38,45 @@ const  userId = payload.user
   return result;
 };
 
+const acceptProject = async (serviceId: string) => {
+  // Find the service by its _id
+  const service = await BookServiceModel.findById(serviceId);
+
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+  service.projectStatus = 'accepted';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
+const rejectProject = async (serviceId: string) => {
+  // Find the service by its _id
+  const service = await BookServiceModel.findById(serviceId);
+
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+  service.projectStatus = 'rejected';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
+
+
+
+
+
 export const BookServices = {
-addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB
+addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,acceptProject,rejectProject
 };

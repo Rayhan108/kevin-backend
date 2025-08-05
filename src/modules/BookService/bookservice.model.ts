@@ -21,8 +21,8 @@ const BookServicesSchema: Schema = new Schema(
     },
     projectStatus: {
       type: String,
-      enum: ['accepted', 'rejected'],
-      default: 'accepted',
+      enum: ['accepted', 'rejected','pending'],
+      default: 'pending',
     },
   },
   {

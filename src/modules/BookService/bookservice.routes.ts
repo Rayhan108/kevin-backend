@@ -23,6 +23,8 @@ router.post('/bookServices',
 );
 
 router.get('/specUserBookServices/:userId',BookServicesControllers.getSpecUserBookService)
+router.patch('/acceptService/:serviceId',BookServicesControllers.acceptSingleProject)
+router.patch('/rejectService/:serviceId',BookServicesControllers.rejectSingleProject)
 router.get('/allBookedOrder',BookServicesControllers.getAllBookedServices)
 
 export const BookServicesRoutes = router;
