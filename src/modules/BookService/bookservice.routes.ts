@@ -22,6 +22,6 @@ router.post('/bookServices',
 
 );
 
-// router.get('/allServices',servicesControllers.getAllServices)
+router.get('/specUserBookServices/:userId',BookServicesControllers.getSpecUserBookService)
 
 export const BookServicesRoutes = router;

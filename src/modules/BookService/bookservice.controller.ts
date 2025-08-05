@@ -5,21 +5,23 @@ import sendResponse from '../../app/utils/sendResponse';
 import httpStatus from 'http-status';
 
 import { BookServices } from './bookservice.services';
+import catchAsync from '../../app/utils/catchAsync';
 
 
 
 
-// const getAllServices = catchAsync(async(req:Request,res:Response)=>{
+const getSpecUserBookService = catchAsync(async(req:Request,res:Response)=>{
+  const {userId}=req.params;
 
-//   const result = await BookServices.getAllServicesFromDB();
-//   sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'User retrived succesfully!',
-//       data: result,
-//     });
+  const result = await BookServices.getSpecUserBookServiceFromDB(userId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Order retrived succesfully!',
+      data: result,
+    });
 
-// })
+})
 
 const createBookService = async (
   req: Request,
@@ -42,5 +44,5 @@ const createBookService = async (
 };
 
 export const BookServicesControllers = {
-createBookService
+createBookService,getSpecUserBookService
 };

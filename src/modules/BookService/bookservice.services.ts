@@ -9,10 +9,12 @@ import httpStatus from 'http-status';
 import BookServiceModel from "./bookservice.model";
 
 
-// const getAllServicesFromDB = async()=>{
-//     const services = await ServiceModel.find().populate('contractorId');
-//     return services;
-// }
+const getSpecUserBookServiceFromDB = async (userId: string) => {
+  const services = await BookServiceModel.find({ user: userId }) // Find all services for this specific user
+    .populate('user'); // Populate the user details (optional if needed)
+
+  return services;
+};
 
 const addBookServicesIntoDB = async (payload:IBookServices) => {
     // console.log("Services---------->",payload);
@@ -31,5 +33,5 @@ const  userId = payload.user
 };
 
 export const BookServices = {
-addBookServicesIntoDB,
+addBookServicesIntoDB,getSpecUserBookServiceFromDB
 };
