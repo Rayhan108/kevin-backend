@@ -15,6 +15,12 @@ const getSpecUserBookServiceFromDB = async (userId: string) => {
 
   return services;
 };
+const getAllOrderedServiceFromDB = async () => {
+  const services = await BookServiceModel.find() // Find all services for this specific user
+    .populate('user'); // Populate the user details (optional if needed)
+
+  return services;
+};
 
 const addBookServicesIntoDB = async (payload:IBookServices) => {
     // console.log("Services---------->",payload);
@@ -33,5 +39,5 @@ const  userId = payload.user
 };
 
 export const BookServices = {
-addBookServicesIntoDB,getSpecUserBookServiceFromDB
+addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB
 };

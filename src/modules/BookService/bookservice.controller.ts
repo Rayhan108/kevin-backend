@@ -22,6 +22,18 @@ const getSpecUserBookService = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
+const getAllBookedServices = catchAsync(async(req:Request,res:Response)=>{
+
+
+  const result = await BookServices.getAllOrderedServiceFromDB();
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Order retrived succesfully!',
+      data: result,
+    });
+
+})
 
 const createBookService = async (
   req: Request,
@@ -44,5 +56,5 @@ const createBookService = async (
 };
 
 export const BookServicesControllers = {
-createBookService,getSpecUserBookService
+createBookService,getSpecUserBookService,getAllBookedServices
 };
