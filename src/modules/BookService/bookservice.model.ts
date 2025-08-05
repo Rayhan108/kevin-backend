@@ -31,9 +31,9 @@ const BookServicesSchema: Schema = new Schema(
 );
 
 // Create and export the model
-const BookServices = mongoose.model<IBookServices>(
+const BookServiceModel = mongoose.model<IBookServices>(
   'BookServices',
   BookServicesSchema,
 );
 
-export default BookServices;
+export default BookServiceModel;
