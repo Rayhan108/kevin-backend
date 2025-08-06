@@ -104,6 +104,18 @@ const updateStatusAsFinished = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
+const updateAssignTask = catchAsync(async(req:Request,res:Response)=>{
+  const payload=req.body;
+
+  const result = await BookServices.updateAssignedTaskInDB(payload);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Task is updated',
+      data: result,
+    });
+
+})
 const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
   const {serviceId}=req.params;
 
@@ -119,5 +131,5 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 
 export const BookServicesControllers = {
-createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished
+createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished,updateAssignTask
 };

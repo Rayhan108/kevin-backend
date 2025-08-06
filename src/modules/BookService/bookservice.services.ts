@@ -2,7 +2,7 @@
 
 import AppError from "../../errors/AppError";
 import { UserModel } from "../User/user.model";
-import { IBookServices } from "./bookservice.interface";
+import { IBookServices, TUpdateTask } from "./bookservice.interface";
 
 
 import httpStatus from 'http-status';
@@ -38,7 +38,31 @@ const  userId = payload.user
   return result;
 };
 
+const updateAssignedTaskInDB = async (payload: TUpdateTask) => {
+  const bookedServiceId = payload.bookedService;
+  const updatedTodoList = payload.todoList; // expecting string[]
 
+  // Find the service by its _id
+  const service = await BookServiceModel.findById(bookedServiceId);
+
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update the todoList and status
+  if (Array.isArray(updatedTodoList)) {
+    service.todoList = updatedTodoList;
+  } else {
+    throw new AppError(httpStatus.BAD_REQUEST, 'todoList must be an array of strings');
+  }
+
+
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
 const updateProjectStatusAsBooked = async (serviceId: string) => {
   // Find the service by its _id
   const service = await BookServiceModel.findById(serviceId);
@@ -130,4 +154,4 @@ const rejectProject = async (serviceId: string) => {
 
 
 export const BookServices = {
-addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,rejectProject,updateProjectStatusAsBooked,updateProjectStatusDone,updateProjectStatusStarted,updateProjectStatusOnTheWay}
+addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,rejectProject,updateProjectStatusAsBooked,updateProjectStatusDone,updateProjectStatusStarted,updateProjectStatusOnTheWay,updateAssignedTaskInDB}

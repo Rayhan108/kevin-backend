@@ -15,3 +15,7 @@ export interface IBookServices extends Document {
   status: 'booked' | 'onTheWay' | 'started' | 'done';
   projectStatus:'pending'| 'rejected'|'accepted';
 }
+export type TUpdateTask={
+  bookedService:mongoose.Types.ObjectId,
+  todoList: string[];
+}

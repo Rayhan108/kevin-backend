@@ -20,3 +20,13 @@ export const IBookServicesSchema = z.object({
     })
 
 });
+
+export const updateTaskZodSchema = z.object({
+  body:z.object({
+  bookedService: z.string().regex(/^[0-9a-fA-F]{24}$/, {
+    message: 'Invalid MongoDB ObjectId format',
+  }),
+  todoList: z.array(z.string().min(1, 'Task cannot be empty')),
+  })
+
+});

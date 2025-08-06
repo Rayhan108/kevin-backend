@@ -7,7 +7,7 @@ import validateRequest from '../../app/middleware/validateRequest';
 import { USER_ROLE } from '../Auth/auth.constant';
 
 
-import { IBookServicesSchema } from './bookservice.validation';
+import { IBookServicesSchema, updateTaskZodSchema } from './bookservice.validation';
 import { BookServicesControllers } from './bookservice.controller';
 
 
@@ -24,6 +24,7 @@ router.post('/bookServices',
 
 router.get('/specUserBookServices/:userId',BookServicesControllers.getSpecUserBookService)
 
+router.patch('/updateTask',validateRequest(updateTaskZodSchema),BookServicesControllers.updateAssignTask)
 router.patch('/cancelService/:serviceId',BookServicesControllers.rejectSingleProject)
 router.patch('/booked/:serviceId',BookServicesControllers.updateStatusAsBooked)
 router.patch('/onTheWay/:serviceId',BookServicesControllers.updateStatusAsOnTheWay)
