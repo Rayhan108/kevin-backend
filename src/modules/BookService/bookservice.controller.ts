@@ -10,6 +10,7 @@ import catchAsync from '../../app/utils/catchAsync';
 
 
 
+
 const getSpecUserBookService = catchAsync(async(req:Request,res:Response)=>{
   const {userId}=req.params;
 
@@ -107,7 +108,13 @@ const updateStatusAsFinished = catchAsync(async(req:Request,res:Response)=>{
 const updateAssignTask = catchAsync(async(req:Request,res:Response)=>{
   const payload=req.body;
 
-  const result = await BookServices.updateAssignedTaskInDB(payload);
+  // eslint-disable-next-line no-undef
+  const files = req.files as Express.Multer.File[] ;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const image  =files?.map((file: any) => file.path) as any
+console.log("req files image",image);
+
+  const result = await BookServices.updateAssignedTaskInDB(payload,image);
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,

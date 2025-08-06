@@ -25,7 +25,7 @@ const createServices = async (
   res: Response,
   next: NextFunction,
 ) => {
-//   console.log("create revieew-->",req.body);
+  // console.log("create revieew-->",req.body);
   try {
     const result = await ServicesService.addServicesIntoDB(req.body);
 

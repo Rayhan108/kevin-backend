@@ -16,7 +16,7 @@ const getAllServicesFromDB = async()=>{
 
 const addServicesIntoDB = async (payload:IServices) => {
 const  userId = payload.contractorId
-
+// console.log("payload-->",payload);
   // ✅ Step 1: Check if user exists
   const user = await UserModel.findById(userId);
   if (!user) {

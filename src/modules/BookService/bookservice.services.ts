@@ -38,9 +38,11 @@ const  userId = payload.user
   return result;
 };
 
-const updateAssignedTaskInDB = async (payload: TUpdateTask) => {
+const updateAssignedTaskInDB = async (payload: TUpdateTask, image: string[]) => {
   const bookedServiceId = payload.bookedService;
   const updatedTodoList = payload.todoList; // expecting string[]
+
+  console.log("images-->", image);
 
   // Find the service by its _id
   const service = await BookServiceModel.findById(bookedServiceId);
@@ -49,14 +51,19 @@ const updateAssignedTaskInDB = async (payload: TUpdateTask) => {
     throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
   }
 
-  // Update the todoList and status
+  // Update the todoList
   if (Array.isArray(updatedTodoList)) {
     service.todoList = updatedTodoList;
   } else {
     throw new AppError(httpStatus.BAD_REQUEST, 'todoList must be an array of strings');
   }
 
-
+  // Update the image paths
+  if (image && Array.isArray(image)) {
+    service.image = image; // Assuming 'photos' field in the model is used for storing image paths
+  } else {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Image paths should be an array of strings');
+  }
 
   // Save the updated service
   await service.save();

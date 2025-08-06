@@ -24,6 +24,7 @@ const BookServicesSchema: Schema = new Schema(
       enum: ['accepted', 'rejected','pending'],
       default: 'pending',
     },
+    image: { type: [String], default: [] },
   },
   {
     timestamps: true, // Automatically create createdAt and updatedAt fields
