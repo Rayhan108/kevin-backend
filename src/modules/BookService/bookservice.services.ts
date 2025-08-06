@@ -42,7 +42,7 @@ const updateAssignedTaskInDB = async (payload: TUpdateTask, image: string[]) => 
   const bookedServiceId = payload.bookedService;
   const updatedTodoList = payload.todoList; // expecting string[]
 
-  console.log("images-->", image);
+  // console.log("images-->", image);
 
   // Find the service by its _id
   const service = await BookServiceModel.findById(bookedServiceId);

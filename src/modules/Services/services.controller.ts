@@ -25,9 +25,10 @@ const createServices = async (
   res: Response,
   next: NextFunction,
 ) => {
-  // console.log("create revieew-->",req.body);
+  const image = req.file?.path
+  // console.log("create revieew-->",req.file.path);
   try {
-    const result = await ServicesService.addServicesIntoDB(req.body);
+    const result = await ServicesService.addServicesIntoDB(req.body,image as string);
 
     sendResponse(res, {
       success: true,

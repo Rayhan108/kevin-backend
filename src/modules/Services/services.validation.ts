@@ -13,7 +13,6 @@ export const serviceValidationSchema = z.object({
     body:z.object({
 
         contractorId: objectId,
-        image: z.string().url({ message: 'Must be a valid image URL' }),
         title: z.string().min(1),
         details: z.string().min(1),
         categoryName: z.string().min(1),

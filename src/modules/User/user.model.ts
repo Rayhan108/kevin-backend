@@ -28,7 +28,7 @@ firstName: { type: String, required: true },
     report:{
     reason: { type: String, default: undefined },
       feedback: { type: String, default: undefined },
-      image: { type: String, default: undefined },
+      image: { type: String},
     },
       verification: {
       code: {

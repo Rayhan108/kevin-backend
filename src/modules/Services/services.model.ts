@@ -18,7 +18,7 @@ const ReviewSchema = new Schema<TReview>(
 const ServiceSchema = new Schema<IServices>(
   {
     contractorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    image: { type: String, required: true },
+    image: { type: String},
     title: { type: String, required: true },
     details: { type: String, required: true },
     categoryName: { type: String, required: true },

@@ -37,7 +37,7 @@ verification?: {
   report?:{
     reason:string,
     feedback:string,
-    image:string
+    image?:string
   };
   password: string;
     passwordChangedAt?: Date;

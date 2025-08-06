@@ -52,7 +52,9 @@ const addReport = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId;
   // console.log("request",req.body);
   const reportData = req.body.report;
-
+const image = req.file?.path
+reportData.image=image
+// console.log("reported data--->",reportData);
   const result = await UserServices.addReportToContractor(userId, reportData);
 
   sendResponse(res, {

@@ -14,7 +14,8 @@ const getAllServicesFromDB = async()=>{
     return services;
 }
 
-const addServicesIntoDB = async (payload:IServices) => {
+const addServicesIntoDB = async (payload:IServices,image:string) => {
+  console.log(image);
 const  userId = payload.contractorId
 // console.log("payload-->",payload);
   // ✅ Step 1: Check if user exists
@@ -27,7 +28,9 @@ const  userId = payload.contractorId
   if (user.role !== 'contractor') {
     throw new Error('Only contractors can create services');
   }
-// console.log("Pyload--->",payload);
+console.log("Pyload--->",payload);
+payload.image = image;
+
   const result = (await ServiceModel.create(payload)).populate('contractorId')
   return result;
 };

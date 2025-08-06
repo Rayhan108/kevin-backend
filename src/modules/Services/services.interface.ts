@@ -16,7 +16,7 @@ export type TReview ={
 
 export interface IServices extends Document {
   contractorId: Types.ObjectId;
-  image: string;
+  image?: string;
   title: string;
   details: string;
   categoryName: string;
