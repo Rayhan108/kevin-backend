@@ -55,18 +55,7 @@ const createBookService = async (
   }
 };
 
-const acceptSingleProject = catchAsync(async(req:Request,res:Response)=>{
-  const {serviceId}=req.params;
 
-  const result = await BookServices.acceptProject(serviceId);
-  sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Service accepted succesfully!',
-      data: result,
-    });
-
-})
 const updateStatusAsBooked = catchAsync(async(req:Request,res:Response)=>{
   const {serviceId}=req.params;
 
@@ -110,7 +99,7 @@ const updateStatusAsFinished = catchAsync(async(req:Request,res:Response)=>{
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Contractor is sfinished his work',
+      message: 'Contractor is finished his work',
       data: result,
     });
 
@@ -122,7 +111,7 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Service rejected succesfully!',
+      message: 'Book Service is rejected succesfully!',
       data: result,
     });
 
@@ -130,5 +119,5 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 
 export const BookServicesControllers = {
-createBookService,getSpecUserBookService,getAllBookedServices,acceptSingleProject,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished
+createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished
 };

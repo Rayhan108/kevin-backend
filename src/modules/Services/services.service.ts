@@ -1,9 +1,10 @@
 // import AppError from '../../errors/AppError';
 
+import AppError from "../../errors/AppError";
 import { UserModel } from "../User/user.model";
 import { IServices } from "./services.interface";
 import ServiceModel from "./services.model";
-
+import httpStatus from 'http-status';
 
 // import httpStatus from 'http-status';
 
@@ -31,6 +32,42 @@ const  userId = payload.contractorId
   return result;
 };
 
+const acceptProject = async (serviceId: string) => {
+  // Find the service by its _id
+  const service = await ServiceModel.findById(serviceId);
+
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+  service.projectStatus = 'accepted';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
+const rejectProject = async (serviceId: string) => {
+  // Find the service by its _id
+  const service = await ServiceModel.findById(serviceId);
+
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+  service.projectStatus = 'rejected';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
+
+
 export const ServicesService = {
-addServicesIntoDB,getAllServicesFromDB
+addServicesIntoDB,getAllServicesFromDB,acceptProject,rejectProject
 };

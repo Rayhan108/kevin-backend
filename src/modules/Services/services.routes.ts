@@ -29,5 +29,6 @@ router.post('/addServices',
 );
 
 router.get('/allServices',servicesControllers.getAllServices)
-
+router.patch('/rejectService/:serviceId',servicesControllers.rejectSingleProject)
+router.patch('/acceptService/:serviceId',servicesControllers.acceptSingleProject)
 export const servicesRoutes = router;

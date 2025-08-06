@@ -25,6 +25,11 @@ const ServiceSchema = new Schema<IServices>(
     subCategoryName: { type: String, required: true },
     review: { type: ReviewSchema, required: false },
     price: { type: Number, required: true },
+       projectStatus: {
+      type: String,
+      enum: ['accepted', 'rejected','pending'],
+      default: 'pending',
+    },
   },
   { timestamps: true }
 );

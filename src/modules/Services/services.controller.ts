@@ -40,6 +40,33 @@ const createServices = async (
   }
 };
 
+const acceptSingleProject = catchAsync(async(req:Request,res:Response)=>{
+  const {serviceId}=req.params;
+
+  const result = await ServicesService.acceptProject(serviceId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Service accepted succesfully!',
+      data: result,
+    });
+
+})
+
+const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
+  const {serviceId}=req.params;
+
+  const result = await ServicesService.rejectProject(serviceId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Service rejected succesfully!',
+      data: result,
+    });
+
+})
+
+
 export const servicesControllers = {
-createServices,getAllServices
+createServices,getAllServices,acceptSingleProject,rejectSingleProject
 };

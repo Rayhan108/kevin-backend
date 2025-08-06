@@ -23,4 +23,5 @@ export interface IServices extends Document {
   subCategoryName: string;
   review?:TReview 
   price: number;
+    projectStatus:'pending'| 'accepted' | 'rejected';
 }

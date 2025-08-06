@@ -13,5 +13,5 @@ export interface IBookServices extends Document {
   exactTime: string;
   todoList: string[];
   status: 'booked' | 'onTheWay' | 'started' | 'done';
-  projectStatus:'pending'| 'accepted' | 'rejected';
+  projectStatus:'pending'| 'rejected'|'accepted';
 }
