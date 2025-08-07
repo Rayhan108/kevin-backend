@@ -11,8 +11,6 @@ const loginValidationSchema = z.object({
 
 export const registerUserValidationSchema = z.object({
    body: z.object({
-   
-
       firstName: z.string().trim().min(1, { message: "First name is required" }),
       lastName: z.string().trim().min(1, { message: "Last name is required" }),
       email: z.string().trim().email("Invalid email address"),

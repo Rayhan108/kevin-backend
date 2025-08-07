@@ -41,7 +41,7 @@ verification?: {
   };
   password: string;
     passwordChangedAt?: Date;
-  role: 'user' | 'contractor';
+  role: 'user' | 'contractor'|'vipContractor'|'vipMember';
   status: 'in-progress' | 'blocked';
   address: string;
   createdAt: Date;

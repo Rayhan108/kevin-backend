@@ -17,7 +17,7 @@ firstName: { type: String, required: true },
     password: { type: String, required: true, select: false },
     role: {
       type: String,
-      enum: ['user', 'contractor'],
+      enum: ['user', 'contractor','vipContractor','vipMember'],
       default: 'user',
     },
      status: {

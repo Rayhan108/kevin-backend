@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import express, { NextFunction, Request, Response } from 'express';
 
-// import auth from '../../app/middleware/auth';
+import auth from '../../app/middleware/auth';
 import validateRequest from '../../app/middleware/validateRequest';
 
-// import { USER_ROLE } from '../Auth/auth.constant';
+import { USER_ROLE } from '../Auth/auth.constant';
 
 import { upload } from '../../app/middleware/upload';
 import { ArticleControllers } from './article.controller';
@@ -25,7 +25,7 @@ router.post(
         next();
     },
   
-//   auth(USER_ROLE.user,USER_ROLE.contractor),
+  auth(USER_ROLE.vipContractor),
   validateRequest(articleZodSchema),
  ArticleControllers.createArticle,
 );
