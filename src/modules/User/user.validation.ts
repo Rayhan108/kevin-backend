@@ -22,6 +22,7 @@ import { UserStatus } from '../Auth/auth.constant';
       .string()
       .trim()
       .email({ message: 'Valid email is required' }),
+   
 
     location: z
       .string()

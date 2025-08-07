@@ -10,6 +10,7 @@ import bcrypt from 'bcrypt';
 import { sendMail } from '../../app/utils/sendMail';
 import { TUser } from '../User/user.interface';
 import { UserModel } from '../User/user.model';
+import { generateReferCode } from '../../app/utils/generateReferCode';
 // register new user
 const registeredUserIntoDB = async (payload: TUser) => {
   // console.log(payload);
@@ -18,9 +19,18 @@ const registeredUserIntoDB = async (payload: TUser) => {
   if (user) {
     throw new AppError(httpStatus.CONFLICT, 'This user is already exists!');
   }
- 
-  // console.log(newUser);
-  const result = await UserModel.create(payload);
+   // generate a unique refer code
+  const refercode = await generateReferCode();
+// console.log("refercode",referCode);
+  // attach referCode to payload
+  const newUserData = {
+    ...payload,
+    refercode,
+  };
+
+  // console.log('new user data',newUserData);
+
+  const result = await UserModel.create(newUserData);
   return result;
 };
 // login user

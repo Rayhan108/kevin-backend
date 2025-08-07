@@ -34,6 +34,7 @@ verification?: {
     code: string;
     expireDate: Date;
   };
+  refercode:string,
   report?:{
     reason:string,
     feedback:string,

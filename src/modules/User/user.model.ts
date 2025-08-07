@@ -15,6 +15,7 @@ firstName: { type: String, required: true },
     image: { type: String },
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
+    refercode: { type: String, required: true },
     password: { type: String, required: true, select: false },
     role: {
       type: String,
@@ -32,7 +33,7 @@ firstName: { type: String, required: true },
       image: { type: String},
     },
     feedback:{
-      message: { type: String, required:true },
+      message: { type: String },
       image: { type: String},
     },
       verification: {
