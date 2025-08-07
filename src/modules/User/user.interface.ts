@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import {  Model } from 'mongoose';
+import mongoose, {  Model } from 'mongoose';
 import { USER_ROLE } from '../Auth/auth.constant';
 
 
@@ -25,6 +25,8 @@ export type TBecomeContractorInput = {
 export interface TUser{
     _id:string;
     userId:string;
+      referredBy?: mongoose.Types.ObjectId; 
+       referrals?: (mongoose.Types.ObjectId | User)[];
   firstName: string;
   lastName: string;
   image: string;

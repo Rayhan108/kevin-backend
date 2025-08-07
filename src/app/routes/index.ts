@@ -6,6 +6,7 @@ import { reviewRoutes } from '../../modules/Review/review.routes';
 import { servicesRoutes } from '../../modules/Services/services.routes';
 import { BookServicesRoutes } from '../../modules/BookService/bookservice.routes';
 import { ArticleRoutes } from '../../modules/Article/article.routes';
+import { referRoutes } from '../../modules/Refferal/refferal.routes';
 
 ;
 
@@ -39,6 +40,10 @@ const moduleRoutes = [
   {
     path:'/article',
     route: ArticleRoutes,
+  },
+  {
+    path:'/refer',
+    route:referRoutes,
   },
 
 ];

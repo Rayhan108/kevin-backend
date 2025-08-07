@@ -1,4 +1,4 @@
-import { model, Schema } from 'mongoose';
+import mongoose, { model, Schema } from 'mongoose';
 
 import bcrypt from 'bcrypt';
 import config from '../../app/config';
@@ -15,13 +15,24 @@ firstName: { type: String, required: true },
     image: { type: String },
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
-    refercode: { type: String, required: true },
+    refercode: { type: String },
     password: { type: String, required: true, select: false },
     role: {
       type: String,
       enum: ['user', 'contractor','vipContractor','vipMember','admin'],
       default: 'user',
     },
+    referredBy: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: 'User',
+  default: null,
+},
+referrals: [
+  {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
+],
      status: {
       type: String,
       enum: UserStatus,
