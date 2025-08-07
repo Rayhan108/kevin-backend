@@ -74,8 +74,8 @@ const addReportToContractor = async (
     throw new Error('User not found');
   }
 
-  if (user.role !== 'contractor') {
-    throw new AppError(httpStatus.CONFLICT,'Only contractors can be reported');
+  if (user.role == 'user') {
+    throw new AppError(httpStatus.CONFLICT,'Only users can be reported');
   }
 
   // Update the report field only
@@ -91,11 +91,45 @@ const addReportToContractor = async (
 
   return updatedUser;
 };
+const addFeedbackToContractor = async (
+  userId: string,
+  feedback: {
+    reason?: string;
+    feedback?: string;
+    image?: string;
+  }
+) => {
+  // console.log("report--->",report);
+  // console.log("id--->",userId);
+  // First, find the user and check role
+  const user = await UserModel.findById(userId);
+
+  if (!user) {
+    throw new Error('User not found');
+  }
+
+  if (user.role == 'admin') {
+    throw new AppError(httpStatus.CONFLICT,'Only admin can gave feedback');
+  }
+
+  // Update the report field only
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    userId,
+    {
+      $set: {
+        feedback, // this will overwrite any existing report object
+      },
+    },
+    { new: true }
+  );
+
+  return updatedUser;
+};
 
 
 
 
 
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor
+  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor
 };

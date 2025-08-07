@@ -64,6 +64,24 @@ reportData.image=image
     data: result,
   });
 });
+const addFeedback = catchAsync(async (req: Request, res: Response) => {
+  const userId = req.params.userId;
+  // console.log("request",req.file);
+  const feedbackData = req.body.feedback;
+const image = req.file?.path
+  // console.log("request iamge",image);
+feedbackData.image=image
+// console.log("feedback data--->",feedbackData);
+
+  const result = await UserServices.addFeedbackToContractor(userId, feedbackData);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Feedback  added to user ',
+    data: result,
+  });
+});
 
 
 
@@ -112,5 +130,5 @@ const createContractor = async (
 };
 
 export const UserControllers = {
-  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport
+  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport,addFeedback
 };

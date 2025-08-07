@@ -39,9 +39,13 @@ verification?: {
     feedback:string,
     image?:string
   };
+  feedback?:{
+    message:string,
+    image?:string
+  };
   password: string;
     passwordChangedAt?: Date;
-  role: 'user' | 'contractor'|'vipContractor'|'vipMember';
+  role: 'user' | 'contractor'|'vipContractor'|'vipMember'|'admin';
   status: 'in-progress' | 'blocked';
   address: string;
   createdAt: Date;

@@ -32,6 +32,7 @@ router.post(
   UserControllers.createContractor,
 );
 router.get('/retrive/:userId',UserControllers.getSingleUser)
+
 router.patch('/report/:userId',
     upload.single('image'),
        (req: Request, res: Response, next: NextFunction) => {
@@ -42,6 +43,19 @@ router.patch('/report/:userId',
         next();
     },
   UserControllers.addReport)
+
+router.patch('/feedback/:userId',
+    upload.single('image'),
+       (req: Request, res: Response, next: NextFunction) => {
+      // console.log("req--->",req.body);
+   if(req.body.data){
+         req.body = JSON.parse(req.body.data);
+   }
+        next();
+    },
+      auth(USER_ROLE.admin),
+  UserControllers.addFeedback)
+
 router.get('/allUser',UserControllers.getAllUser)
 
 export const UserRoutes = router;

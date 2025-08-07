@@ -7,6 +7,7 @@ import { UserStatus } from '../Auth/auth.constant';
 
 
 
+
 const userSchema = new Schema<TUser, User,IUserMethods>(
   {
 firstName: { type: String, required: true },
@@ -17,7 +18,7 @@ firstName: { type: String, required: true },
     password: { type: String, required: true, select: false },
     role: {
       type: String,
-      enum: ['user', 'contractor','vipContractor','vipMember'],
+      enum: ['user', 'contractor','vipContractor','vipMember','admin'],
       default: 'user',
     },
      status: {
@@ -28,6 +29,10 @@ firstName: { type: String, required: true },
     report:{
     reason: { type: String, default: undefined },
       feedback: { type: String, default: undefined },
+      image: { type: String},
+    },
+    feedback:{
+      message: { type: String, required:true },
       image: { type: String},
     },
       verification: {
