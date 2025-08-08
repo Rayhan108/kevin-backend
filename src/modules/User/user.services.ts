@@ -140,9 +140,18 @@ const addFeedbackToContractor = async (
 };
 
 
+const deleteUserFromDB = async (id: string) => {
+  const user = await UserModel.findByIdAndDelete(id);
+
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
+  }
+
+  return user; // return deleted user if needed
+};
 
 
 
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB
+  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB
 };

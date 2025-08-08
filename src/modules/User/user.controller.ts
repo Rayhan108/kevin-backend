@@ -159,6 +159,20 @@ const createContractor = async (
   }
 };
 
+const deleteUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+  const result = await UserServices.deleteUserFromDB(userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User deleted successfully!',
+    data: result,
+  });
+})
+
+
 export const UserControllers = {
-  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport,addFeedback,updateProfile
+  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport,addFeedback,updateProfile,deleteUser
 };

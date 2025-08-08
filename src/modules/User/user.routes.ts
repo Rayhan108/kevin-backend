@@ -67,6 +67,7 @@ router.patch('/edit-profile/:id',
         validateRequest(editProfileSchema),
   UserControllers.updateProfile)
 
+router.delete('/deleteUser/:userId',UserControllers.deleteUser)
 router.get('/allUser',UserControllers.getAllUser)
 
 export const UserRoutes = router;
