@@ -13,6 +13,7 @@ const userSchema = new Schema<TUser, User,IUserMethods>(
 firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     image: { type: String },
+    bio: { type: String },
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
     refercode: { type: String },

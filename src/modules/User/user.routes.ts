@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from 'express';
 
 import auth from '../../app/middleware/auth';
 import validateRequest from '../../app/middleware/validateRequest';
-import { userValidation } from './user.validation';
+import { editProfileSchema, userValidation } from './user.validation';
 import { USER_ROLE } from '../Auth/auth.constant';
 import { UserControllers } from './user.controller';
 import { upload } from '../../app/middleware/upload';
@@ -20,7 +20,6 @@ router.post(
 router.patch(
   '/change-profilePic/:id',
        upload.single('image'),
-  
   auth(USER_ROLE.user,USER_ROLE.contractor),
   // validateRequest(userValidation.changeStatusValidationSchema),
   UserControllers.changeProPic,
@@ -55,6 +54,18 @@ router.patch('/feedback/:userId',
     },
       auth(USER_ROLE.admin),
   UserControllers.addFeedback)
+
+router.patch('/edit-profile/:id',
+    upload.single('image'),
+       (req: Request, res: Response, next: NextFunction) => {
+      // console.log("req--->",req.body);
+   if(req.body.data){
+         req.body = JSON.parse(req.body.data);
+   }
+        next();
+    },
+        validateRequest(editProfileSchema),
+  UserControllers.updateProfile)
 
 router.get('/allUser',UserControllers.getAllUser)
 

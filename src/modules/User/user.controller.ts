@@ -4,7 +4,7 @@ import sendResponse from '../../app/utils/sendResponse';
 import { UserServices } from './user.services';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
-import { TProfilePictureUpdatePayload } from './user.constant';
+import { TEditProfile, TProfilePictureUpdatePayload } from './user.constant';
 
 const changeStatus = catchAsync(async (req, res) => {
   const id = req.params.id;
@@ -43,6 +43,36 @@ const changeProPic = catchAsync(
       statusCode: httpStatus.OK,
       success: true,
       message: 'Profile picture updated successfully',
+      data: result,
+    });
+  }
+);
+const updateProfile = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+
+    // 🔍 Check if file is uploaded
+    if (!req.file) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Image file is required');
+    }
+
+    // 🖼️ Get file path or filename from multer
+    const imageUrl = req.file.path || req.file.filename;
+
+    // 🧾 Prepare typed payload
+    const payload: TEditProfile = {
+      ...req.body,
+      image: imageUrl,
+    };
+
+    // 🔁 Update user's image field
+    const result = await UserServices.updateProfileFromDB(id, payload);
+
+    // 📤 Send response
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Profile updated successfully',
       data: result,
     });
   }
@@ -130,5 +160,5 @@ const createContractor = async (
 };
 
 export const UserControllers = {
-  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport,addFeedback
+  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport,addFeedback,updateProfile
 };

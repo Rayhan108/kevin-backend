@@ -1,4 +1,5 @@
 import AppError from '../../errors/AppError';
+import { TEditProfile } from './user.constant';
 import { TBecomeContractorInput } from './user.interface';
 import { UserModel } from './user.model';
 import httpStatus from 'http-status';
@@ -11,6 +12,18 @@ const changeStatus = async (id: string, payload: { status: string }) => {
 const changeProfilePicture = async (
   id: string,
   payload: { image: string }  // ✅ changed from status to image
+) => {
+  // console.log('payload--->', payload);
+
+  const result = await UserModel.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+
+  return result;
+}
+const updateProfileFromDB = async (
+  id: string,
+  payload: TEditProfile 
 ) => {
   // console.log('payload--->', payload);
 
@@ -131,5 +144,5 @@ const addFeedbackToContractor = async (
 
 
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor
+  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB
 };

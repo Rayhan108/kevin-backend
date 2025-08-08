@@ -29,6 +29,7 @@ export interface TUser{
        referrals?: (mongoose.Types.ObjectId | User)[];
   firstName: string;
   lastName: string;
+  bio?: string;
   image: string;
   email: string;
   phone: string;
