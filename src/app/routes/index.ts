@@ -7,6 +7,7 @@ import { servicesRoutes } from '../../modules/Services/services.routes';
 import { BookServicesRoutes } from '../../modules/BookService/bookservice.routes';
 import { ArticleRoutes } from '../../modules/Article/article.routes';
 import { referRoutes } from '../../modules/Refferal/refferal.routes';
+import { vipMemberRoutes } from '../../modules/VipMember/vipmember.routes';
 
 ;
 
@@ -30,7 +31,7 @@ const moduleRoutes = [
     route: reviewRoutes,
   },
   {
-    path:'/service',
+    path:'/service', 
     route: servicesRoutes,
   },
   {
@@ -44,6 +45,10 @@ const moduleRoutes = [
   {
     path:'/refer',
     route:referRoutes,
+  },
+  {
+    path:'/vipMember',
+    route:vipMemberRoutes,
   },
 
 ];
