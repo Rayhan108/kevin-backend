@@ -1,0 +1,5 @@
+export const ENUM_NOTIFICATION_TYPE = {
+    USER: 'USER',
+    CONTRACTOR: 'CONTRACTOR',
+    ADMIN:'ADMIN'
+};
