@@ -45,7 +45,11 @@ verification?: {
   };
   feedback?:{
     message:string,
-    image?:string
+    image?:string,
+    reply?:{
+       message:string,
+    image?:string,
+    }
   };
   password: string;
     passwordChangedAt?: Date;

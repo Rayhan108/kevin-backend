@@ -1,5 +1,5 @@
 import AppError from '../../errors/AppError';
-import { TEditProfile } from './user.constant';
+import { FeedbackReplyUpdate, TEditProfile } from './user.constant';
 import { TBecomeContractorInput } from './user.interface';
 import { UserModel } from './user.model';
 import httpStatus from 'http-status';
@@ -138,6 +138,28 @@ const addFeedbackToContractor = async (
 
   return updatedUser;
 };
+export const replyFeedbackByAdmin = async (
+  userId: string,
+  update: FeedbackReplyUpdate
+) => {
+  if (!update || Object.keys(update).length === 0) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Nothing to update');
+  }
+
+
+  const user = await UserModel.findById(userId).select('_id');
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  }
+
+  const updatedUser = await UserModel.findByIdAndUpdate(
+    userId,
+    { $set: update },          
+    { new: true, runValidators: true, projection: { feedback: 1 } }
+  );
+
+  return updatedUser;
+};
 
 
 const deleteUserFromDB = async (id: string) => {
@@ -153,5 +175,5 @@ const deleteUserFromDB = async (id: string) => {
 
 
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB
+  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB,replyFeedbackByAdmin
 };

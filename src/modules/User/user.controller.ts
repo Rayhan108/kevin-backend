@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from 'express';
 import catchAsync from '../../app/utils/catchAsync';
 import sendResponse from '../../app/utils/sendResponse';
@@ -112,6 +113,32 @@ feedbackData.image=image
     data: result,
   });
 });
+const replyFeedback = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
+
+
+  const message = req.body.message as string | undefined;
+  const image   = req.file?.path; 
+
+  if (!message && !image) {
+    return res.status(400).json({ message: 'Nothing to update' });
+  }
+
+  const update: any = {};
+  if (message !== undefined) update['feedback.reply.message'] = message;
+  if (image) update['feedback.reply.image'] = image;
+  update['feedback.reply.repliedAt'] = new Date();
+
+const result = UserServices.replyFeedbackByAdmin(userId,update)
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: 'Admin reply added to feedback',
+    data: result,
+  });
+});
+
 
 
 
@@ -174,5 +201,5 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
 
 
 export const UserControllers = {
-  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport,addFeedback,updateProfile,deleteUser
+  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport,addFeedback,updateProfile,deleteUser,replyFeedback
 };

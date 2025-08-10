@@ -47,6 +47,11 @@ referrals: [
     feedback:{
       message: { type: String },
       image: { type: String},
+      reply:{
+         message: { type: String },
+      image: { type: String},
+   
+      }
     },
       verification: {
       code: {

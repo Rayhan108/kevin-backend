@@ -52,8 +52,19 @@ router.patch('/feedback/:userId',
    }
         next();
     },
-      auth(USER_ROLE.admin),
+      auth(USER_ROLE.user,USER_ROLE.contractor,USER_ROLE.vipContractor,USER_ROLE.vipMember),
   UserControllers.addFeedback)
+router.patch('/feedbackReply/:userId',
+    upload.single('image'),
+       (req: Request, res: Response, next: NextFunction) => {
+      // console.log("req--->",req.body);
+   if(req.body.data){
+         req.body = JSON.parse(req.body.data);
+   }
+        next();
+    },
+      auth(USER_ROLE.admin),
+  UserControllers.replyFeedback)
 
 router.patch('/edit-profile/:id',
     upload.single('image'),
