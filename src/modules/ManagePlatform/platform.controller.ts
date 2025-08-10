@@ -3,7 +3,8 @@ import { NextFunction, Request, Response } from 'express';
 import sendResponse from '../../app/utils/sendResponse';
 
 import httpStatus from 'http-status';
-import { FlagServices } from './flag.services';
+import { PlatformServices } from './platform.services';
+
 
 
 // const getAllUser = catchAsync(async(req:Request,res:Response)=>{
@@ -18,18 +19,18 @@ import { FlagServices } from './flag.services';
 
 // })
 
-const createFlag = async (
+const addFee = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
 //   console.log("create contractor-->",req.body);
   try {
-    const result = await FlagServices.addFlagIntoDB(req.body);
+    const result = await PlatformServices.addPlatformFeeIntoDB(req.body);
 
     sendResponse(res, {
       success: true,
-      message: 'Succesfully send flag',
+      message: 'Succesfully added fee',
       statusCode: httpStatus.CREATED,
       data: result,
     });
@@ -38,6 +39,6 @@ const createFlag = async (
   }
 };
 
-export const FlagControllers = {
-createFlag
+export const PlatformControllers = {
+addFee
 };
