@@ -20,6 +20,11 @@ const getAllServicesForSpecUserFromDB = async (contractorId: string) => {
     .populate('contractorId');
   return services;
 }
+const getSingleServicesFromDB = async (serviceId: string) => {
+  const services = await ServiceModel
+    .findById(serviceId).populate('contractorId')          
+  return services;
+}
 
 const addServicesIntoDB = async (payload:IServices,image:string) => {
   // console.log(image);
@@ -79,5 +84,5 @@ const rejectProject = async (serviceId: string) => {
 
 
 export const ServicesService = {
-addServicesIntoDB,getAllServicesFromDB,acceptProject,rejectProject,getAllServicesForSpecUserFromDB
+addServicesIntoDB,getAllServicesFromDB,acceptProject,rejectProject,getAllServicesForSpecUserFromDB,getSingleServicesFromDB
 };

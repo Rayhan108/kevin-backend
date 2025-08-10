@@ -30,6 +30,17 @@ const contractorId = req.params.id
     });
 
 })
+const getSingleServices = catchAsync(async(req:Request,res:Response)=>{
+const serviceId = req.params.id
+  const result = await ServicesService.getSingleServicesFromDB(serviceId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Service retrived succesfully',
+      data: result,
+    });
+
+})
 
 const createServices = async (
   req: Request,
@@ -80,5 +91,5 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 
 export const servicesControllers = {
-createServices,getAllServices,acceptSingleProject,rejectSingleProject,getAllServicesForSpecUser
+createServices,getAllServices,acceptSingleProject,rejectSingleProject,getAllServicesForSpecUser,getSingleServices
 };
