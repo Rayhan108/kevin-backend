@@ -8,6 +8,7 @@ import { BookServicesRoutes } from '../../modules/BookService/bookservice.routes
 import { ArticleRoutes } from '../../modules/Article/article.routes';
 import { referRoutes } from '../../modules/Refferal/refferal.routes';
 import { vipMemberRoutes } from '../../modules/VipMember/vipmember.routes';
+import { FlagRoutes } from '../../modules/Flag/flag.routes';
 
 ;
 
@@ -49,6 +50,10 @@ const moduleRoutes = [
   {
     path:'/vipMember',
     route:vipMemberRoutes,
+  },
+  {
+    path:'/flag',
+    route:FlagRoutes,
   },
 
 ];
