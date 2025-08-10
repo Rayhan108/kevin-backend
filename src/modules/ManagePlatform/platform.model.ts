@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose';
 import { IPlatFormFeeModel } from './platform.interface';
 
 // Define the schema for the model
-const BookServicesSchema: Schema = new Schema(
+const PlatformSchema: Schema = new Schema(
  {
     amount: { type: Number, required: true },
     type:  {
@@ -22,7 +22,7 @@ const BookServicesSchema: Schema = new Schema(
 // Create and export the model
 const PlatformModel = mongoose.model<IPlatFormFeeModel>(
   'Platform',
-  BookServicesSchema,
+  PlatformSchema,
 );
 
 export default PlatformModel;

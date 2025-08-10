@@ -10,6 +10,7 @@ import { referRoutes } from '../../modules/Refferal/refferal.routes';
 import { vipMemberRoutes } from '../../modules/VipMember/vipmember.routes';
 import { FlagRoutes } from '../../modules/Flag/flag.routes';
 import { PlatformRoutes } from '../../modules/ManagePlatform/platform.routes';
+import { CategoryRoutes } from '../../modules/Category/category.routes';
 
 
 const router = Router();
@@ -58,6 +59,10 @@ const moduleRoutes = [
   {
     path:'/platform',
     route:PlatformRoutes,
+  },
+  {
+    path:'/category',
+    route:CategoryRoutes,
   },
 
 ];
