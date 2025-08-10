@@ -33,5 +33,6 @@ router.post(
 // router.get('/retrive/:userId',UserControllers.getSingleUser)
 
 router.get('/allArticle',ArticleControllers.getAllArticle)
+router.delete('/delete-article/:id',ArticleControllers.deleteArticle)
 
 export const ArticleRoutes = router;

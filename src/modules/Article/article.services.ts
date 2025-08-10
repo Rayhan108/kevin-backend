@@ -1,12 +1,13 @@
 // import AppError from '../../errors/AppError';
 
+import AppError from "../../errors/AppError";
 import { UserModel } from "../User/user.model";
 import { IArticle } from "./article.interface";
 import ArticleModel from "./article.model";
 
 
 
-// import httpStatus from 'http-status';
+import httpStatus from 'http-status';
 
 
 const getAllArticleFromDB = async()=>{
@@ -25,8 +26,16 @@ const addArticleIntoDB = async (payload: IArticle) => {
 const result = (await ArticleModel.create(payload)).populate('user')
 return result
 };
+const deleteArticleFromDB = async (id: string) => {
+  const article = await ArticleModel.findByIdAndDelete(id);
 
+  if (!article) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Article not found!');
+  }
+
+  return article; // return deleted user if needed
+};
 
 export const ArticleServices = {
-getAllArticleFromDB,addArticleIntoDB
+getAllArticleFromDB,addArticleIntoDB,deleteArticleFromDB
 };
