@@ -5,7 +5,7 @@ import { ENUM_NOTIFICATION_TYPE } from './notification.constant';
 
 const notificationSchema = new Schema<INotification>(
   {
-    title: {
+    title:{
       type: String,
       required: true,
     },

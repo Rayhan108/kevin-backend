@@ -14,7 +14,18 @@ const getAllServices = catchAsync(async(req:Request,res:Response)=>{
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'User retrived succesfully!',
+      message: 'Services retrived succesfully!',
+      data: result,
+    });
+
+})
+const getAllServicesForSpecUser = catchAsync(async(req:Request,res:Response)=>{
+const contractorId = req.params.id
+  const result = await ServicesService.getAllServicesForSpecUserFromDB(contractorId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Services retrived succesfully!',
       data: result,
     });
 
@@ -69,5 +80,5 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 
 export const servicesControllers = {
-createServices,getAllServices,acceptSingleProject,rejectSingleProject
+createServices,getAllServices,acceptSingleProject,rejectSingleProject,getAllServicesForSpecUser
 };
