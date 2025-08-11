@@ -11,6 +11,7 @@ import { vipMemberRoutes } from '../../modules/VipMember/vipmember.routes';
 import { FlagRoutes } from '../../modules/Flag/flag.routes';
 import { PlatformRoutes } from '../../modules/ManagePlatform/platform.routes';
 import { CategoryRoutes } from '../../modules/Category/category.routes';
+import { notificationRoutes } from '../../modules/Notification/notification.routes';
 
 
 const router = Router();
@@ -63,6 +64,10 @@ const moduleRoutes = [
   {
     path:'/category',
     route:CategoryRoutes,
+  },
+  {
+    path:'/notification',
+    route:notificationRoutes,
   },
 
 ];
