@@ -12,6 +12,8 @@ import { FlagRoutes } from '../../modules/Flag/flag.routes';
 import { PlatformRoutes } from '../../modules/ManagePlatform/platform.routes';
 import { CategoryRoutes } from '../../modules/Category/category.routes';
 import { notificationRoutes } from '../../modules/Notification/notification.routes';
+import { conversationRoutes } from '../../modules/Conversation/conversation.routes';
+import { messageRoutes } from '../../modules/message/message.routes';
 
 
 const router = Router();
@@ -68,6 +70,14 @@ const moduleRoutes = [
   {
     path:'/notification',
     route:notificationRoutes,
+  },
+  {
+    path:'/conversation',
+    route:conversationRoutes,
+  },
+  {
+    path:'/message',
+    route:messageRoutes,
   },
 
 ];
