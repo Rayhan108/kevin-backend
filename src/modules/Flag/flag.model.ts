@@ -1,10 +1,15 @@
-import { Schema, model } from 'mongoose';
+import mongoose, { Schema, model } from 'mongoose';
 import { IFlagUserModel, TFlagUser } from './flag.interface';
 
 
 
 const flagUserSchema = new Schema<TFlagUser, IFlagUserModel>(
   {
+     user: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref:'User', 
+    required: [true, 'User reference is required'] 
+  },
     notice: { type: String, required: true },
     message: { type: String, required: true },
     image: { type: String},

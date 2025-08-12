@@ -10,4 +10,5 @@ export interface INotification {
     receiver: Types.ObjectId;
     type: (typeof ENUM_NOTIFICATION_TYPE)[keyof typeof ENUM_NOTIFICATION_TYPE];
     redirectId?: string;
+
 }
