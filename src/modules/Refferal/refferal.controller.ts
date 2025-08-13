@@ -24,7 +24,7 @@ const createRefer = async (
   res: Response,
   next: NextFunction,
 ) => {
-  console.log("create refere-->",req.body);
+  // console.log("create refere-->",req.body);
   const code = req.query.code
 //   console.log("code--->",req.query.code);
 const data = {
@@ -35,7 +35,7 @@ const data = {
 
     sendResponse(res, {
       success: true,
-      message: 'Review Sent Successfull',
+      message: 'Reffer Create Successfull',
       statusCode: httpStatus.CREATED,
       data: result,
     });

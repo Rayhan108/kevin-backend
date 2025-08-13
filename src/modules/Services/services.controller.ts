@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextFunction, Request, Response } from 'express';
 
 import sendResponse from '../../app/utils/sendResponse';
@@ -6,6 +7,11 @@ import httpStatus from 'http-status';
 
 import catchAsync from '../../app/utils/catchAsync';
 import { ServicesService } from './services.service';
+import AppError from '../../errors/AppError';
+import ServiceModel from './services.model';
+import { CURRENCY_ENUM } from './service.const';
+import Stripe from 'stripe';
+import config from '../../app/config';
 
 
 const getAllServices = catchAsync(async(req:Request,res:Response)=>{
@@ -62,6 +68,75 @@ const createServices = async (
     next(err);
   }
 };
+  const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
+    const { items, shippingCost, customerEmail } = req.body;
+    // const { purpose } = req.query;
+
+    if (!items || items.length === 0) {
+      throw new AppError(httpStatus.BAD_REQUEST,('No items in the order.'))
+    }
+
+    const serviceIds = items.map((item: any) => item.itemId);
+    const services = await ServiceModel.find({ _id: { $in: serviceIds } });
+
+    const lineItems = items.map((item: any) => {
+      const service = services.find((b: any) => b._id.toString() === item.itemId.toString());
+      if (!service) throw new AppError(httpStatus.BAD_REQUEST,('No items in the order.'));
+      const basePrice = service.price;
+      // let finalPrice = basePrice;
+
+      // if (service.isDiscount && service.discountPrice) {
+      //   if (service.discountPrice.type === 'percentage') {
+      //     finalPrice = basePrice - (service.discountPrice.amount / 100) * basePrice;
+      //   } else {
+      //     finalPrice = basePrice - service.discountPrice.amount;
+      //   }
+      // }
+
+      return {
+        price_data: {
+          currency: CURRENCY_ENUM.USD,
+          product_data: {
+            name: service.title,
+          },
+          unit_amount: Math.round(basePrice * 100),
+        },
+        quantity: item.quantity,
+      };
+    });
+
+    // Add shipping cost as an additional line item
+    if (shippingCost && shippingCost > 0) {
+      lineItems.push({
+        price_data: {
+          currency: CURRENCY_ENUM.USD,
+          product_data: {
+            name: 'Shipping Cost',
+          },
+          unit_amount: Math.round(shippingCost * 100),
+        },
+        quantity: 1,
+      });
+    }
+    // console.log(purpose)
+
+    const session = await Stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: lineItems,
+      mode: 'payment',
+      customer_email: customerEmail,
+      success_url: `${config.frontend_url}/success?session_id={CHECKOUT_SESSION_ID}}`,
+      // cancel_url: `${config.frontend_url}/cancel`,
+    });
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success:true,
+      message: 'Order created successfully',
+      data: { url: session.url },
+    });
+  });
+
 
 const acceptSingleProject = catchAsync(async(req:Request,res:Response)=>{
   const {serviceId}=req.params;
@@ -91,5 +166,5 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 
 export const servicesControllers = {
-createServices,getAllServices,acceptSingleProject,rejectSingleProject,getAllServicesForSpecUser,getSingleServices
+createServices,getAllServices,acceptSingleProject,rejectSingleProject,getAllServicesForSpecUser,getSingleServices,initiateOrderPayment
 };

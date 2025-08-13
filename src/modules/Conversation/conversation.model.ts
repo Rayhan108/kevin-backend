@@ -1,27 +1,45 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
-const ConversationSchema = new mongoose.Schema(
+const UnreadCountSchema = new Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",  // Refers to the 'user' collection
+    },
+    count: {
+      type: Number,
+      default: 0,
+    },
+  },
+  { _id: false }  // Disable the _id field for subdocuments
+);
+
+const ConversationSchema = new Schema(
   {
     members: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
-    latestmessage: {
-      type: String,
-      default: "",
-    },
-    unreadCounts: [
-      {
-        userId: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "user",
-        },
-        count: {
-          type: Number,
-          default: 0,
-        },
+    latestMessage: {
+      content: {
+        type: String,
+        default: "",
       },
-    ],
+      senderId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "user",
+      },
+      timestamp: {
+        type: Date,
+        default: Date.now,
+      },
+    },
+    unreadCounts: [UnreadCountSchema],
+    allowedRoles: {
+      type: [String],
+      enum: ['user', 'contractor', 'vipMember', 'vipContractor'],
+      required: true,
+    },
   },
   {
-    timestamps: true,
+    timestamps: true,  // Automatically adds createdAt and updatedAt
   }
 );
 

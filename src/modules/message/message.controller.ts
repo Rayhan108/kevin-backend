@@ -74,7 +74,7 @@ const sendMessageHandler = async (data: any) => {
       seenBy: [],
     });
 
-    conversation.latestmessage = text;
+    conversation.latestMessage = text;
     conversation.unreadCounts.map((unread) => {
       if (unread.userId?.toString() == receiverId.toString()) {
         unread.count++;
@@ -90,7 +90,7 @@ const sendMessageHandler = async (data: any) => {
       attachment,
       seenBy: [{ user: receiverId, seenAt: new Date() }],
     });
-    conversation.latestmessage = text;
+    conversation.latestMessage = text;
     await conversation.save();
     return message;
   }

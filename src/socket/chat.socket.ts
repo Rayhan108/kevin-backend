@@ -5,6 +5,7 @@ import { Server, Socket } from 'socket.io';
 import { UserModel } from '../modules/User/user.model';
 import Conversation from '../modules/Conversation/conversation.model';
 import messageController from '../modules/message/message.controller';
+import { Types } from 'mongoose';
 
 interface SendMessageData {
   conversationId: string;
@@ -48,68 +49,187 @@ const chatHandler = (io: Server, socket: Socket) => {
     });
   });
 
-  socket.on('join-chat', async (data: { roomId: string; userId: string }) => {
-    const { roomId, userId } = data;
+  // socket.on('join-chat', async (data: { roomId: string; userId: string }) => {
+  //   const { roomId, userId } = data;
 
-    console.log('User joined chat room ', roomId);
-    const conv = await Conversation.findById(roomId);
-    socket.join(roomId);
+  //   console.log('User joined chat room ', roomId);
+  //   const conv = await Conversation.findById(roomId);
+  //   socket.join(roomId);
 
-    if (conv) {
-      conv.unreadCounts.forEach((unread) => {
-        if (unread.userId?.toString() === userId) {
-          unread.count = 0;
-        }
-      });
-      await conv.save({ timestamps: false });
-    }
+  //   if (conv) {
+  //     conv.unreadCounts.forEach((unread) => {
+  //       if (unread.userId?.toString() === userId) {
+  //         unread.count = 0;
+  //       }
+  //     });
+  //     await conv.save({ timestamps: false });
+  //   }
 
-    io.to(roomId).emit('user-joined-room', userId);
-  });
+  //   io.to(roomId).emit('user-joined-room', userId);
+  // });
+
+socket.on('join-chat', async (data: { roomId: string; userId: string }) => {
+  const { roomId, userId } = data;
+
+  // Check if userId is a valid ObjectId
+  if (!Types.ObjectId.isValid(userId)) {
+    return socket.emit('error', 'Invalid userId');
+  }
+
+  // Convert the string userId to ObjectId
+  const objectIdUser = new Types.ObjectId(userId);
+
+  // Fetch the user using the converted ObjectId
+  const user = await UserModel.findById(objectIdUser);
+  
+  if (!user) {
+    return socket.emit('error', 'User not found');
+  }
+  
+  // Check if roomId is a valid ObjectId
+  if (!Types.ObjectId.isValid(roomId)) {
+    return socket.emit('error', 'Invalid roomId');
+  }
+
+  // Fetch the conversation
+  const conv = await Conversation.findById(roomId);
+  if (!conv) {
+    return socket.emit('error', 'Conversation not found');
+  }
+  
+  // Check if the user is part of the conversation
+  if (!conv.members.includes(objectIdUser)) {
+    return socket.emit('error', 'User not part of this conversation');
+  }
+  
+  // Join the room
+  socket.join(roomId);
+  
+  // Notify the other users in the room
+  io.to(roomId).emit('user-joined-room', userId);
+});
+
+
 
   socket.on('leave-chat', (room: string) => {
     socket.leave(room);
   });
 
-  const handleSendMessage = async (data: SendMessageData) => {
-    console.log('Received message');
-    const { conversationId, senderId, text, attachment } = data;
+  // const handleSendMessage = async (data: SendMessageData) => {
+  //   console.log('Received message');
+  //   const { conversationId, senderId, text, attachment } = data;
 
-    const conversation = await Conversation.findById(conversationId).populate('members');
-    if (!conversation) return;
+  //   const conversation = await Conversation.findById(conversationId).populate('members');
+  //   if (!conversation) return;
 
-    const receiver = conversation.members.find((member: any) => member._id.toString() !== senderId);
-    if (!receiver) return;
+  //   const receiver = conversation.members.find((member: any) => member._id.toString() !== senderId);
+  //   if (!receiver) return;
 
-    const receiverId = receiver._id.toString();
-    const receiverPersonalRoom = io.sockets.adapter.rooms.get(receiverId);
-    let isReceiverInPersonalRoom = false;
+  //   const receiverId = receiver._id.toString();
+  //   const receiverPersonalRoom = io.sockets.adapter.rooms.get(receiverId);
+  //   let isReceiverInPersonalRoom = false;
 
-    if (receiverPersonalRoom) {
-      const receiverSId = Array.from(receiverPersonalRoom)[0];
-      const room = io.sockets.adapter.rooms.get(conversationId);
-      if (room && room?.has(receiverSId)) {
-        isReceiverInPersonalRoom = true;
-      }
+  //   if (receiverPersonalRoom) {
+  //     const receiverSId = Array.from(receiverPersonalRoom)[0];
+  //     const room = io.sockets.adapter.rooms.get(conversationId);
+  //     if (room && room?.has(receiverSId)) {
+  //       isReceiverInPersonalRoom = true;
+  //     }
+  //   }
+
+  //   const messagePayload = {
+  //     conversationId,
+  //     senderId,
+  //     text,
+  //     attachment,
+  //     receiverId,
+  //     isReceiverInPersonalRoom,
+  //   };
+  //   const message = await messageController.sendMessageHandler(messagePayload);
+
+  //   io.to(conversationId).emit('receive-message', message);
+
+  //   if (!isReceiverInPersonalRoom) {
+  //     console.log('Emitting new message to: ', receiverId);
+  //     io.to(receiverId).emit('new-message-notification', message);
+  //   }
+  // };
+
+const handleSendMessage = async (data: SendMessageData) => {
+  console.log('Received message');
+  const { conversationId, senderId, text, attachment } = data;
+
+  // Fetch the conversation and populate members
+  const conversation = await Conversation.findById(conversationId).populate('members');
+  if (!conversation) return;
+
+  // Find the receiver (excluding the sender)
+  const receiver = conversation.members.find((member: any) => member._id.toString() !== senderId);
+  if (!receiver) return;
+
+  const receiverId = receiver._id.toString();
+
+  // Role-based access check
+  const sender = await UserModel.findById(senderId);
+  if (!sender) return;
+
+  const senderRole = sender.role;
+
+  // Check if sender's role matches conversation allowed roles
+  const isRoleAllowed = conversation.allowedRoles.includes(senderRole);
+  if (!isRoleAllowed) {
+    return io.to(senderId).emit('error', 'You are not authorized to send messages in this conversation');
+  }
+
+  // Check if the receiver is currently in their personal room (i.e., online)
+  const receiverPersonalRoom = io.sockets.adapter.rooms.get(receiverId);
+  let isReceiverInPersonalRoom = false;
+
+  if (receiverPersonalRoom) {
+    const receiverSId = Array.from(receiverPersonalRoom)[0];
+    const room = io.sockets.adapter.rooms.get(conversationId);
+    if (room && room?.has(receiverSId)) {
+      isReceiverInPersonalRoom = true;
     }
+  }
 
-    const messagePayload = {
-      conversationId,
-      senderId,
-      text,
-      attachment,
-      receiverId,
-      isReceiverInPersonalRoom,
-    };
-    const message = await messageController.sendMessageHandler(messagePayload);
-
-    io.to(conversationId).emit('receive-message', message);
-
-    if (!isReceiverInPersonalRoom) {
-      console.log('Emitting new message to: ', receiverId);
-      io.to(receiverId).emit('new-message-notification', message);
-    }
+  // Create message payload
+  const messagePayload = {
+    conversationId,
+    senderId,
+    text,
+    attachment,
+    receiverId,
+    isReceiverInPersonalRoom,
   };
+
+  // Send the message using message controller
+  const message = await messageController.sendMessageHandler(messagePayload);
+
+  // Broadcast the message to all members in the conversation
+  io.to(conversationId).emit('receive-message', message);
+
+  // If the receiver is not in the room, update unread counts
+  if (!isReceiverInPersonalRoom) {
+    
+  // Modify unread counts safely using Mongoose methods
+  conversation.unreadCounts.forEach((unread) => {
+    if (unread.userId?.toString() === receiverId) {
+      unread.count += 1; // Increase unread count
+      unread.markModified('count'); // Explicitly mark the subdocument as modified
+    }
+  });
+
+  // Save the conversation after updating unread counts
+  await conversation.save();
+
+  // Notify the receiver about the new message
+  io.to(receiverId).emit('new-message-notification', message);
+  }
+};
+
+
+
 
   socket.on('send-message', handleSendMessage);
 

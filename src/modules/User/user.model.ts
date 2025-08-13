@@ -64,6 +64,14 @@ referrals: [
       },
     },
     address: { type: String, required: true },
+      stripeCustomerId: {
+      type: String,
+      default: null,
+    },
+    stripePaymentMethodId: {
+      type: String,
+      default: null,
+    },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 

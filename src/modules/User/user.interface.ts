@@ -64,7 +64,8 @@ verification?: {
     noOfEmployee: string;
   servicesYouProvide: string[];   
   subServices: string[]; 
-
+ stripeCustomerId?: string;
+  stripePaymentMethodId?: string;
 }
 
 // export interface IUser extends TUser, Document{

@@ -1,6 +1,6 @@
 import AppError from '../../errors/AppError';
 import { FeedbackReplyUpdate, TEditProfile } from './user.constant';
-import { TBecomeContractorInput } from './user.interface';
+import {  TBecomeContractorInput } from './user.interface';
 import { UserModel } from './user.model';
 import httpStatus from 'http-status';
 const changeStatus = async (id: string, payload: { status: string }) => {
@@ -161,7 +161,15 @@ export const replyFeedbackByAdmin = async (
   return updatedUser;
 };
 
-
+const getSpecificUserByCustomerId = async (id: string) => {
+  const result = await UserModel.findOne({ stripeCustomerId: id })
+    .populate({
+      path: 'survey',
+      select: '',
+    })
+    .select('-password -verification');
+    return result
+};
 const deleteUserFromDB = async (id: string) => {
   const user = await UserModel.findByIdAndDelete(id);
 
@@ -175,5 +183,5 @@ const deleteUserFromDB = async (id: string) => {
 
 
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB,replyFeedbackByAdmin
+  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB,replyFeedbackByAdmin,getSpecificUserByCustomerId
 };
