@@ -10,8 +10,9 @@ import { ServicesService } from './services.service';
 import AppError from '../../errors/AppError';
 import ServiceModel from './services.model';
 import { CURRENCY_ENUM } from './service.const';
-import Stripe from 'stripe';
+
 import config from '../../app/config';
+import { stripe } from '../../utils/stripeClient';
 
 
 const getAllServices = catchAsync(async(req:Request,res:Response)=>{
@@ -102,7 +103,7 @@ const createServices = async (
           unit_amount: Math.round(basePrice * 100),
         },
         quantity: item.quantity,
-      };
+      };  
     });
 
     // Add shipping cost as an additional line item
@@ -119,13 +120,14 @@ const createServices = async (
       });
     }
     // console.log(purpose)
-
-    const session = await Stripe.checkout.sessions.create({
+const baseUrl = (config.frontend_url || '').replace(/\/+$/, ''); // ending slash কেটে দিচ্ছে
+if (!baseUrl) throw new Error('FRONTEND_URL not configured')
+    const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: lineItems,
-      mode: 'payment',
-      customer_email: customerEmail,
-      success_url: `${config.frontend_url}/success?session_id={CHECKOUT_SESSION_ID}}`,
+      mode:'payment',
+      customer_email:customerEmail,
+      success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}}`,
       // cancel_url: `${config.frontend_url}/cancel`,
     });
 
@@ -133,7 +135,7 @@ const createServices = async (
       statusCode: httpStatus.OK,
       success:true,
       message: 'Order created successfully',
-      data: { url: session.url },
+      data: { url:session.url },
     });
   });
 
