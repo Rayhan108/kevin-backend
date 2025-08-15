@@ -16,14 +16,14 @@ import { UserStatus } from '../Auth/auth.constant';
 
 export const editProfileSchema = z.object({
   body:z.object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    phone: z
-      .string()
-      .min(10, "Phone number must be at least 10 digits")
-      .max(15, "Phone number can't exceed 15 digits")
-      .regex(/^[0-9+\-() ]+$/, "Invalid phone number format"),
-    bio: z.string().max(500, "Bio can't be longer than 500 characters"),
+    firstName: z.string().min(1, "First name is required").optional(),
+    lastName: z.string().min(1, "Last name is required").optional(),
+    // phone: z
+    //   .string()
+    //   .min(10, "Phone number must be at least 10 digits")
+    //   .max(15, "Phone number can't exceed 15 digits")
+    //   .regex(/^[0-9+\-() ]+$/, "Invalid phone number format"),
+    bio: z.string().max(500, "Bio can't be longer than 500 characters").optional(),
   })
 });
 

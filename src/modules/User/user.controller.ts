@@ -53,12 +53,12 @@ const updateProfile = catchAsync(
     const id = req.params.id;
 
     // 🔍 Check if file is uploaded
-    if (!req.file) {
-      throw new AppError(httpStatus.BAD_REQUEST, 'Image file is required');
-    }
+    // if (!req.file) {
+    //   throw new AppError(httpStatus.BAD_REQUEST, 'Image file is required');
+    // }
 
     // 🖼️ Get file path or filename from multer
-    const imageUrl = req.file.path || req.file.filename;
+    const imageUrl = req?.file?.path || req?.file?.filename;
 
     // 🧾 Prepare typed payload
     const payload: TEditProfile = {

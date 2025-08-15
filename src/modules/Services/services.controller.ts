@@ -120,7 +120,7 @@ const createServices = async (
       });
     }
     // console.log(purpose)
-const baseUrl = (config.frontend_url || '').replace(/\/+$/, ''); // ending slash কেটে দিচ্ছে
+const baseUrl = (config.frontend_url || '').replace(/\/+$/, ''); 
 if (!baseUrl) throw new Error('FRONTEND_URL not configured')
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
