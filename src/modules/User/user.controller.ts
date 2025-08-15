@@ -46,24 +46,22 @@ const changeProPic = catchAsync(
       message: 'Profile picture updated successfully',
       data: result,
     });
-  }
+  },
 );
 const updateProfile = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
 
-    // 🔍 Check if file is uploaded
-    // if (!req.file) {
-    //   throw new AppError(httpStatus.BAD_REQUEST, 'Image file is required');
-    // }
-
     // 🖼️ Get file path or filename from multer
-    const imageUrl = req?.file?.path || req?.file?.filename;
+    // const imageUrl = req?.file?.path || req?.file?.filename;
+
+    const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`; //for local machine
+    // console.log("image path--->",path);
 
     // 🧾 Prepare typed payload
     const payload: TEditProfile = {
       ...req.body,
-      image: imageUrl,
+      image: path,
     };
 
     // 🔁 Update user's image field
@@ -76,16 +74,16 @@ const updateProfile = catchAsync(
       message: 'Profile updated successfully',
       data: result,
     });
-  }
+  },
 );
 
 const addReport = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId;
   // console.log("request",req.body);
   const reportData = req.body.report;
-const image = req.file?.path
-reportData.image=image
-// console.log("reported data--->",reportData);
+  const image = req.file?.path;
+  reportData.image = image;
+  // console.log("reported data--->",reportData);
   const result = await UserServices.addReportToContractor(userId, reportData);
 
   sendResponse(res, {
@@ -99,12 +97,15 @@ const addFeedback = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId;
   // console.log("request",req.file);
   const feedbackData = req.body.feedback;
-const image = req.file?.path
+  const image = req.file?.path;
   // console.log("request iamge",image);
-feedbackData.image=image
-// console.log("feedback data--->",feedbackData);
+  feedbackData.image = image;
+  // console.log("feedback data--->",feedbackData);
 
-  const result = await UserServices.addFeedbackToContractor(userId, feedbackData);
+  const result = await UserServices.addFeedbackToContractor(
+    userId,
+    feedbackData,
+  );
 
   sendResponse(res, {
     statusCode: 200,
@@ -116,9 +117,8 @@ feedbackData.image=image
 const replyFeedback = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
 
-
   const message = req.body.message as string | undefined;
-  const image   = req.file?.path; 
+  const image = req.file?.path;
 
   if (!message && !image) {
     return res.status(400).json({ message: 'Nothing to update' });
@@ -129,7 +129,7 @@ const replyFeedback = catchAsync(async (req: Request, res: Response) => {
   if (image) update['feedback.reply.image'] = image;
   update['feedback.reply.repliedAt'] = new Date();
 
-const result = UserServices.replyFeedbackByAdmin(userId,update)
+  const result = UserServices.replyFeedbackByAdmin(userId, update);
 
   sendResponse(res, {
     statusCode: 200,
@@ -139,39 +139,31 @@ const result = UserServices.replyFeedbackByAdmin(userId,update)
   });
 });
 
-
-
-
-
-const getAllUser = catchAsync(async(req:Request,res:Response)=>{
-
+const getAllUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserServices.getAllUserFromDB();
   sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User retrived succesfully!',
-      data: result,
-    });
-
-})
-const getSingleUser = catchAsync(async(req:Request,res:Response)=>{
-
-  const {userId}=req.params;
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User retrived succesfully!',
+    data: result,
+  });
+});
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+  const { userId } = req.params;
   const result = await UserServices.getSingleUserFromDB(userId);
   sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'User retrived succesfully!',
-      data: result,
-    });
-
-})
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User retrived succesfully!',
+    data: result,
+  });
+});
 const createContractor = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-//   console.log("create contractor-->",req.body);
+  //   console.log("create contractor-->",req.body);
   try {
     const result = await UserServices.updateUserToContractor(req.body);
 
@@ -197,9 +189,17 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
     message: 'User deleted successfully!',
     data: result,
   });
-})
-
+});
 
 export const UserControllers = {
-  changeStatus,getSingleUser,getAllUser,createContractor,changeProPic,addReport,addFeedback,updateProfile,deleteUser,replyFeedback
+  changeStatus,
+  getSingleUser,
+  getAllUser,
+  createContractor,
+  changeProPic,
+  addReport,
+  addFeedback,
+  updateProfile,
+  deleteUser,
+  replyFeedback,
 };
