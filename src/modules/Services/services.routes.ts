@@ -2,10 +2,10 @@
 import express, { NextFunction, Request, Response } from 'express';
 
 import auth from '../../app/middleware/auth';
-import validateRequest from '../../app/middleware/validateRequest';
+// import validateRequest from '../../app/middleware/validateRequest';
 
 import { USER_ROLE } from '../Auth/auth.constant';
-import { serviceValidationSchema } from './services.validation';
+// import { serviceValidationSchema } from './services.validation';
 import { servicesControllers } from './services.controller';
 import { upload } from '../../app/middleware/upload';
 
