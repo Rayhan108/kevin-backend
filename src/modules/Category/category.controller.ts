@@ -39,7 +39,26 @@ const createCategory = async (
     next(err);
   }
 };
+const createSubCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+//   console.log("create contractor-->",req.body);
+  try {
+    const result = await CategoryServices.addSubCategoryIntoDB(req.body);
+
+    sendResponse(res, {
+      success: true,
+      message: 'Sub-category Added Succesfull',
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const CategoryControllers = {
-createCategory,getAllCategory
+createCategory,getAllCategory,createSubCategory
 };

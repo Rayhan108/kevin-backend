@@ -19,6 +19,13 @@ router.post('/add-category',
 CategoryControllers.createCategory,
 
 );
+router.post('/add-sub-category',
+
+  auth(USER_ROLE.admin),
+//   validateRequest(createFlagUserSchema),
+CategoryControllers.createSubCategory,
+
+);
 
 router.get('/all-category',CategoryControllers.getAllCategory)
 

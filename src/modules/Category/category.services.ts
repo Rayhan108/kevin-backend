@@ -18,7 +18,13 @@ const addCategoryIntoDB = async (payload:TCategory) => {
   const result = await CategoryModel.create(payload)
   return result;
 };
+const addSubCategoryIntoDB = async (payload:TCategory) => {
+
+// console.log("Pyload--->",payload);
+  const result = await CategoryModel.create(payload)
+  return result;
+};
 
 export const CategoryServices = {
-addCategoryIntoDB,getAllCategoryFromDB
+addCategoryIntoDB,getAllCategoryFromDB,addSubCategoryIntoDB
 };
