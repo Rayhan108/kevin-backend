@@ -7,7 +7,7 @@ import { ICategoryModel, TCategory } from './category.interface';
 const categorySchema = new Schema<TCategory, ICategoryModel>(
   {
     category: { type: String, required: true },
-    subCategory: { type: String, required: true },
+    subCategory: { type: [String], required: true },
   
 
   },

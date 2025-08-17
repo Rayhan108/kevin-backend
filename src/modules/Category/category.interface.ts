@@ -2,7 +2,7 @@ import { Model } from "mongoose";
 
 export type TCategory ={
   category:string;
-  subCategory: string;
+  subCategory: string[];
 
 }
 
