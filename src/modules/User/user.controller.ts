@@ -169,7 +169,7 @@ const createContractor = async (
 
     sendResponse(res, {
       success: true,
-      message: 'User registered successfully',
+      message: 'Contractor role activated',
       statusCode: httpStatus.CREATED,
       data: result,
     });
