@@ -23,7 +23,7 @@ router.post('/addServices',
         next();
     },
   auth(USER_ROLE.contractor),
-  validateRequest(serviceValidationSchema),
+  // validateRequest(serviceValidationSchema),
   servicesControllers.createServices,
 
 );

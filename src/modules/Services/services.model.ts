@@ -13,7 +13,14 @@ const ReviewSchema = new Schema<TReview>(
   },
   { _id: false } // prevents automatic _id for embedded subdocument
 );
-
+// Category and Subcategory Schema
+const CategorySubcategorySchema = new Schema(
+  {
+    category: { type: String, required: true },
+    subCategories: { type: [String], required: true },
+  },
+  { _id: false } // prevents automatic _id for embedded subdocument
+);
 // Main Service Schema
 const ServiceSchema = new Schema<IServices>(
   {
@@ -21,8 +28,9 @@ const ServiceSchema = new Schema<IServices>(
     image: { type: String},
     title: { type: String, required: true },
     details: { type: String, required: true },
-    categoryName: { type: String, required: true },
-    subCategoryName: { type: String, required: true },
+    // categoryName: { type: [String], required: true },
+        categoryName: { type: [CategorySubcategorySchema], required: true },
+    // subCategoryName: { type:[ String]},
     review: { type: ReviewSchema, required: false },
     price: { type: Number, required: true },
        projectStatus: {
