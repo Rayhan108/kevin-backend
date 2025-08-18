@@ -1,16 +1,5 @@
 import mongoose, { Document, Types } from "mongoose";
 
-interface SubCategory {
-  label: string;
-  value: string;
-  parent: string; // The parent category
-}
-
-interface Category {
-  label: string;
-  value: string;
-  subCategories: SubCategory[];
-}
 
 
 export type TReview ={
@@ -29,7 +18,7 @@ export interface IServices extends Document {
   image?: string;
   title: string;
   details: string;
-  categoryName:Category[];
+  categoryName:string[];
   // subCategoryName?: string[];
   review?:TReview 
   price: number;
