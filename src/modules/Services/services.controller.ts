@@ -54,10 +54,11 @@ const createServices = async (
   res: Response,
   next: NextFunction,
 ) => {
-  const image = req.file?.path
+  // const image = req.file?.path
+   const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
   // console.log("create revieew-->",req.file.path);
   try {
-    const result = await ServicesService.addServicesIntoDB(req.body,image as string);
+    const result = await ServicesService.addServicesIntoDB(req.body,path as string);
 
     sendResponse(res, {
       success: true,

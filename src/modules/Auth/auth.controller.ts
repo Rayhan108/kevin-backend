@@ -18,7 +18,7 @@ const registerUser = async (
       // Store file path or URL
       userPayload.image = req.file.path; // or URL if you're uploading to cloud
     }
-
+console.log("ueser payload--->",userPayload);
     const result = await AuthServices.registeredUserIntoDB(userPayload);
 
     sendResponse(res, {
