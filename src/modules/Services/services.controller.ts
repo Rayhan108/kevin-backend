@@ -17,11 +17,12 @@ import { stripe } from '../../utils/stripeClient';
 
 const getAllServices = catchAsync(async(req:Request,res:Response)=>{
 
-  const result = await ServicesService.getAllServicesFromDB();
+  const result = await ServicesService.getAllServicesFromDB(req?.query);
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
       message: 'Services retrived succesfully!',
+
       data: result,
     });
 
