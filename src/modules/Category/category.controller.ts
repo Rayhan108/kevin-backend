@@ -6,26 +6,22 @@ import httpStatus from 'http-status';
 import { CategoryServices } from './category.services';
 import catchAsync from '../../app/utils/catchAsync';
 
-
-
-const getAllCategory = catchAsync(async(req:Request,res:Response)=>{
-
+const getAllCategory = catchAsync(async (req: Request, res: Response) => {
   const result = await CategoryServices.getAllCategoryFromDB();
   sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Category retrived succesfully!',
-      data: result,
-    });
-
-})
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Category retrived succesfully!',
+    data: result,
+  });
+});
 
 const createCategory = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-//   console.log("create contractor-->",req.body);
+  //   console.log("create contractor-->",req.body);
   try {
     const result = await CategoryServices.addCategoryIntoDB(req.body);
 
@@ -44,7 +40,7 @@ const createSubCategory = async (
   res: Response,
   next: NextFunction,
 ) => {
-//   console.log("create contractor-->",req.body);
+  //   console.log("create contractor-->",req.body);
   try {
     const result = await CategoryServices.addSubCategoryIntoDB(req.body);
 
@@ -60,5 +56,7 @@ const createSubCategory = async (
 };
 
 export const CategoryControllers = {
-createCategory,getAllCategory,createSubCategory
+  createCategory,
+  getAllCategory,
+  createSubCategory,
 };
