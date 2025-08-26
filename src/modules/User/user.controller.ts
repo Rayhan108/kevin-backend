@@ -29,11 +29,11 @@ const changeProPic = catchAsync(
     }
 
     // 🖼️ Get file path or filename from multer
-    const imageUrl = req.file.path || req.file.filename;
+   const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 
     // 🧾 Prepare typed payload
     const payload: TProfilePictureUpdatePayload = {
-      image: imageUrl,
+      image: path,
     };
 
     // 🔁 Update user's image field
@@ -81,8 +81,8 @@ const addReport = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId;
   // console.log("request",req.body);
   const reportData = req.body.report;
-  const image = req.file?.path;
-  reportData.image = image;
+const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+  reportData.image = path;
   // console.log("reported data--->",reportData);
   const result = await UserServices.addReportToContractor(userId, reportData);
 
@@ -97,9 +97,9 @@ const addFeedback = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId;
   // console.log("request",req.file);
   const feedbackData = req.body.feedback;
-  const image = req.file?.path;
+const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
   // console.log("request iamge",image);
-  feedbackData.image = image;
+  feedbackData.image = path;
   // console.log("feedback data--->",feedbackData);
 
   const result = await UserServices.addFeedbackToContractor(
@@ -118,15 +118,15 @@ const replyFeedback = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   const message = req.body.message as string | undefined;
-  const image = req.file?.path;
+ const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 
-  if (!message && !image) {
+  if (!message && !path) {
     return res.status(400).json({ message: 'Nothing to update' });
   }
 
   const update: any = {};
   if (message !== undefined) update['feedback.reply.message'] = message;
-  if (image) update['feedback.reply.image'] = image;
+  if (path) update['feedback.reply.image'] = path;
   update['feedback.reply.repliedAt'] = new Date();
 
   const result = UserServices.replyFeedbackByAdmin(userId, update);
@@ -148,6 +148,7 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
   const result = await UserServices.getSingleUserFromDB(userId);

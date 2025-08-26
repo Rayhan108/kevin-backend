@@ -110,9 +110,18 @@ const updateAssignTask = catchAsync(async(req:Request,res:Response)=>{
 
   // eslint-disable-next-line no-undef
   const files = req.files as Express.Multer.File[] ;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const image  =files?.map((file: any) => file.path) as any
-console.log("req files image",image);
+
+
+  // const image  =files?.map((file: any) => file.path) as any
+// console.log("req files image",image);
+
+
+  // Construct the full image URLs
+  // eslint-disable-next-line no-undef
+  const image = files?.map((file: Express.Multer.File) => {
+    const path = `${req.protocol}://${req.get('host')}/uploads/${file.filename}`;
+    return path;
+  });
 
   const result = await BookServices.updateAssignedTaskInDB(payload,image);
   sendResponse(res, {

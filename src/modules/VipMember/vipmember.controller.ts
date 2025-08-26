@@ -26,11 +26,11 @@ const askAProQues = async (
   next: NextFunction,
 ) => {
 const userId = req.params.id
-const imageUrl = req.file?.path
+const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 const payload = {
     ...req.body,
     user:userId,
-    image:imageUrl
+    image:path
 }
 
   try {

@@ -27,7 +27,7 @@ router.get('/specUserBookServices/:userId',BookServicesControllers.getSpecUserBo
 router.patch('/updateTask',    
   upload.array('image'),
        (req: Request, res: Response, next: NextFunction) => {
-      console.log("req data for update--->",req.body.data);
+      // console.log("req data for update--->",req.body.data);
    if(req.body.data){
          req.body = JSON.parse(req.body.data);
    }
@@ -35,6 +35,7 @@ router.patch('/updateTask',
     },
      validateRequest(updateTaskZodSchema),
     BookServicesControllers.updateAssignTask)
+    
 router.patch('/cancelService/:serviceId',BookServicesControllers.rejectSingleProject)
 router.patch('/booked/:serviceId',BookServicesControllers.updateStatusAsBooked)
 router.patch('/onTheWay/:serviceId',BookServicesControllers.updateStatusAsOnTheWay)

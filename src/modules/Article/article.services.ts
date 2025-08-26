@@ -11,8 +11,12 @@ import httpStatus from 'http-status';
 
 
 const getAllArticleFromDB = async()=>{
-    const reviews = await ArticleModel.find().populate('user');
-    return reviews;
+    const result = await ArticleModel.find().populate('user');
+    return result;
+}
+const getSingleArticleFromDB = async(id:string)=>{
+    const result = await ArticleModel.findById(id).populate('user');
+    return result;
 }
 
 const addArticleIntoDB = async (payload: IArticle) => {
@@ -37,5 +41,5 @@ const deleteArticleFromDB = async (id: string) => {
 };
 
 export const ArticleServices = {
-getAllArticleFromDB,addArticleIntoDB,deleteArticleFromDB
+getAllArticleFromDB,addArticleIntoDB,deleteArticleFromDB,getSingleArticleFromDB
 };

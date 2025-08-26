@@ -24,8 +24,12 @@ const createFlag = async (
   next: NextFunction,
 ) => {
 //   console.log("create contractor-->",req.body);
+
+const flagData = req?.body
+const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+flagData.image=path
   try {
-    const result = await FlagServices.addFlagIntoDB(req.body);
+    const result = await FlagServices.addFlagIntoDB(flagData);
 
     sendResponse(res, {
       success: true,
