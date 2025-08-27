@@ -14,6 +14,7 @@ export interface IBookServices extends Document {
   todoList: string[];
   status: 'booked' | 'onTheWay' | 'started' | 'done';
   projectStatus:'pending'| 'rejected'|'accepted';
+  paymentStatus:'unpaid'| 'paid';
   image?:string[]
 }
 export type TUpdateTask={

@@ -1,17 +1,33 @@
-import { model, Schema } from "mongoose";
-import { IServices, TReview } from "./services.interface";
+import mongoose, { model, Schema } from "mongoose";
+import { IServices, TReview} from "./services.interface";
 
-const ReviewSchema = new Schema<TReview>(
-  {
-    user: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    service: { type: Number, required: true },
-    behavior: { type: Number, required: true },
-    timeManagement: { type: Number, required: true },
-    price: { type: Number, required: true },
-    comment: { type: String },
-    date: { type: Date, required: true },
+
+const ReviewSchema: Schema = new Schema<TReview>({
+  user: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref:'User', 
+    required: [true, 'User reference is required'] 
   },
-  { _id: false } // prevents automatic _id for embedded subdocument
+serviceId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Service', 
+    required: [true, 'Service reference is required'] 
+  },
+  
+  rating: { 
+    type: Number, 
+    required: [true, 'Rating is required'], 
+    min: [1, 'Rating must be at least 1'], 
+    max: [5, 'Rating cannot be more than 5'] 
+  },
+  comment: { 
+    type: String, 
+    maxlength: [500, 'Comment cannot exceed 500 characters']
+  },
+},
+ {
+    timestamps: true, // Automatically create createdAt and updatedAt fields
+  },
 );
 
 // Main Service Schema
@@ -24,7 +40,7 @@ const ServiceSchema = new Schema<IServices>(
     // categoryName: { type: [String], required: true },
         categoryName: { type: [String], required: true },
     // subCategoryName: { type:[ String]},
-    review: { type: ReviewSchema, required: false },
+review: { type: [ReviewSchema], default: [] },
     price: { type: Number, required: true },
        projectStatus: {
       type: String,

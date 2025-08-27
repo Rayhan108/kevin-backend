@@ -3,13 +3,10 @@ import mongoose, { Document, Types } from "mongoose";
 
 
 export type TReview ={
-      user: mongoose.Types.ObjectId; 
-      service: number;       
-      behavior: number;     
-      timeManagement: number; 
-      price: number; 
-      comment?: string;   
-      date: Date;    
+  user: mongoose.Types.ObjectId; 
+  serviceId: mongoose.Types.ObjectId; 
+  rating: number;           
+  comment?: string;    
 }
 
 
@@ -20,7 +17,7 @@ export interface IServices extends Document {
   details: string;
   categoryName:string[];
   // subCategoryName?: string[];
-  review?:TReview 
+  review?:TReview[]
   price: number;
     projectStatus:'pending'| 'accepted' | 'rejected';
 }

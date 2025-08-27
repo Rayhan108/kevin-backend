@@ -9,6 +9,7 @@ import AppError from '../../errors/AppError';
 import { UserServices } from '../../modules/User/user.services';
 
 import sendEmail from '../../utils/sendEmail';
+import BookServiceModel from '../../modules/BookService/bookservice.model';
 
 // import billingServices from '../modules/billingModule/billing.services';
 
@@ -31,67 +32,37 @@ export const stripeWebhookHandler = catchAsync(async (req: Request, res: Respons
   const userId = session.customer as string;
 
   const user = await UserServices.getSingleUserFromDB(userId);
-  if (!user) throw new AppError(httpStatus.BAD_REQUEST,('No items in the order.'))
+
+  if (!user) throw new AppError(httpStatus.BAD_REQUEST,('No user found.'))
+
 
   switch (event.type) {
+    
     case 'checkout.session.completed': {
-      console.log('Checkout session completed');
 
-      if (session.subscription && session.customer) {
-        const subscription = await stripe.subscriptions.retrieve(session.subscription as string);
+  console.log('Checkout session completed');
 
-        const defaultPaymentMethod = subscription.default_payment_method;
+  const bookServiceId =
+    session.metadata?.bookServiceId || session.client_reference_id || '';
+console.log("book service id from webhook 2--------->",bookServiceId);
+  // 1) Update the specific BookService (if you provided its id in metadata)
+  if (bookServiceId) {
+    try {
+      await BookServiceModel.findByIdAndUpdate(
+        bookServiceId,
+        { $set: { paymentStatus: 'paid', paidAt: new Date() } },
+        { new: true }
+      );
+      console.log(`BookService ${bookServiceId} marked as paid`);
+    } catch (e) {
+      console.error('BookService update failed:', e);
+    }
+  } else {
+    console.warn('No bookServiceId found in session metadata/client_reference_id');
+  }
 
-        if (defaultPaymentMethod) {
-          await stripe.customers.update(session.customer as string, {
-            invoice_settings: {
-              default_payment_method: defaultPaymentMethod.toString(),
-            },
-          });
+  break;
 
-          user.stripePaymentMethodId = defaultPaymentMethod.toString();
-        }
-      }
-
-    //   const subscriptionId = session.subscription as string;
-
-      // Retrieve full subscription to get the priceId
-    //   const stripeSubscription = await stripe.subscriptions.retrieve(subscriptionId);
-    //   const priceId = stripeSubscription.items.data[0]?.price?.id;
-
-    //   const subscriptionPurchase = await subscriptionPurchaseServices.createSubscriptionPurchase({
-    //     user: user._id as Types.ObjectId,
-    //     subscription: {
-    //       id: subscriptionId,
-    //       priceId: priceId || '',
-    //     },
-    //     paymentType: 'card',
-    //     paymentStatus: 'paid',
-    //     isActive: true,
-    //   });
-    //   console.log('webhook called', subscriptionPurchase);
-
-    //   user.subscription = {
-    //     isActive: true,
-    //     purchaseId: subscriptionPurchase._id as Types.ObjectId,
-    //   };
-      await user.save();
-
-      // create billing
-    //   await billingServices.createBilling({
-    //     user: user._id as Types.ObjectId,
-    //     type: 'subscriptionPurchase',
-    //     contentId: subscriptionPurchase._id as Types.ObjectId,
-    //   });
-
-      const content = 'Congratulations! Your subscription purchase is successful!';
-      await sendEmail({
-        from: config.SMTP_USER as string,
-        to: user.email,
-        subject: 'Illuminate Muslim Minds - Subscription Purchase',
-        text: content,
-      });
-      break;
     }
 
     case 'invoice.payment_failed': {

@@ -34,4 +34,5 @@ router.get('/:id',servicesControllers.getSingleServices)
 router.patch('/rejectService/:serviceId',servicesControllers.rejectSingleProject)
 router.patch('/acceptService/:serviceId',servicesControllers.acceptSingleProject)
 router.post('/checkout',servicesControllers.initiateOrderPayment)
+router.post('/checkout/:id',servicesControllers.initiateOrderPayment)
 export const servicesRoutes = router;
