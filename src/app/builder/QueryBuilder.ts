@@ -23,16 +23,32 @@ class QueryBuilder<T> {
   }
 
   // Apply filters, excluding fields that shouldn't be part of the query
-  filter() {
-    const queryObj = { ...this.query }; // Clone the query object
+  // filter() {
+  //   const queryObj = { ...this.query }; // Clone the query object
 
-    const excludeFields = ['search', 'sort', 'limit', 'page', 'fields']; // fields to exclude from filter query
-    excludeFields.forEach((el) => delete queryObj[el]);
+  //   const excludeFields = ['search', 'sort', 'limit', 'page', 'fields']; // fields to exclude from filter query
+  //   excludeFields.forEach((el) => delete queryObj[el]);
 
-    this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
-    return this;
+  //   this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
+  //   return this;
+  // }
+filter() {
+  const queryObj = { ...this.query };
+  const excludeFields = ['search', 'sort', 'limit', 'page', 'fields'];
+  excludeFields.forEach((el) => delete queryObj[el]);
+
+  const mongoQuery: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(queryObj)) {
+    if (typeof value === 'string') {
+      mongoQuery[key] = { $regex: new RegExp(`^${value}$`, 'i') };
+    } else {
+      mongoQuery[key] = value;
+    }
   }
 
+  this.modelQuery = this.modelQuery.find(mongoQuery as FilterQuery<T>);
+  return this;
+}
   // Sorting functionality
   sort() {
     const sort = (this?.query?.sort as string)?.split(',')?.join(' ') || '-createdAt'; // Default to descending by createdAt

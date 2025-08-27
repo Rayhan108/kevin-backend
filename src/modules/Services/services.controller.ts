@@ -80,6 +80,7 @@ const createServices = async (
     }
 
     const serviceIds = items.map((item: any) => item.itemId);
+    
     const services = await ServiceModel.find({ _id: { $in: serviceIds } });
 
     const lineItems = items.map((item: any) => {
@@ -140,6 +141,11 @@ if (!baseUrl) throw new Error('FRONTEND_URL not configured')
       data: { url:session.url },
     });
   });
+
+
+
+
+
 
 
 const acceptSingleProject = catchAsync(async(req:Request,res:Response)=>{
