@@ -37,9 +37,9 @@ const createArticle = async (
   next: NextFunction,
 ) => {
 //   console.log("create revieew-->",req.body);
-const image = req.file?.path
+  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 const payload = req.body
-payload.image = image
+payload.image = path
   try {
     const result = await ArticleServices.addArticleIntoDB(payload);
 

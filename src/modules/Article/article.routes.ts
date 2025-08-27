@@ -25,7 +25,7 @@ router.post(
         next();
     },
   
-  auth(USER_ROLE.vipContractor),
+  auth(USER_ROLE.vipContractor,USER_ROLE.contractor,USER_ROLE.admin,USER_ROLE.vipMember),
   validateRequest(articleZodSchema),
  ArticleControllers.createArticle,
 );
