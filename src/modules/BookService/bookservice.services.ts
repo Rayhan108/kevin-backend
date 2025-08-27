@@ -7,6 +7,7 @@ import { IBookServices, TUpdateTask } from "./bookservice.interface";
 
 import httpStatus from 'http-status';
 import BookServiceModel from "./bookservice.model";
+import QueryBuilder from "../../app/builder/QueryBuilder";
 
 
 const getSpecUserBookServiceFromDB = async (userId: string) => {
@@ -15,11 +16,20 @@ const getSpecUserBookServiceFromDB = async (userId: string) => {
 
   return services;
 };
-const getAllOrderedServiceFromDB = async () => {
-  const services = await BookServiceModel.find() // Find all services for this specific user
-    .populate('user'); // Populate the user details (optional if needed)
+const getAllOrderedServiceFromDB = async (query: Record<string, unknown>) => {
+  const queryBuilder = new QueryBuilder(BookServiceModel.find(),query)
 
-  return services;
+    queryBuilder
+    .search(['serviceType'])
+    .filter()
+    .sort()
+    .paginate();
+
+  const result = await queryBuilder.modelQuery.populate('user'); // Populate the user details (optional if needed)
+  const meta = await queryBuilder.countTotal();
+
+  return { meta, result };
+  
 };
 
 const addBookServicesIntoDB = async (payload:IBookServices) => {

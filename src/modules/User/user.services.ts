@@ -1,3 +1,4 @@
+import QueryBuilder from '../../app/builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { FeedbackReplyUpdate, TEditProfile } from './user.constant';
 import {  TBecomeContractorInput } from './user.interface';
@@ -38,9 +39,16 @@ const getSingleUserFromDB = async(id:string)=>{
     const result = await UserModel.findById(id);
     return result;
 }
-const getAllUserFromDB = async()=>{
-    const result = await UserModel.find();
-    return result;
+const getAllUserFromDB = async(query: Record<string, unknown>)=>{
+  const queryBuilder = new QueryBuilder(UserModel.find(),query)
+  queryBuilder
+    .search(['phone', 'email', 'lastName','firstName'])
+    .filter()
+    .sort()
+    .paginate();
+    const result = await queryBuilder.modelQuery;
+      const meta = await queryBuilder.countTotal();
+    return {meta,result};
 }
 
 const updateUserToContractor = async (payload: TBecomeContractorInput) => {

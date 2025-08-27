@@ -22,33 +22,61 @@ class QueryBuilder<T> {
     return this;
   }
 
-  // Apply filters, excluding fields that shouldn't be part of the query
-  // filter() {
-  //   const queryObj = { ...this.query }; // Clone the query object
+  
+// filter() {
 
-  //   const excludeFields = ['search', 'sort', 'limit', 'page', 'fields']; // fields to exclude from filter query
-  //   excludeFields.forEach((el) => delete queryObj[el]);
+//   const queryObj = { ...this.query };
+//   const excludeFields = ['search', 'sort', 'limit', 'page', 'fields'];
+//   excludeFields.forEach((el) => delete queryObj[el]);
 
-  //   this.modelQuery = this.modelQuery.find(queryObj as FilterQuery<T>);
-  //   return this;
-  // }
+//   const mongoQuery: Record<string, unknown> = {};
+//   for (const [key, value] of Object.entries(queryObj)) {
+//     if (typeof value === 'string') {
+//       mongoQuery[key] = { $regex: new RegExp(`^${value}$`, 'i') };
+//     } else {
+//       mongoQuery[key] = value;
+//     }
+//   }
+
+//   this.modelQuery = this.modelQuery.find(mongoQuery as FilterQuery<T>);
+//   return this;
+// }
+
 filter() {
-  const queryObj = { ...this.query };
-  const excludeFields = ['search', 'sort', 'limit', 'page', 'fields'];
-  excludeFields.forEach((el) => delete queryObj[el]);
+  const queryObj: Record<string, unknown> = { ...this.query };
+  const exclude = ['search', 'sort', 'limit', 'page', 'fields'];
+  exclude.forEach(k => delete queryObj[k]);
 
-  const mongoQuery: Record<string, unknown> = {};
-  for (const [key, value] of Object.entries(queryObj)) {
-    if (typeof value === 'string') {
-      mongoQuery[key] = { $regex: new RegExp(`^${value}$`, 'i') };
+  const mongo: Record<string, unknown> = {};
+  for (const [key, raw] of Object.entries(queryObj)) {
+    if (raw == null) continue;
+    if (typeof raw === 'string') {
+      // boolean normalize
+      if (/^(true|false)$/i.test(raw)) {
+        mongo[key] = /^true$/i.test(raw);
+        continue;
+      }
+      // objectId normalize (optional)
+      // if (key.toLowerCase().endsWith('id') && mongoose.isValidObjectId(raw)) {
+      //   mongo[key] = new mongoose.Types.ObjectId(raw);
+      //   continue;
+      // }
+      // default: case-insensitive exact string match
+      mongo[key] = { $regex: `^${raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, $options: 'i' };
     } else {
-      mongoQuery[key] = value;
+      mongo[key] = raw;
     }
   }
 
-  this.modelQuery = this.modelQuery.find(mongoQuery as FilterQuery<T>);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  this.modelQuery = this.modelQuery.find(mongo as FilterQuery<any>);
   return this;
 }
+
+
+
+
+
   // Sorting functionality
   sort() {
     const sort = (this?.query?.sort as string)?.split(',')?.join(' ') || '-createdAt'; // Default to descending by createdAt

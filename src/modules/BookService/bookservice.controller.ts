@@ -26,7 +26,7 @@ const getSpecUserBookService = catchAsync(async(req:Request,res:Response)=>{
 const getAllBookedServices = catchAsync(async(req:Request,res:Response)=>{
 
 
-  const result = await BookServices.getAllOrderedServiceFromDB();
+  const result = await BookServices.getAllOrderedServiceFromDB(req?.query);
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,

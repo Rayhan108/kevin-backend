@@ -1,5 +1,6 @@
 // import AppError from '../../errors/AppError';
 
+import QueryBuilder from "../../app/builder/QueryBuilder";
 import { IServices} from "../Services/services.interface";
 import ServiceModel from "../Services/services.model";
 import { IReview } from "./review.interface";
@@ -8,9 +9,16 @@ import { IReview } from "./review.interface";
 // import httpStatus from 'http-status';
 
 
-const getAllReviewFromDB = async()=>{
-    const reviews = await ServiceModel.find().populate('contractorId');
-    return reviews;
+const getAllReviewFromDB = async(query: Record<string, unknown>)=>{
+  const queryBuilder = new QueryBuilder(ServiceModel.find(),query)
+   queryBuilder
+    .filter()
+    .sort()
+    .paginate();
+    const result = await queryBuilder.modelQuery.populate('contractorId');
+    const meta = await queryBuilder.countTotal();
+
+  return { meta, result };
 }
 
 const addReviewIntoDB = async (payload: IReview) => {
@@ -26,7 +34,7 @@ const addReviewIntoDB = async (payload: IReview) => {
 
   // Save the updated service with review
   await service.save();
- console.log("services is",service);
+//  console.log("services is",service);
   return service;
 };
 

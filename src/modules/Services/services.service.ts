@@ -5,7 +5,7 @@ import AppError from '../../errors/AppError';
 import { UserModel } from '../User/user.model';
 import { IServices } from './services.interface';
 import ServiceModel from './services.model';
-import httpStatus from 'http-status';
+import httpStatus from 'http-status';   
 
 const getAllServicesFromDB = async (query: Record<string, unknown>) => {
   const queryBuilder = new QueryBuilder(ServiceModel.find(), query);

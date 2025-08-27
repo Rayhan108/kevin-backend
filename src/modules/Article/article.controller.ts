@@ -10,7 +10,7 @@ import { ArticleServices } from './article.services';
 
 const getAllArticle = catchAsync(async(req:Request,res:Response)=>{
 
-  const result = await ArticleServices.getAllArticleFromDB();
+  const result = await ArticleServices.getAllArticleFromDB(req?.query);
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
