@@ -7,10 +7,10 @@ export interface IBookServices extends Document {
   location: string;
   zip: string;
   projectDescription?: string;
-  dateRange: string;
-  timeSlot: string;
-  exactDate: string;
-  exactTime: string;
+  // dateRange: string;
+  // timeSlot: string;
+  date: string;
+  time: string;
   todoList: string[];
   status: 'booked' | 'onTheWay' | 'started' | 'done';
   projectStatus:'pending'| 'rejected'|'accepted';
