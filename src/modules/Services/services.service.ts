@@ -7,32 +7,21 @@ import { IServices } from "./services.interface";
 import ServiceModel from "./services.model";
 import httpStatus from 'http-status';
 
-// import httpStatus from 'http-status';
 
-
-// const getAllServicesFromDB = async()=>{
-//     const services = await ServiceModel.find().populate('contractorId');
-//     return services;
-// }
-// Service method to fetch all services with query parameters (category, search, pagination, etc.)
 const getAllServicesFromDB = async (query: Record<string, unknown>) => {
-  // Initialize QueryBuilder with the ServiceModel and the query parameters from the request
+
   const queryBuilder = new QueryBuilder(ServiceModel.find(), query);
 
-  // Apply search in 'title', 'description', and 'category' fields
   queryBuilder.search(['title', 'description', 'categoryName'])
-               .filter()   // Apply filters (e.g., category, status, etc.)
-               .sort()     // Apply sorting (default to createdAt)
-               .paginate(); // Apply pagination based on page and limit query params
-
-  // Execute the query and populate 'contractorId' field (if needed)
+               .filter() 
+               .sort() 
+               .paginate();
+ 
   const result = await queryBuilder.modelQuery.populate('contractorId');
 
-  // Get pagination metadata (total records, total pages, etc.)
   const meta = await queryBuilder.countTotal();
 
-  // Return both result and metadata
-  return { result, meta };
+  return { meta ,result};
 };
 
 
