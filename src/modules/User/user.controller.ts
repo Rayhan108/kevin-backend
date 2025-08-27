@@ -140,7 +140,7 @@ const replyFeedback = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllUser = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserServices.getAllUserFromDB();
+  const result = await UserServices.getAllUserFromDB(req?.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,

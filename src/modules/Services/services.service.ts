@@ -1,46 +1,44 @@
 // import AppError from '../../errors/AppError';
 
-import QueryBuilder from "../../app/builder/QueryBuilder";
-import AppError from "../../errors/AppError";
-import { UserModel } from "../User/user.model";
-import { IServices } from "./services.interface";
-import ServiceModel from "./services.model";
+import QueryBuilder from '../../app/builder/QueryBuilder';
+import AppError from '../../errors/AppError';
+import { UserModel } from '../User/user.model';
+import { IServices } from './services.interface';
+import ServiceModel from './services.model';
 import httpStatus from 'http-status';
 
-
 const getAllServicesFromDB = async (query: Record<string, unknown>) => {
-
   const queryBuilder = new QueryBuilder(ServiceModel.find(), query);
 
-  queryBuilder.search(['title', 'description', 'categoryName'])
-               .filter() 
-               .sort() 
-               .paginate();
- 
+  queryBuilder
+    .search(['title', 'description', 'categoryName'])
+    .filter()
+    .sort()
+    .paginate();
+
   const result = await queryBuilder.modelQuery.populate('contractorId');
 
   const meta = await queryBuilder.countTotal();
 
-  return { meta ,result};
+  return { meta, result };
 };
 
-
 const getAllServicesForSpecUserFromDB = async (contractorId: string) => {
-  const services = await ServiceModel
-    .find({ contractorId })            
-    .populate('contractorId');
+  const services = await ServiceModel.find({ contractorId }).populate(
+    'contractorId',
+  );
   return services;
-}
+};
 const getSingleServicesFromDB = async (serviceId: string) => {
-  const services = await ServiceModel
-    .findById(serviceId).populate('contractorId')          
+  const services =
+    await ServiceModel.findById(serviceId).populate('contractorId');
   return services;
-}
+};
 
-const addServicesIntoDB = async (payload:IServices,image:string) => {
+const addServicesIntoDB = async (payload: IServices, image: string) => {
   // console.log(image);
-const  userId = payload.contractorId
-// console.log("payload-->",payload);
+  const userId = payload.contractorId;
+  // console.log("payload-->",payload);
   // ✅ Step 1: Check if user exists
   const user = await UserModel.findById(userId);
   if (!user) {
@@ -51,10 +49,10 @@ const  userId = payload.contractorId
   if (user.role !== 'contractor') {
     throw new Error('Only contractors can create services');
   }
-// console.log("Pyload--->",payload);
-payload.image = image;
+  // console.log("Pyload--->",payload);
+  payload.image = image;
 
-  const result = (await ServiceModel.create(payload)).populate('contractorId')
+  const result = (await ServiceModel.create(payload)).populate('contractorId');
   return result;
 };
 
@@ -73,7 +71,7 @@ const acceptProject = async (serviceId: string) => {
   // Save the updated service
   await service.save();
 
-  return service;  // Return the updated service
+  return service; // Return the updated service
 };
 const rejectProject = async (serviceId: string) => {
   // Find the service by its _id
@@ -90,10 +88,14 @@ const rejectProject = async (serviceId: string) => {
   // Save the updated service
   await service.save();
 
-  return service;  // Return the updated service
+  return service; // Return the updated service
 };
 
-
 export const ServicesService = {
-addServicesIntoDB,getAllServicesFromDB,acceptProject,rejectProject,getAllServicesForSpecUserFromDB,getSingleServicesFromDB
+  addServicesIntoDB,
+  getAllServicesFromDB,
+  acceptProject,
+  rejectProject,
+  getAllServicesForSpecUserFromDB,
+  getSingleServicesFromDB,
 };
