@@ -21,12 +21,12 @@ const BookServicesSchema: Schema = new Schema(
     },
     projectStatus: {
       type: String,
-      enum: ['accepted', 'rejected','pending'],
+      enum: ['accepted', 'rejected', 'pending'],
       default: 'pending',
     },
     paymentStatus: {
       type: String,
-      enum: ['unpaid', 'paid',],
+      enum: ['unpaid', 'paid'],
       default: 'unpaid',
     },
     image: { type: [String], default: [] },

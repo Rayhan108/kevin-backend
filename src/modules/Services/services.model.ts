@@ -47,6 +47,11 @@ review: { type: [ReviewSchema], default: [] },
       enum: ['accepted', 'rejected','pending'],
       default: 'pending',
     },
+       type: {
+      type: String,
+      enum: ['indoor', 'outdoor','garden'],
+      required:true
+    },
   },
   { timestamps: true }
 );

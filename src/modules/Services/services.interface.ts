@@ -20,4 +20,5 @@ export interface IServices extends Document {
   review?:TReview[]
   price: number;
     projectStatus:'pending'| 'accepted' | 'rejected';
+    type:'indoor'| 'outdoor' | 'garden';
 }
