@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Server, Socket } from 'socket.io';
 
-
 import { UserModel } from '../modules/User/user.model';
 import Conversation from '../modules/Conversation/conversation.model';
 import messageController from '../modules/message/message.controller';
@@ -156,7 +155,7 @@ socket.on('join-chat', async (data: { roomId: string; userId: string }) => {
   // };
 
 const handleSendMessage = async (data: SendMessageData) => {
-  console.log('Received message');
+  console.log('Received message',data);
   const { conversationId, senderId, text, attachment } = data;
 
   // Fetch the conversation and populate members

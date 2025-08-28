@@ -12,12 +12,13 @@ const initializeSocket = (server: HTTPServer) => {
     io = new IOServer(server, {
       pingTimeout: 60000,
       cors: {
-        origin: ['http://localhost:3000', 'http://10.10.20.13:5000'],
+        origin: ['http://localhost:3000', 'http://10.10.20.13:5000',],
       },
     });
     // online user
     const onlineUser = new Set();
     io.on('connection', async (socket: Socket) => {
+      // console.log("testing",socket);
       const userId = socket.handshake.query.id as string;
       if (!userId) {
         return;
