@@ -2,3 +2,9 @@ node_modules
 dist
 .env
 .vercel
+
+
+package-lock.json
+pnpm-lock.yaml
+bun.lock
+yarn.lock
