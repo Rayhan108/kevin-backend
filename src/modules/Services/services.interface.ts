@@ -14,6 +14,7 @@ export interface IServices extends Document {
   contractorId: Types.ObjectId;
   image?: string;
   title: string;
+  location: string;
   details: string;
   categoryName:string[];
   // subCategoryName?: string[];
