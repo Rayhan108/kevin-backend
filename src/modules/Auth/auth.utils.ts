@@ -12,6 +12,7 @@ export const createToken = (
 
 export const verifyToken = (token: string, secret: Secret): JwtPayload => {
   let decoded;
+
   try {
     decoded = jwt.verify(token, secret) as JwtPayload;
   } catch (error) {

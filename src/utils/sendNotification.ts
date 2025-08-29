@@ -1,20 +1,21 @@
 import { INotification } from '../modules/Notification/notification.interface';
 import NotificationModel from '../modules/Notification/notification.model';
 import { getIO } from '../socket';
-import getUserNotificationCount from './getUserNotificationCount';
+import getUserNotificationsWithUnReadCount from './getUserNotificationCount';
 
-const sendNotification = async (notificationData: INotification) => {
-  const io = getIO();
+const createAndSendNotification = async (
+  notificationData: INotification,
+  receiverSocketId: string,
+) => {
+  const ioInstance = getIO();
+
   await NotificationModel.create(notificationData);
 
-  const updatedNotification = await getUserNotificationCount(
+  const updatedNotification = await getUserNotificationsWithUnReadCount(
     notificationData.receiver.toString(),
   );
 
-  io.to(notificationData.receiver.toString()).emit(
-    'notification',
-    updatedNotification,
-  );
+  ioInstance.to(receiverSocketId).emit('newNotification', updatedNotification);
 };
 
-export default sendNotification;
+export default createAndSendNotification;

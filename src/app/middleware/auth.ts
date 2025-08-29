@@ -22,12 +22,11 @@ const auth = (...requiredRoles: TUserRole[]) => {
     const decodedUser = verifyToken(token, config.jwt_access_secret as Secret);
 
     const { role, userId, iat } = decodedUser;
-    // console.log('userID',userId);
+    
     // checking if the user is exist
     const user = await UserModel.isUserExistsById(userId);
-    // console.log('Found user:', user);
+
     if (!user) {
-      // console.log('User not found in database!');
       throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
     }
 

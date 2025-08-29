@@ -2,8 +2,11 @@ import { JwtPayload } from 'jsonwebtoken';
 import { Message } from './message.model';
 import { TMessage } from './message.interface';
 import { UserModel } from '../User/user.model';
-import { getReceiverSocketId, ioInstance } from '../../socket';
+import { getIO, getReceiverSocketId } from '../../socket';
 import { Types } from 'mongoose';
+import { INotification } from '../Notification/notification.interface';
+import { ENUM_NOTIFICATION_TYPE } from '../Notification/notification.constant';
+import createAndSendNotification from '../../utils/sendNotification';
 
 // get Users For Sidebar From DB
 // const getUsersForSidebarFromDB = async (userData: JwtPayload) => {
@@ -65,6 +68,7 @@ const getUsersForSidebarFromDB = async (userData: JwtPayload) => {
 
   // 2. rest users
   const messagedUserIds = recentMessages.map((u) => u._id);
+
   const otherUsers = await UserModel.find({
     _id: { $ne: userId, $nin: messagedUserIds },
   }).select('-password');
@@ -117,8 +121,18 @@ const sendMessageIntoDB = async (
 
   const receiverSocketId = getReceiverSocketId(receiverId);
 
+  const ioInstance = getIO();
   if (receiverSocketId && ioInstance) {
     ioInstance.to(receiverSocketId).emit('newMessage', newMessage);
+
+    const notificationData: INotification = {
+      title: 'New message.',
+      message: 'You Have a new message.',
+      receiver: newMessage.receiverId,
+      type: ENUM_NOTIFICATION_TYPE.USER,
+    };
+
+    await createAndSendNotification(notificationData, receiverSocketId);
   }
 
   return newMessage;

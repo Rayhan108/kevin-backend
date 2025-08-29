@@ -1,27 +1,21 @@
 /* eslint-disable no-console */
 import { Server } from 'http';
 import { Server as IOServer, Socket } from 'socket.io';
-// import { SocketMessage } from './app/modules/socket/socket.model';
 
-// Store the io instance at module level
-export let ioInstance: IOServer | null = null;
+ let ioInstance: IOServer | null = null;
 
-// Store online users
-// const onlineUsers: Map<string, string> = new Map(); // socketId -> username
-
-// Map userId to socketId
-const userSocketMap: { [userId: string]: string } = {}; // userId -> socketId
+const userSocketMap: { [userId: string]: string } = {};
 
 export function initializeSocket(server: Server) {
   const io = new IOServer(server, {
     cors: {
-      // origin: ['http://localhost:3000', 'http://10.10.20.41:5000'],
-      origin: '*', // Adjust for production
+      origin: ['http://localhost:3000', 'http://10.10.20.41:5000'],
+      // origin: '*', // Adjust for production
       methods: ['GET', 'POST'],
     },
   });
 
-  ioInstance = io; // Store the instance
+  ioInstance = io;
 
   io.on('connection', (socket: Socket) => {
     console.log('A user connected', socket.id);
@@ -30,10 +24,8 @@ export function initializeSocket(server: Server) {
 
     if (userId) userSocketMap[userId] = socket.id;
 
-    // io.emit() is used to send events to all the connected clients
     io.emit('getOnlineUsers', Object.keys(userSocketMap));
 
-    // socket.on() is used to listen to the events. can be used both on client and server side
     socket.on('disconnect', () => {
       console.log('A user disconnected', socket.id);
       if (userId !== undefined) {
