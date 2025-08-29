@@ -5,7 +5,7 @@ import sendResponse from '../../app/utils/sendResponse';
 import { UserServices } from './user.services';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
-import { TEditProfile, TProfilePictureUpdatePayload } from './user.constant';
+import { TEditContractorProfile, TEditProfile, TProfilePictureUpdatePayload } from './user.constant';
 
 const changeStatus = catchAsync(async (req, res) => {
   const id = req.params.id;
@@ -76,6 +76,65 @@ const updateProfile = catchAsync(
     });
   },
 );
+const updateContractorProfile = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+    // eslint-disable-next-line no-undef
+    const files = req.files as Record<string, Express.Multer.File[]>;
+
+    // 🖼️ Get file paths or filenames from multer for image, thumbnail, and video
+    const imagePath = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+    const thumbnailPaths = files?.thumbnailImage
+      ? files.thumbnailImage.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`)
+      : [];
+    const videoPaths = files?.video
+      ? files.video.map(file => `${req.protocol}://${req.get('host')}/uploads/${file.filename}`)
+      : [];
+
+    // Ensure required fields (image and video) are uploaded
+    if (!imagePath || videoPaths.length === 0) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'Both image and at least one video are required for the slider.');
+    }
+
+    // Extract titles from the request body (assuming titles are passed as an array)
+    const videoTitles = req.body.videoTitles || [];
+
+    // Ensure the number of titles matches the number of videos
+    if (videoTitles.length !== videoPaths.length) {
+      throw new AppError(httpStatus.BAD_REQUEST, 'The number of titles must match the number of videos.');
+    }
+
+    // 🧾 Prepare the profile videos array
+    const profileVideos = videoPaths.map((videoUrl, index) => {
+      return {
+        imageUrl: thumbnailPaths[index] || '',
+        title: videoTitles[index] || '', // Assign the title based on index
+        videoUrl,
+      };
+    });
+
+    // 🧾 Prepare the full payload
+    const payload: TEditContractorProfile = {
+      ...req.body, // Spread other data from the request body (like firstName, lastName, etc.)
+      image: imagePath, // Set the profile image path
+      profileVedio: profileVideos, // Multiple profile videos as an array
+    };
+
+    // 🔁 Update contractor profile in DB
+    const result = await UserServices.updateContractorProfileFromDB(id, payload);
+
+    // 📤 Send response
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Profile updated successfully',
+      data: result,
+    });
+  }
+);
+
+
+
 
 const addReport = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId;
@@ -202,5 +261,5 @@ export const UserControllers = {
   addFeedback,
   updateProfile,
   deleteUser,
-  replyFeedback,
+  replyFeedback,updateContractorProfile
 };

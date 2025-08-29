@@ -1,6 +1,6 @@
 import QueryBuilder from '../../app/builder/QueryBuilder';
 import AppError from '../../errors/AppError';
-import { FeedbackReplyUpdate, TEditProfile } from './user.constant';
+import { FeedbackReplyUpdate, TEditContractorProfile, TEditProfile } from './user.constant';
 import {  TBecomeContractorInput } from './user.interface';
 import { UserModel } from './user.model';
 import httpStatus from 'http-status';
@@ -25,6 +25,18 @@ const changeProfilePicture = async (
 const updateProfileFromDB = async (
   id: string,
   payload: TEditProfile 
+) => {
+  // console.log('payload--->', payload);
+
+  const result = await UserModel.findByIdAndUpdate(id, payload, {
+    new: true,
+  });
+
+  return result;
+}
+const updateContractorProfileFromDB = async (
+  id: string,
+  payload: TEditContractorProfile 
 ) => {
   // console.log('payload--->', payload);
 
@@ -192,4 +204,5 @@ const deleteUserFromDB = async (id: string) => {
 
 export const UserServices = {
   changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB,replyFeedbackByAdmin,getSpecificUserByCustomerId
+  ,updateContractorProfileFromDB
 };

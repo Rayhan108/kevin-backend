@@ -5,14 +5,16 @@ import config from '../../app/config';
 import { IUserMethods, TUser, User } from './user.interface';
 import { UserStatus } from '../Auth/auth.constant';
 
-
-
-
-const userSchema = new Schema<TUser, User,IUserMethods>(
+const userSchema = new Schema<TUser, User, IUserMethods>(
   {
-firstName: { type: String, required: true },
+    firstName: { type: String, required: true },
     lastName: { type: String, required: true },
     image: { type: String },
+     profileVedio: [
+    {  thumbImageUrl:{type:String},
+      title:{type:String},
+      videoUrl:{type:String},}
+     ],
     bio: { type: String },
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
@@ -20,40 +22,40 @@ firstName: { type: String, required: true },
     password: { type: String, required: true, select: false },
     role: {
       type: String,
-      enum: ['user', 'contractor','vipContractor','vipMember','admin'],
+      enum: ['user', 'contractor', 'vipContractor', 'vipMember', 'admin'],
       default: 'user',
     },
     referredBy: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: 'User',
-  default: null,
-},
-referrals: [
-  {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-  },
-],
-     status: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      default: null,
+    },
+    referrals: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      },
+    ],
+    status: {
       type: String,
       enum: UserStatus,
       default: 'in-progress',
     },
-    report:{
-    reason: { type: String, default: undefined },
+    report: {
+      reason: { type: String, default: undefined },
       feedback: { type: String, default: undefined },
-      image: { type: String},
+      image: { type: String },
     },
-    feedback:{
+    feedback: {
       message: { type: String },
-      image: { type: String},
-      reply:{
-         message: { type: String },
-      image: { type: String},
-   
-      }
+      image: { type: String },
+      reply: {
+        message: { type: String },
+        image: { type: String },
+       
+      },
     },
-      verification: {
+    verification: {
       code: {
         type: String,
         default: null,
@@ -64,7 +66,7 @@ referrals: [
       },
     },
     address: { type: String, required: true },
-      stripeCustomerId: {
+    stripeCustomerId: {
       type: String,
       default: null,
     },
@@ -90,28 +92,32 @@ referrals: [
   },
   {
     timestamps: true,
-  }
+  },
 );
-
 
 userSchema.pre('save', async function (next) {
   if (this.isModified('password')) {
-    this.password = await bcrypt.hash(this.password, Number(config.bcrypt_salt_rounds));
+    this.password = await bcrypt.hash(
+      this.password,
+      Number(config.bcrypt_salt_rounds),
+    );
   }
 
   // ✅ Always hash if verification.code exists and is not already hashed
   if (this.verification?.code && !this.verification.code.startsWith('$2b$')) {
-    this.verification.code = bcrypt.hashSync(this.verification.code, Number(config.bcrypt_salt_rounds));
+    this.verification.code = bcrypt.hashSync(
+      this.verification.code,
+      Number(config.bcrypt_salt_rounds),
+    );
   }
 
   next();
 });
 
 userSchema.methods.compareVerificationCode = function (userPlaneCode: string) {
-      if (!this.verification?.code) return false;
+  if (!this.verification?.code) return false;
   return bcrypt.compareSync(userPlaneCode, this.verification.code);
 };
-
 
 userSchema.post('save', function (doc, next) {
   doc.password = '';
@@ -139,7 +145,5 @@ userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
     new Date(passwordChangedTimestamp).getTime() / 1000;
   return passwordChangedTime > jwtIssuedTimestamp;
 };
-
-
 
 export const UserModel = model<TUser, User>('User', userSchema);

@@ -55,6 +55,11 @@ verification?: {
     passwordChangedAt?: Date;
   role: 'user' | 'contractor'|'vipContractor'|'vipMember'|'admin';
   status: 'in-progress' | 'blocked';
+  profileVedio:[
+{  thumbImageUrl: string;
+  title: string;
+  videoUrl: string;}
+  ];
   address: string;
   createdAt: Date;
   updatedAt: Date;

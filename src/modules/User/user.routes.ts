@@ -3,7 +3,7 @@ import express, { NextFunction, Request, Response } from 'express';
 
 import auth from '../../app/middleware/auth';
 import validateRequest from '../../app/middleware/validateRequest';
-import { editProfileSchema, userValidation } from './user.validation';
+import { editContractorProfileSchema, editProfileSchema, userValidation } from './user.validation';
 import { USER_ROLE } from '../Auth/auth.constant';
 import { UserControllers } from './user.controller';
 import { upload } from '../../app/middleware/upload';
@@ -77,6 +77,24 @@ router.patch('/edit-profile/:id',
     },
         validateRequest(editProfileSchema),
   UserControllers.updateProfile)
+
+
+router.patch(
+  '/edit-contractor-profile/:id',
+  upload.fields([
+    { name: 'image', maxCount: 1 }, 
+    { name: 'thumbnailImage', maxCount: 3 }, 
+    { name: 'video', maxCount: 3 } 
+  ]),
+  (req: Request, res: Response, next: NextFunction) => {
+    if (req.body.data) {
+      req.body = JSON.parse(req.body.data);
+    }
+    next();
+  },
+  validateRequest(editContractorProfileSchema),
+  UserControllers.updateContractorProfile
+);
 
 router.delete('/deleteUser/:userId',UserControllers.deleteUser)
 router.get('/allUser',UserControllers.getAllUser)
