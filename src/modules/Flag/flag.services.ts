@@ -32,7 +32,11 @@ const addFlagIntoDB = async (payload: TFlagUser) => {
   const ioInstance = getIO();
 
   if (receiverSocketId && ioInstance) {
-    await createAndSendNotification(notificationData, receiverSocketId);
+    await createAndSendNotification(
+      ioInstance,
+      notificationData,
+      receiverSocketId,
+    );
   }
 
   return result;

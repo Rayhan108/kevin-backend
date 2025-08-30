@@ -132,7 +132,11 @@ const sendMessageIntoDB = async (
       type: ENUM_NOTIFICATION_TYPE.USER,
     };
 
-    await createAndSendNotification(notificationData, receiverSocketId);
+    await createAndSendNotification(
+      ioInstance,
+      notificationData,
+      receiverSocketId,
+    );
   }
 
   return newMessage;

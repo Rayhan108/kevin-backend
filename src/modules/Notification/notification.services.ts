@@ -3,6 +3,7 @@
 import { Types } from 'mongoose';
 import Notification from './notification.model';
 import QueryBuilder from '../../app/builder/QueryBuilder';
+import { getIO, getReceiverSocketId } from '../../socket';
 
 // getAllNotificationsFromDB
 const getAllNotificationsFromDB = async (
@@ -31,6 +32,14 @@ const markANotificationAsReadIntoDB = async (notificationId: string) => {
     { isRead: true },
     { new: true },
   );
+
+  const receiverSocketId = getReceiverSocketId(result!?.receiver.toString());
+  const ioInstance = getIO();
+
+  if (receiverSocketId && ioInstance) {
+    ioInstance.to(receiverSocketId).emit('newNotification', { unReadMinus: 1 });
+  }
+
   return result;
 };
 
@@ -40,6 +49,14 @@ const markNotificationsAsReadIntoDB = async (userId: string) => {
     { receiver: userId, isRead: false },
     { $set: { isRead: true } },
   );
+
+  const receiverSocketId = getReceiverSocketId(userId);
+
+  const ioInstance = getIO();
+
+  if (receiverSocketId && ioInstance) {
+    ioInstance.to(receiverSocketId).emit('newNotification', { unReadCount: 0 });
+  }
 
   return result;
 };

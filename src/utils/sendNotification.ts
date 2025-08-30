@@ -1,14 +1,15 @@
+import { Server } from 'http';
 import { INotification } from '../modules/Notification/notification.interface';
 import NotificationModel from '../modules/Notification/notification.model';
 import { getIO } from '../socket';
 import getUserNotificationsWithUnReadCount from './getUserNotificationCount';
+import { DefaultEventsMap } from 'socket.io';
 
 const createAndSendNotification = async (
+  ioInstance: any,
   notificationData: INotification,
   receiverSocketId: string,
 ) => {
-  const ioInstance = getIO();
-
   await NotificationModel.create(notificationData);
 
   const updatedNotification = await getUserNotificationsWithUnReadCount(
