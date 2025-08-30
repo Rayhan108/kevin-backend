@@ -54,7 +54,7 @@ const getSingleUserFromDB = async(id:string)=>{
 const getAllUserFromDB = async(query: Record<string, unknown>)=>{
   const queryBuilder = new QueryBuilder(UserModel.find(),query)
   queryBuilder
-    .search(['phone', 'email', 'lastName','firstName'])
+    .search(['phone', 'email', 'lastName','firstName','servicesYouProvide','subServices'])
     .filter()
     .sort()
     .paginate();

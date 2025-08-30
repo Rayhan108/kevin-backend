@@ -11,7 +11,7 @@ const getAllServicesFromDB = async (query: Record<string, unknown>) => {
   const queryBuilder = new QueryBuilder(ServiceModel.find(), query);
 
   queryBuilder
-    .search(['title', 'description', 'categoryName','location'])
+    .search(['title', 'description', 'categoryName','location','details'])
     .filter()
     .sort()
     .paginate();
