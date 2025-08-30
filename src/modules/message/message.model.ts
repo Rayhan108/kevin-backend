@@ -1,53 +1,29 @@
-import mongoose from 'mongoose';
+import { Schema, model } from 'mongoose';
+import { TMessage } from './message.interface';
 
-const MessageSchema = new mongoose.Schema(
+const messageSchema = new Schema<TMessage>(
   {
-    conversationId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'conversation',
+    senderId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
-    senderId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'user',
+    receiverId: {
+      type: Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
     },
     text: {
       type: String,
-    },
-    attachment: [{
-      type: String,
-    }],
-    seenBy: [
-      {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'user',
-        },
-        seenAt: {
-          type: Date,
-          default: Date.now,
-        },
-      },
-    ],
-    replyTo: {
-      type: mongoose.Schema.Types.ObjectId,
+      trim: true,
       default: null,
-      ref: 'message',
+    },
+    image: {
+      type: String,
+      default: null,
     },
   },
-  {
-    timestamps: true,
-  },
+  { timestamps: true, versionKey: false },
 );
 
-// Custom validator to ensure either text or attachment is present
-MessageSchema.pre('validate', function (next) {
-  if (!this.text && !this.attachment) {
-    next(new Error('Either text or attachment is required.'));
-  } else {
-    next();
-  }
-});
-
-const Message = mongoose.model('message', MessageSchema);
-export default Message;
+export const Message = model<TMessage>('Message', messageSchema);

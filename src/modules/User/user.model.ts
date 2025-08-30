@@ -52,7 +52,6 @@ const userSchema = new Schema<TUser, User, IUserMethods>(
       reply: {
         message: { type: String },
         image: { type: String },
-       
       },
     },
     verification: {
@@ -74,6 +73,7 @@ const userSchema = new Schema<TUser, User, IUserMethods>(
       type: String,
       default: null,
     },
+
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 
@@ -123,6 +123,7 @@ userSchema.post('save', function (doc, next) {
   doc.password = '';
   next();
 });
+
 userSchema.statics.isUserExistsByEmail = async function (email: string) {
   return await UserModel.findOne({ email }).select('+password');
 };
@@ -137,6 +138,7 @@ userSchema.statics.isPasswordMatched = async function (
 ) {
   return await bcrypt.compare(plainTextPassword, hashedPassword);
 };
+
 userSchema.statics.isJWTIssuedBeforePasswordChanged = function (
   passwordChangedTimestamp: Date,
   jwtIssuedTimestamp: number,

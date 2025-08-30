@@ -1,25 +1,22 @@
-
-
+import { Server } from 'http';
 import { INotification } from '../modules/Notification/notification.interface';
 import NotificationModel from '../modules/Notification/notification.model';
-import { getIO } from '../socket/socketconn';
-import getUserNotificationCount from './getUserNotificationCount';
+import { getIO } from '../socket';
+import getUserNotificationsWithUnReadCount from './getUserNotificationCount';
+import { DefaultEventsMap } from 'socket.io';
 
+const createAndSendNotification = async (
+  ioInstance: any,
+  notificationData: INotification,
+  receiverSocketId: string,
+) => {
+  await NotificationModel.create(notificationData);
 
+  const updatedNotification = await getUserNotificationsWithUnReadCount(
+    notificationData.receiver.toString(),
+  );
 
-
-const sendNotification = async (notificationData: INotification) => {
-    const io = getIO();
-    await NotificationModel.create(notificationData);
-
-    const updatedNotification = await getUserNotificationCount(
-        notificationData.receiver.toString()
-    );
-
-    io.to(notificationData.receiver.toString()).emit(
-        'notification',
-        updatedNotification
-    );
+  ioInstance.to(receiverSocketId).emit('newNotification', updatedNotification);
 };
 
-export default sendNotification;
+export default createAndSendNotification;

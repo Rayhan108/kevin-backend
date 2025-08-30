@@ -1,17 +1,19 @@
-import NotificationModel from "../modules/Notification/notification.model";
+import NotificationModel from '../modules/Notification/notification.model';
 
+const getUserNotificationsWithUnReadCount = async (receiver: string) => {
+  const unseenCount = await NotificationModel.countDocuments({
+    isRead: false,
+    receiver: receiver,
+  });
 
-const getUserNotificationCount = async (receiver: string) => {
-    const unseenCount = await NotificationModel.countDocuments({
-        seen: false,
-        receiver: receiver,
-    });
-    const latestNotification = await NotificationModel.findOne({
-        receiver: receiver,
-    })
-        .sort({ createdAt: -1})
-        .lean();
-    return { unseenCount,latestNotification};
+  const latestNotification = await NotificationModel.findOne({
+    receiver: receiver,
+  })
+    .sort({ createdAt: -1 })
+    .lean();
+
+  // return { unseenCount, latestNotification };
+  return latestNotification;
 };
 
-export default getUserNotificationCount;
+export default getUserNotificationsWithUnReadCount;
