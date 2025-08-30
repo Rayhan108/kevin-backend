@@ -1,7 +1,7 @@
 import AppError from '../../errors/AppError';
 
 import httpStatus from 'http-status';
-import { TLoginUser,  } from './auth.interface';
+import { TLoginUser } from './auth.interface';
 import { createToken, verifyToken } from './auth.utils';
 import config from '../../app/config';
 import { JwtPayload } from 'jsonwebtoken';
@@ -19,9 +19,9 @@ const registeredUserIntoDB = async (payload: TUser) => {
   if (user) {
     throw new AppError(httpStatus.CONFLICT, 'This user is already exists!');
   }
-   // generate a unique refer code
+  // generate a unique refer code
   const refercode = await generateReferCode();
-// console.log("refercode",referCode);
+  // console.log("refercode",referCode);
   // attach referCode to payload
   const newUserData = {
     ...payload,
@@ -33,16 +33,19 @@ const registeredUserIntoDB = async (payload: TUser) => {
   const result = await UserModel.create(newUserData);
   return result;
 };
+
 // login user
 const loginUser = async (payload: TLoginUser) => {
   const user = await UserModel.isUserExistsByEmail(payload.email);
-  // console.log('login user',user);
+
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'This user is not found!');
   }
+
   if (!(await UserModel.isPasswordMatched(payload?.password, user?.password))) {
     throw new AppError(httpStatus.UNAUTHORIZED, 'Invalid Credentials!');
   }
+
   const jwtPayload = {
     userId: user?._id,
     role: user?.role,
@@ -53,6 +56,7 @@ const loginUser = async (payload: TLoginUser) => {
     config.jwt_access_secret as string,
     config.jwt_access_expires_in as string,
   );
+
   const refreshToken = createToken(
     jwtPayload,
     config.jwt_refresh_secret as string,
@@ -173,9 +177,8 @@ export const forgotPass = async (email: string) => {
   await sendMail(
     email,
     'Your OTP Code',
-    `Your OTP code is: ${otp}. It will expire in 1 minute.`
+    `Your OTP code is: ${otp}. It will expire in 1 minute.`,
   );
-
 };
 export const verifyOTP = async (email: string, otp: string) => {
   const user = await UserModel.findOne({ email });
@@ -184,8 +187,14 @@ export const verifyOTP = async (email: string, otp: string) => {
   }
 
   // ✅ Check OTP expiry
-  if (!user.verification?.expireDate || user.verification.expireDate < new Date()) {
-    throw new AppError(httpStatus.UNAUTHORIZED, 'OTP has expired,resend Otp And try again');
+  if (
+    !user.verification?.expireDate ||
+    user.verification.expireDate < new Date()
+  ) {
+    throw new AppError(
+      httpStatus.UNAUTHORIZED,
+      'OTP has expired,resend Otp And try again',
+    );
   }
 
   // ✅ Compare OTP
@@ -204,13 +213,11 @@ export const verifyOTP = async (email: string, otp: string) => {
   };
 };
 
-
-
 export const AuthServices = {
   registeredUserIntoDB,
   loginUser,
   changePassword,
   refreshToken,
   forgotPass,
-  verifyOTP
+  verifyOTP,
 };
