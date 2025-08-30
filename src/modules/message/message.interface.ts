@@ -1,13 +1,11 @@
-import { Document, Types } from 'mongoose';
+import { Types } from 'mongoose';
 
-export interface IMessage extends Document {
-    conversationId: Types.ObjectId;
-    senderId: Types.ObjectId | null;
-    text: string;
-    attachment: string[];
-    seenBy: {
-        user: Types.ObjectId;
-        seenAt: Date;
-    }[];
-    replyTo: Types.ObjectId;
-}
+export type TMessage = {
+  _id: Types.ObjectId;
+  senderId: Types.ObjectId;
+  receiverId: Types.ObjectId;
+  text?: string | null;
+  image?: string | null;
+  createdAt?: Date;
+  updatedAt?: Date;
+};

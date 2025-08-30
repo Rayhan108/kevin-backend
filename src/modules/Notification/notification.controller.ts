@@ -1,48 +1,80 @@
 import { Request, Response } from 'express';
 
-
 import httpStatus from 'http-status';
 import notificationServices from './notification.services';
 import catchAsync from '../../app/utils/catchAsync';
 import sendResponse from '../../app/utils/sendResponse';
 
-const getNotifications = catchAsync(async (req: Request, res: Response) => {
+// getAllNotifications
+const getAllNotifications = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.id;
-  const data = await notificationServices.getAllNotifications(req.query, userId);
-  sendResponse(res, {
-        success: true,
-          message: 'Notification seen successfully',
-          statusCode:httpStatus.OK,
-          data: data,
-  });
-});
 
-const markAsSeen = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const data = await notificationServices.markNotificationAsSeen(id);
+  const result = await notificationServices.getAllNotificationsFromDB(
+    req.query,
+    userId,
+  );
+
   sendResponse(res, {
-    statusCode: httpStatus.OK,
     success: true,
     message: 'Notification seen successfully',
-    data: data,
-  });
-});
-
-const getUnseenNotificationCount = catchAsync(async (req: Request, res: Response) => {
-  const userId = req.params.id;
-
-  const count = await notificationServices.getAllUnseenNotificationCount(userId);
-
-  sendResponse(res, {
     statusCode: httpStatus.OK,
-    success: true,
-    message: 'Unseen notification count fetched successfully',
-    data: count,
+    data: result,
   });
 });
+
+// markANotificationAsRead
+const markANotificationAsRead = catchAsync(
+  async (req: Request, res: Response) => {
+    const notificationId = req.params.id;
+    const result =
+      await notificationServices.markANotificationAsReadIntoDB(notificationId);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Notification marked as read successfully!',
+      data: result,
+    });
+  },
+);
+
+// markNotificationsAsRead
+const markNotificationsAsRead = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.params.id;
+
+    const result =
+      await notificationServices.markNotificationsAsReadIntoDB(userId);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'All notifications marked as read successfully!',
+      data: result,
+    });
+  },
+);
+
+// getUnseenNotificationCount
+const getUnseenNotificationCount = catchAsync(
+  async (req: Request, res: Response) => {
+    const userId = req.params.id;
+
+    const result =
+      await notificationServices.getAllUnseenNotificationCountFromDB(userId);
+
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Unseen notification count fetched successfully',
+      data: result,
+    });
+  },
+);
 
 export default {
-  getNotifications,
-  markAsSeen,
+  getAllNotifications,
+  markANotificationAsRead,
+  markNotificationsAsRead,
   getUnseenNotificationCount,
 };

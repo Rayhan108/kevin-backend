@@ -3,58 +3,84 @@
 import { Types } from 'mongoose';
 import Notification from './notification.model';
 import QueryBuilder from '../../app/builder/QueryBuilder';
+import { getIO, getReceiverSocketId } from '../../socket';
 
-const getAllNotifications = async (query: Record<string, any>, userId: string) => {
+// getAllNotificationsFromDB
+const getAllNotificationsFromDB = async (
+  query: Record<string, any>,
+  userId: string,
+) => {
   const baseQuery = Notification.find({ receiver: userId });
 
   const builder = new QueryBuilder(baseQuery, query);
 
   builder.search(['title', 'message']).filter().sort().paginate().fields();
 
-  const data = await builder.modelQuery.exec();
-
+  const result = await builder.modelQuery.exec();
   const meta = await builder.countTotal();
 
   return {
-    meta: {
-      page: meta.page,
-      limit: meta.limit,
-      total: meta.total,
-      totalPages: meta.totalPage,
-    },
-    data,
+    meta,
+    result,
   };
 };
 
-const markNotificationAsSeen = async (notificationId: string) => {
-  const updated = await Notification.findByIdAndUpdate(
+// markANotificationAsReadIntoDB
+const markANotificationAsReadIntoDB = async (notificationId: string) => {
+  const result = await Notification.findByIdAndUpdate(
     notificationId,
-    { isSeen: true },
-    { new: true }
+    { isRead: true },
+    { new: true },
   );
-  return updated;
+
+  const receiverSocketId = getReceiverSocketId(result!?.receiver.toString());
+  const ioInstance = getIO();
+
+  if (receiverSocketId && ioInstance) {
+    ioInstance.to(receiverSocketId).emit('newNotification', { unReadMinus: 1 });
+  }
+
+  return result;
 };
 
+// markNotificationsAsReadIntoDB
+const markNotificationsAsReadIntoDB = async (userId: string) => {
+  const result = await Notification.updateMany(
+    { receiver: userId, isRead: false },
+    { $set: { isRead: true } },
+  );
 
-const getAllUnseenNotificationCount = async (userId: string) => {
+  const receiverSocketId = getReceiverSocketId(userId);
+
+  const ioInstance = getIO();
+
+  if (receiverSocketId && ioInstance) {
+    ioInstance.to(receiverSocketId).emit('newNotification', { unReadCount: 0 });
+  }
+
+  return result;
+};
+
+// getAllUnseenNotificationCountFromDB
+const getAllUnseenNotificationCountFromDB = async (userId: string) => {
   const result = await Notification.aggregate([
     {
       $match: {
         receiver: new Types.ObjectId(userId),
-        isSeen: false,
+        isRead: false,
       },
     },
     {
-      $count: 'unseenCount',
+      $count: 'unReadCount',
     },
   ]);
 
-  return result[0]?.unseenCount || 0;
+  return result[0]?.unReadCount || 0;
 };
 
-
 export default {
-  getAllNotifications,
-  markNotificationAsSeen,
-  getAllUnseenNotificationCount
+  getAllNotificationsFromDB,
+  markANotificationAsReadIntoDB,
+  markNotificationsAsReadIntoDB,
+  getAllUnseenNotificationCountFromDB,
 };

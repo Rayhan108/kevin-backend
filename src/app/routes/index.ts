@@ -13,8 +13,7 @@ import { PlatformRoutes } from '../../modules/ManagePlatform/platform.routes';
 import { CategoryRoutes } from '../../modules/Category/category.routes';
 import { notificationRoutes } from '../../modules/Notification/notification.routes';
 import { conversationRoutes } from '../../modules/Conversation/conversation.routes';
-import { messageRoutes } from '../../modules/message/message.routes';
-
+import { messageRoutes } from '../../modules/message/message.route';
 
 const router = Router();
 
@@ -28,58 +27,57 @@ const moduleRoutes = [
     route: UserRoutes,
   },
   {
-    path:'/quotes',
+    path: '/quotes',
     route: quoteRoutes,
   },
   {
-    path:'/review',
+    path: '/review',
     route: reviewRoutes,
   },
   {
-    path:'/service', 
+    path: '/service',
     route: servicesRoutes,
   },
   {
-    path:'/book',
+    path: '/book',
     route: BookServicesRoutes,
   },
   {
-    path:'/article',
+    path: '/article',
     route: ArticleRoutes,
   },
   {
-    path:'/refer',
-    route:referRoutes,
+    path: '/refer',
+    route: referRoutes,
   },
   {
-    path:'/vipMember',
-    route:vipMemberRoutes,
+    path: '/vipMember',
+    route: vipMemberRoutes,
   },
   {
-    path:'/flag',
-    route:FlagRoutes,
+    path: '/flag',
+    route: FlagRoutes,
   },
   {
-    path:'/platform',
-    route:PlatformRoutes,
+    path: '/platform',
+    route: PlatformRoutes,
   },
   {
-    path:'/category',
-    route:CategoryRoutes,
+    path: '/category',
+    route: CategoryRoutes,
   },
   {
-    path:'/notification',
-    route:notificationRoutes,
+    path: '/notification',
+    route: notificationRoutes,
   },
   {
-    path:'/conversation',
-    route:conversationRoutes,
+    path: '/conversation',
+    route: conversationRoutes,
   },
   {
-    path:'/message',
-    route:messageRoutes,
+    path: '/message',
+    route: messageRoutes,
   },
-
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));
