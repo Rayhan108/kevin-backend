@@ -31,6 +31,7 @@ export interface TUser{
   lastName: string;
   bio?: string;
   image: string;
+  getReward:boolean;
   email: string;
   phone: string;
 verification?: {
@@ -51,6 +52,7 @@ verification?: {
     image?:string,
     }
   };
+
   password: string;
     passwordChangedAt?: Date;
   role: 'user' | 'contractor'|'vipContractor'|'vipMember'|'admin';

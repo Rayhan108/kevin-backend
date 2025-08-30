@@ -1,17 +1,12 @@
 import { Schema, model } from "mongoose";
-import { IReffer } from "./refferal.interface";
-const RefferSchema = new Schema<IReffer>(
+import { IRefferal } from "./refferal.interface";
+
+const RefferSchema = new Schema<IRefferal>(
   {
-    email: {
-      type: String,
+userID: {
+      type: Schema.Types.ObjectId, 
       required: true,
-      trim: true,
-      lowercase: true,
-    },
-    link: {
-      type: String,
-      required: true,
-      trim: true,
+      ref: "User", 
     },
   },
   {
@@ -19,4 +14,4 @@ const RefferSchema = new Schema<IReffer>(
   }
 );
 
-export const RefferModel = model<IReffer>("Reffer", RefferSchema);
+export const RefferModel = model<IRefferal>("Reffer", RefferSchema);

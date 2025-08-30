@@ -36,6 +36,10 @@ const userSchema = new Schema<TUser, User, IUserMethods>(
         ref: 'User',
       },
     ],
+    getReward: {
+     type:Boolean,
+     default:false
+    },
     status: {
       type: String,
       enum: UserStatus,

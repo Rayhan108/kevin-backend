@@ -2,8 +2,10 @@
 import httpStatus from 'http-status';
 import AppError from "../../errors/AppError";
 import { UserModel } from "../User/user.model";
-import { IReffer } from "./refferal.interface";
+import { IReffer, TRefferReward } from "./refferal.interface";
 import mongoose from 'mongoose';
+import { RefferModel } from './refferal.model';
+import { sendMail } from '../../app/utils/sendMail';
 
 
 
@@ -34,7 +36,7 @@ const addReferIntoDB = async (payload: IReffer) => {
     throw new AppError(httpStatus.NOT_FOUND, 'New user not found');
   }
 
-  // ❌ Prevent self-referral
+  //  Prevent self-referral
   if (referrer._id.toString() === newUser._id.toString()) {
     throw new AppError(httpStatus.BAD_REQUEST, 'You cannot refer yourself.');
   }
@@ -66,6 +68,54 @@ const addReferIntoDB = async (payload: IReffer) => {
 };
 
 
+const getRewardForRefer =async(payload:TRefferReward)=>{
+  const { code, userId } = payload;
+
+  // 1. Find the referrer by the given referral code
+  const referrer = await UserModel.findOne({ code });
+
+  if (!referrer) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Invalid referral code');
+  }
+
+  // 2. Find the new user (the one who is being referred) by their userID
+  const newUser = await UserModel.findById(userId);
+
+  if (!newUser) {
+    throw new AppError(httpStatus.NOT_FOUND, 'New user not found');
+  }
+
+  // Prevent self-referral
+  if (referrer._id.toString() === newUser._id.toString()) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'You cannot refer yourself.');
+  }
+
+  // 3. Check if the new user has already been referred
+  if (newUser.referredBy) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'This user has already been referred');
+  }
+
+ 
+
+
+  // 6. Store the referral in the RefferModel
+  const referral = await RefferModel.create({
+    userID: newUser._id,
+ 
+  });
+  return {referral}
+
+}
+const sendReferLink =async(payload:IReffer)=>{
+  const { code, email} = payload;
+
+  await sendMail(
+    email,
+    `Your Refer code is: ${code}.`,
+    `create account : ${process.env.FRONTEND_URL}`
+  );
+}
+   
 export const ReferServices = {
-addReferIntoDB,
+addReferIntoDB,getRewardForRefer,sendReferLink
 };

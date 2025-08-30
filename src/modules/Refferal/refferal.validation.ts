@@ -7,9 +7,5 @@ body:z.object({
     .email("Invalid email address")
     .nonempty("Email is required"),
 
-  link: z
-    .string()
-    .url("Invalid referral link format")
-    .nonempty("Referral link is required")
 })
 });
