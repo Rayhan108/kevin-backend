@@ -40,12 +40,12 @@ const getReferralHistory = async (meId: string) => {
   const me = await UserModel.findById(meId).populate('referrals', 'firstName lastName email');
   if (!me) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
 
-  const claims = await ReferralClaimModel.find({ rewardFor: meId });
+  const claims = await ReferralClaimModel.find({ rewardFor: meId }).populate('relatedUser', 'firstName lastName email').lean();
 
   const referrerItems = (me.referrals ?? []).map((u: any) => {
     const claimed = claims.find(c => String(c.relatedUser) === String(u._id) && c.type === 'referrer');
     return {
-      relatedUserId: u._id,
+      relatedUser: u._id,
       name: `${u.firstName} ${u.lastName}`,
       type: 'referrer',
       amount: '$10',
@@ -59,7 +59,7 @@ const getReferralHistory = async (meId: string) => {
       c => String(c.relatedUser) === String(me.referredBy) && c.type === 'referred'
     );
     referredItem = {
-      relatedUserId: me.referredBy,
+      relatedUser: me.referredBy,
       type: 'referred',
       amount: '$10',
       status: claimed ? 'claimed' : 'claim',

@@ -1,13 +1,7 @@
-import { Schema, model, Document, Types } from 'mongoose';
+import { Schema, model} from 'mongoose';
+import { IReferralClaim } from './referclaim.interface';
 
-export interface IReferralClaim extends Document {
-  rewardFor: Types.ObjectId;     
-  relatedUser: Types.ObjectId;   
-  type: 'referrer' | 'referred';
-  amountCents: number;
-  status: 'claimed';
-  claimedAt: Date;
-}
+
 
 const ReferralClaimSchema = new Schema<IReferralClaim>(
   {
