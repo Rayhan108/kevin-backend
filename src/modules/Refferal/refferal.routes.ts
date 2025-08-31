@@ -20,11 +20,7 @@ router.post('/referal',
 
 );
 //get reward
-router.post('/reward',
 
- ReferControllers.getReward,
-
-);
 
 router.post('/send-referal',
 

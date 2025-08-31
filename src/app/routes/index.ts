@@ -14,6 +14,8 @@ import { CategoryRoutes } from '../../modules/Category/category.routes';
 import { notificationRoutes } from '../../modules/Notification/notification.routes';
 import { conversationRoutes } from '../../modules/Conversation/conversation.routes';
 import { messageRoutes } from '../../modules/message/message.route';
+import { ReferClaimRoutes } from '../../modules/ReferClaim/referclaim.route';
+
 
 const router = Router();
 
@@ -49,6 +51,10 @@ const moduleRoutes = [
   {
     path: '/refer',
     route: referRoutes,
+  },
+  {
+    path: '/refer-claim',
+    route: ReferClaimRoutes,
   },
   {
     path: '/vipMember',

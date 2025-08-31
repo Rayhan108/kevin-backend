@@ -8,17 +8,7 @@ import { ReferServices } from './refferal.services';
 import catchAsync from '../../app/utils/catchAsync';
 
 
-const getReward = catchAsync(async(req:Request,res:Response)=>{
-const payload = req.body
-  const result = await ReferServices.getRewardForRefer(payload);
-  sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'You have successfully get this reward',
-      data: result,
-    });
 
-})
 
 const sendReferCode = catchAsync(async(req:Request,res:Response)=>{
 const payload = req.body
@@ -48,7 +38,7 @@ const data = {
 
     sendResponse(res, {
       success: true,
-      message: 'Reffer Create Successfull',
+      message: 'You have successfully get this reward',
       statusCode: httpStatus.CREATED,
       data: result,
     });
@@ -58,5 +48,5 @@ const data = {
 };
 
 export const ReferControllers = {
-createRefer,getReward,sendReferCode
+createRefer,sendReferCode
 };

@@ -1,4 +1,4 @@
-import mongoose, { model, Schema } from 'mongoose';
+import { model, Schema } from 'mongoose';
 
 import bcrypt from 'bcrypt';
 import config from '../../app/config';
@@ -18,24 +18,15 @@ const userSchema = new Schema<TUser, User, IUserMethods>(
     bio: { type: String },
     email: { type: String, required: true, unique: true },
     phone: { type: String, required: true },
-    refercode: { type: String },
+  refercode: { type: String, unique: true, sparse: true },
     password: { type: String, required: true, select: false },
     role: {
       type: String,
       enum: ['user', 'contractor', 'vipContractor', 'vipMember', 'admin'],
       default: 'user',
     },
-    referredBy: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-      default: null,
-    },
-    referrals: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-      },
-    ],
+  referredBy: { type: Schema.Types.ObjectId, ref: 'User', default: null, index: true },
+    referrals: [{ type: Schema.Types.ObjectId, ref: 'User' }],
     getReward: {
      type:Boolean,
      default:false
