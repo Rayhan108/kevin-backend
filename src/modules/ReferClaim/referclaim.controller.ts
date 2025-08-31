@@ -11,7 +11,7 @@ const claimReferral = catchAsync(async (req: Request, res: Response) => {
     // console.log("req-------->",req?.user?.userId);
     // console.log("me id-------->",meId);
   const { relatedUserId, type } = req.body; // type: 'referrer' | 'referred'
-
+  // console.log("relatedUserId, type-------->",relatedUserId, type);
   const claim = await ReferClaimServices.claimReferralReward(meId, relatedUserId, type);
 
   sendResponse(res, {

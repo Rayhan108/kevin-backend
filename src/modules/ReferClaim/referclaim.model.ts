@@ -22,6 +22,6 @@ const ReferralClaimSchema = new Schema<IReferralClaim>(
 );
 
 
-ReferralClaimSchema.index({ rewardFor: 1, relatedUser: 1, type: 1 }, { unique: true });
+// ReferralClaimSchema.index({ rewardFor: 1, relatedUser: 1, type: 1 }, { unique: true });
 
 export const ReferralClaimModel = model<IReferralClaim>('ReferralClaim', ReferralClaimSchema);
