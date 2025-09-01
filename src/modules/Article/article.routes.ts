@@ -38,6 +38,12 @@ router.post(
 router.get('/allArticle', ArticleControllers.getAllArticle);
 
 router.get('/single-article/:id', ArticleControllers.getSingleArticle);
+router.get('/single-user-article',auth(
+    USER_ROLE.vipContractor,
+    USER_ROLE.contractor,
+    USER_ROLE.admin,
+    USER_ROLE.vipMember,
+  ), ArticleControllers.getSingleUserArticle);
 
 router.delete('/delete-article/:id', ArticleControllers.deleteArticle);
 
