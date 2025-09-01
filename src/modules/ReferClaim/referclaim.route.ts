@@ -23,4 +23,14 @@ router.get('/history',auth(
     USER_ROLE.admin,
   ), ReferClaimControllers.getHistory);
 
+
+
+router.get('/all-claimed',auth(
+    USER_ROLE.user,
+    USER_ROLE.vipMember,
+    USER_ROLE.contractor,
+    USER_ROLE.vipContractor,
+    USER_ROLE.admin,
+  ), ReferClaimControllers.getAllRefferClaimed)
+
 export const ReferClaimRoutes = router;

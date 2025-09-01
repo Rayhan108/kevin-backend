@@ -78,6 +78,8 @@ const sendReferLink =async(payload:IReffer)=>{
   );
 }
    
+
+
 export const ReferServices = {
 addReferIntoDB,sendReferLink
 };

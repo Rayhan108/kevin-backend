@@ -36,7 +36,20 @@ const getHistory = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllRefferClaimed = catchAsync(async(req:Request,res:Response)=>{
+const userId =req?.user?.userId; 
+  const result = await ReferClaimServices.getAllReferClaimedFromDB(userId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Claimed Refer retrived succesfully!',
+      data: result,
+    });
+
+})
+
 export const ReferClaimControllers = {
   claimReferral,
   getHistory,
+  getAllRefferClaimed
 };
