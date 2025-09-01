@@ -1,6 +1,6 @@
 // import AppError from '../../errors/AppError';
 
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import QueryBuilder from "../../app/builder/QueryBuilder";
 import AppError from "../../errors/AppError";
 import ServiceModel from "../Services/services.model";
@@ -9,19 +9,51 @@ import {TReviewPayload } from "./review.interface";
 
 import httpStatus from 'http-status';
 
+const getAllReviewFromDB = async (query: Record<string, unknown>) => {
+  // Type assertion for contractorId (ensure it's a string)
+  const contractorId = query.contractorId as string;
 
-const getAllReviewFromDB = async(query: Record<string, unknown>)=>{
-  const queryBuilder = new QueryBuilder(ServiceModel.find(),query)
-   queryBuilder
-    .search(['email'])
+  // Validate contractorId before proceeding
+  if (!mongoose.Types.ObjectId.isValid(contractorId)) {
+    throw new Error('Invalid contractorId');
+  }
+
+  // Convert contractorId to a mongoose ObjectId
+  const contractorObjectId = new mongoose.Types.ObjectId(contractorId);
+
+  // Create the query using the contractorId
+  const queryBuilder = new QueryBuilder(ServiceModel.find({ "contractorId": contractorObjectId }), query);
+
+  // Apply filters, sorting, and pagination for services
+  queryBuilder
     .filter()
     .sort()
     .paginate();
-    const result = await queryBuilder.modelQuery.populate('contractorId');
-    const meta = await queryBuilder.countTotal();
 
-  return { meta, result };
-}
+  // Execute the query and populate the contractorId
+  const result = await queryBuilder.modelQuery.populate('contractorId');
+  // console.log("result------>", result);
+
+
+  const reviews = result.flatMap(service => service.review || []);
+
+  const totalReviews = reviews.length;
+
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+
+  
+  const paginatedReviews = reviews.slice((page - 1) * limit, page * limit);
+
+  const reviewMeta = {
+    page,
+    limit,
+    total: totalReviews,
+    totalPage: Math.ceil(totalReviews / limit), 
+  };
+
+  return { meta: reviewMeta, reviews: paginatedReviews };
+};
 
 export const addReviewIntoDB = async (payload: TReviewPayload) => {
   const { user, serviceId } = payload;
@@ -36,7 +68,7 @@ export const addReviewIntoDB = async (payload: TReviewPayload) => {
   const svcId = new Types.ObjectId(serviceId);
   const userId = new Types.ObjectId(user);
 
-  // 1) read once & normalize shape of `review`
+
   const doc = await ServiceModel.findById(svcId).select("review").lean();
   if (!doc) throw new AppError(httpStatus.NOT_FOUND, "Service not found");
 
@@ -46,7 +78,6 @@ export const addReviewIntoDB = async (payload: TReviewPayload) => {
     await ServiceModel.updateOne({ _id: svcId }, { $set: { review: normalized } });
   }
 
-  // prepare review object (server-side date default)
   const reviewDoc = {
     user: userId,
   serviceId:svcId,
@@ -73,7 +104,7 @@ export const addReviewIntoDB = async (payload: TReviewPayload) => {
 
   if (updated) return updated;
 
-  // 3) no existing review by this user -> PUSH new
+ 
   const pushed = await ServiceModel.findByIdAndUpdate(
     svcId,
     { $push: { review: reviewDoc } },
