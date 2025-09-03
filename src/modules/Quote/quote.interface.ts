@@ -1,6 +1,7 @@
-import { Model } from "mongoose";
+import { Model, Types } from "mongoose";
 
 export type TREquestQuote ={
+    contractorId: Types.ObjectId;
   projectLocation:string;
   projectDescription: string;
   services: string[];

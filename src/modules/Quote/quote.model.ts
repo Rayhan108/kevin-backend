@@ -10,6 +10,7 @@ const requestQuoteSchema = new Schema<TREquestQuote, IRequestQuoteModel>(
     date: { type: Date, required: true },
     time: { type: Date, required: true },
     priceRange: { type: String, default: undefined },
+        contractorId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
   },
   {
     timestamps: true, // includes createdAt and updatedAt

@@ -5,7 +5,7 @@ import sendResponse from '../../app/utils/sendResponse';
 import httpStatus from 'http-status';
 import { ReferClaimServices } from './referclaim.services';
 
-// POST /api/referclaim/claim
+// POST referclaim
 const claimReferral = catchAsync(async (req: Request, res: Response) => {
     const meId =req?.user?.userId; 
     // console.log("req-------->",req?.user?.userId);
@@ -22,7 +22,7 @@ const claimReferral = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-// GET /api/referclaim/history
+// GET referclaim  history
 const getHistory = catchAsync(async (req: Request, res: Response) => {
     const meId =req?.user?.userId; 
 

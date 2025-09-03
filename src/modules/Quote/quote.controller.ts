@@ -4,6 +4,7 @@ import sendResponse from '../../app/utils/sendResponse';
 
 import httpStatus from 'http-status';
 import { QuoteServices } from './quote.services';
+import catchAsync from '../../app/utils/catchAsync';
 
 // const getAllUser = catchAsync(async(req:Request,res:Response)=>{
 
@@ -22,7 +23,7 @@ const createQuotes = async (
   res: Response,
   next: NextFunction,
 ) => {
-//   console.log("create contractor-->",req.body);
+  //   console.log("create contractor-->",req.body);
   try {
     const result = await QuoteServices.addRequestQuoteIntoDB(req.body);
 
@@ -37,6 +38,21 @@ const createQuotes = async (
   }
 };
 
+// dashboard stats
+const getDashStats = catchAsync(async (req: Request, res: Response) => {
+  const meId = req?.user?.userId;
+
+  const result = await QuoteServices.dashboardStatsFromDB(meId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Dashboard stats retrive successfully',
+    data: result,
+  });
+});
+
 export const QuoteControllers = {
-createQuotes
+  createQuotes,
+  getDashStats,
 };

@@ -8,15 +8,22 @@ import { USER_ROLE } from '../Auth/auth.constant';
 import { requestQuoteValudation } from './quote.validation';
 import { QuoteControllers } from './quote.controller';
 
-
 const router = express.Router();
 
-router.post('/addQuotes',
+router.post(
+  '/addQuotes',
 
   auth(USER_ROLE.user),
   validateRequest(requestQuoteValudation.requestQuoteZodSchema),
   QuoteControllers.createQuotes,
+);
+//dasshboard stats route
+router.get(
+  '/dashboardStats',
 
+  auth(USER_ROLE.contractor, USER_ROLE.vipContractor),
+
+  QuoteControllers.getDashStats,
 );
 
 // router.get('/allUser',UserControllers.getAllUser)
