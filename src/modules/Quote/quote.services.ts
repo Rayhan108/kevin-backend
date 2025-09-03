@@ -22,7 +22,7 @@ const addRequestQuoteIntoDB = async (payload:TREquestQuote) => {
 // dashboard stats
 
 const dashboardStatsFromDB = async(id:string)=>{
- if (!id || !Types.ObjectId.isValid(id)) {
+  if (!id || !Types.ObjectId.isValid(id)) {
     throw new Error("Invalid user id ");
   }
   const contractorId = new Types.ObjectId(id);
@@ -37,22 +37,35 @@ const dashboardStatsFromDB = async(id:string)=>{
     ServiceModel.countDocuments(svcFilter),
     RequestQuoteModel.countDocuments(quoteFilter),
     ArticleModel.countDocuments(articleFilter),
-    // Efficient review count:
-    // For each matching service, compute size(review || []) then sum up.
-    ServiceModel.aggregate<{ _id: null; totalReviews: number }>([
+    
+    // Aggregate total reviews and calculate average rating
+    ServiceModel.aggregate<{ totalReviews: number, totalRating: number }>([
       { $match: svcFilter },
-      { $project: { reviewsCount: { $size: { $ifNull: ["$review", []] } } } },
-      { $group: { _id: null, totalReviews: { $sum: "$reviewsCount" } } },
-      { $project: { _id: 0, totalReviews: 1 } },
+      { $unwind: "$review" }, // Unwind review array to process each review
+      { $group: {
+        _id: null,
+        totalReviews: { $sum: 1 }, // Count reviews
+        totalRating: { $sum: "$review.rating" } // Sum up all ratings
+      }},
+      { $project: {
+        _id: 0,
+        totalReviews: 1,
+        totalRating: 1
+      }}
     ]),
   ]);
 
   const totalReviews = reviewAgg[0]?.totalReviews ?? 0;
+  const totalRating = reviewAgg[0]?.totalRating ?? 0;
+
+  // Calculate average rating
+  const averageRating = totalReviews > 0 ? totalRating / totalReviews : 0;
 
   return {
     totalServices,
     totalQuotes,
     totalReviews,
+    averageRating,
     totalArticles,
   };
 

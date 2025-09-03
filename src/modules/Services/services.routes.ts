@@ -29,7 +29,7 @@ router.post('/addServices',
 );
 
 router.get('/allServices',servicesControllers.getAllServices)
-router.get('/allServices/:id',servicesControllers.getAllServicesForSpecUser)
+router.get('/spec-user-services',  auth(USER_ROLE.contractor, USER_ROLE.vipContractor),servicesControllers.getAllServicesForSpecUser)
 router.get('/:id',servicesControllers.getSingleServices)
 router.patch('/rejectService/:serviceId',servicesControllers.rejectSingleProject)
 router.patch('/acceptService/:serviceId',servicesControllers.acceptSingleProject)

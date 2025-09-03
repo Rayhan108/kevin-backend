@@ -26,7 +26,7 @@ const getAllServices = catchAsync(async (req: Request, res: Response) => {
 });
 const getAllServicesForSpecUser = catchAsync(
   async (req: Request, res: Response) => {
-    const contractorId = req.params.id;
+    const contractorId = req?.user?.userId;
     const result =
       await ServicesService.getAllServicesForSpecUserFromDB(contractorId);
     sendResponse(res, {
