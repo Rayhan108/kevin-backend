@@ -15,6 +15,7 @@ import { notificationRoutes } from '../../modules/Notification/notification.rout
 import { conversationRoutes } from '../../modules/Conversation/conversation.routes';
 import { messageRoutes } from '../../modules/message/message.route';
 import { ReferClaimRoutes } from '../../modules/ReferClaim/referclaim.route';
+import { documentVerificationRoutes } from '../../modules/DocumentVerification/verification.routes';
 
 
 const router = Router();
@@ -83,6 +84,10 @@ const moduleRoutes = [
   {
     path: '/message',
     route: messageRoutes,
+  },
+  {
+    path: '/verify',
+    route: documentVerificationRoutes,
   },
 ];
 
