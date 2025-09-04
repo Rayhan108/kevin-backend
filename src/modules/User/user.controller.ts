@@ -54,24 +54,21 @@ const changeProPic = catchAsync(
 );
 const updateProfile = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
-    const id = req.params.id;
+       const id = req.params.id;
 
-    //  Get file path or filename from multer
-    // const imageUrl = req?.file?.path || req?.file?.filename;
+    // Prepare payload for the update
+    const payload: TEditProfile = { ...req.body };
 
-    const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`; //for local machine
-    // console.log("image path--->",path);
+    // Only add the image to the payload if a new image was uploaded
+    if (req.file) {
+      const path = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`; // for local machine
+      payload.image = path; // Add the new image URL to the payload
+    }
 
-    //  Prepare typed payload
-    const payload: TEditProfile = {
-      ...req.body,
-      image: path,
-    };
-
-    //  Update user's image field
+    // Update user's profile in the database
     const result = await UserServices.updateProfileFromDB(id, payload);
 
-    //  Send response
+    // Send response
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,

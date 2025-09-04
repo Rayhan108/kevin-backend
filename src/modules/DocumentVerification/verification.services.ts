@@ -12,7 +12,11 @@ const user = await UserModel.findById(payload?.contractor)
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND,'User  not found');
   }
+  const existingVerification = await DocumentVerification.findOne({ contractor: payload?.contractor });
 
+  if (existingVerification) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Document verification already exists for this contractor');
+  }
 // console.log("Pyload--->",payload);
   const result = (await DocumentVerification.create(payload)).populate('contractor')
   return result;

@@ -10,7 +10,7 @@ const createVerification = async (
   res: Response,
   next: NextFunction,
 ) => {
-//   console.log("create revieew-->",req.body);
+  console.log("create revieew-->",req.body);
   try {
       const contractor = req?.user?.userId; 
       const documentType =    req?.body?.data?.documentType
