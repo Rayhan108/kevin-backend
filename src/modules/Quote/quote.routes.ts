@@ -26,6 +26,6 @@ router.get(
   QuoteControllers.getDashStats,
 );
 
-// router.get('/allUser',UserControllers.getAllUser)
+router.get('/myQuotes',auth(USER_ROLE.contractor,USER_ROLE.vipContractor),QuoteControllers.getAllQuoteForSpecContctr)
 
 export const quoteRoutes = router;

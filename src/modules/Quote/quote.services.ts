@@ -7,23 +7,29 @@ import ServiceModel from '../Services/services.model';
 import { TREquestQuote } from './quote.interface';
 import { RequestQuoteModel } from './quote.model';
 
-// const getAllUserFromDB = async()=>{
-//     const result = await UserModel.find();
-//     return result;
-// }
+const getAllQuoteForSpecContctrFromDB = async (id: string) => {
+  if (!id || !Types.ObjectId.isValid(id)) {
+    throw new Error('Invalid user id ');
+  }
+  const contractorId = new Types.ObjectId(id);
 
-const addRequestQuoteIntoDB = async (payload:TREquestQuote) => {
+  const result = await RequestQuoteModel.find({ contractorId }).populate('contractorId').populate('user');
+  // console.log("res------>",result);
 
-// console.log("Pyload--->",payload);
-  const result = await RequestQuoteModel.create(payload)
+  return result;
+};
+
+const addRequestQuoteIntoDB = async (payload: TREquestQuote) => {
+  console.log("Pyload--->",payload);
+  const result = await RequestQuoteModel.create(payload);
   return result;
 };
 
 // dashboard stats
 
-const dashboardStatsFromDB = async(id:string)=>{
+const dashboardStatsFromDB = async (id: string) => {
   if (!id || !Types.ObjectId.isValid(id)) {
-    throw new Error("Invalid user id ");
+    throw new Error('Invalid user id ');
   }
   const contractorId = new Types.ObjectId(id);
 
@@ -33,27 +39,32 @@ const dashboardStatsFromDB = async(id:string)=>{
   const articleFilter = { user: contractorId };
 
   // Parallelize all counts
-  const [totalServices, totalQuotes, totalArticles, reviewAgg] = await Promise.all([
-    ServiceModel.countDocuments(svcFilter),
-    RequestQuoteModel.countDocuments(quoteFilter),
-    ArticleModel.countDocuments(articleFilter),
-    
-    // Aggregate total reviews and calculate average rating
-    ServiceModel.aggregate<{ totalReviews: number, totalRating: number }>([
-      { $match: svcFilter },
-      { $unwind: "$review" }, // Unwind review array to process each review
-      { $group: {
-        _id: null,
-        totalReviews: { $sum: 1 }, // Count reviews
-        totalRating: { $sum: "$review.rating" } // Sum up all ratings
-      }},
-      { $project: {
-        _id: 0,
-        totalReviews: 1,
-        totalRating: 1
-      }}
-    ]),
-  ]);
+  const [totalServices, totalQuotes, totalArticles, reviewAgg] =
+    await Promise.all([
+      ServiceModel.countDocuments(svcFilter),
+      RequestQuoteModel.countDocuments(quoteFilter),
+      ArticleModel.countDocuments(articleFilter),
+
+      // Aggregate total reviews and calculate average rating
+      ServiceModel.aggregate<{ totalReviews: number; totalRating: number }>([
+        { $match: svcFilter },
+        { $unwind: '$review' }, // Unwind review array to process each review
+        {
+          $group: {
+            _id: null,
+            totalReviews: { $sum: 1 }, // Count reviews
+            totalRating: { $sum: '$review.rating' }, // Sum up all ratings
+          },
+        },
+        {
+          $project: {
+            _id: 0,
+            totalReviews: 1,
+            totalRating: 1,
+          },
+        },
+      ]),
+    ]);
 
   const totalReviews = reviewAgg[0]?.totalReviews ?? 0;
   const totalRating = reviewAgg[0]?.totalRating ?? 0;
@@ -68,18 +79,10 @@ const dashboardStatsFromDB = async(id:string)=>{
     averageRating,
     totalArticles,
   };
-
-}
-
-
-
-
-
-
-
-
-
+};
 
 export const QuoteServices = {
-addRequestQuoteIntoDB,dashboardStatsFromDB
+  addRequestQuoteIntoDB,
+  dashboardStatsFromDB,
+  getAllQuoteForSpecContctrFromDB,
 };

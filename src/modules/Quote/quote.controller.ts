@@ -6,17 +6,17 @@ import httpStatus from 'http-status';
 import { QuoteServices } from './quote.services';
 import catchAsync from '../../app/utils/catchAsync';
 
-// const getAllUser = catchAsync(async(req:Request,res:Response)=>{
+const getAllQuoteForSpecContctr = catchAsync(async(req:Request,res:Response)=>{
+  const meId = req?.user?.userId;
+  const result = await QuoteServices.getAllQuoteForSpecContctrFromDB(meId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Quotes retrived succesfully!',
+      data: result,
+    });
 
-//   const result = await UserServices.getAllUserFromDB();
-//   sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'User retrived succesfully!',
-//       data: result,
-//     });
-
-// })
+})
 
 const createQuotes = async (
   req: Request,
@@ -24,8 +24,13 @@ const createQuotes = async (
   next: NextFunction,
 ) => {
   //   console.log("create contractor-->",req.body);
+    const userId = req?.user?.userId;
+    const data= req?.body
+    const payload={
+...data,user:userId
+    }
   try {
-    const result = await QuoteServices.addRequestQuoteIntoDB(req.body);
+    const result = await QuoteServices.addRequestQuoteIntoDB(payload);
 
     sendResponse(res, {
       success: true,
@@ -55,4 +60,5 @@ const getDashStats = catchAsync(async (req: Request, res: Response) => {
 export const QuoteControllers = {
   createQuotes,
   getDashStats,
+  getAllQuoteForSpecContctr,
 };
