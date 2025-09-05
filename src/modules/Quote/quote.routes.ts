@@ -27,5 +27,6 @@ router.get(
 );
 
 router.get('/myQuotes',auth(USER_ROLE.contractor,USER_ROLE.vipContractor),QuoteControllers.getAllQuoteForSpecContctr)
+router.patch('/update-status/:id',auth(USER_ROLE.contractor,USER_ROLE.vipContractor),QuoteControllers.updateQuoteStatus)
 
 export const quoteRoutes = router;

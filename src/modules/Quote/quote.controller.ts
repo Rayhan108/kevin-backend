@@ -43,6 +43,30 @@ const createQuotes = async (
   }
 };
 
+const updateQuoteStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  //   console.log("create contractor-->",req.body);
+    const quoteId = req?.params?.id;
+ 
+    const status = req?.body?.status
+
+  try {
+    const result = await QuoteServices.updateQuoteStatusIntoDB(status,quoteId);
+
+    sendResponse(res, {
+      success: true,
+      message: `Quotes Offer ${status}`,
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
 // dashboard stats
 const getDashStats = catchAsync(async (req: Request, res: Response) => {
   const meId = req?.user?.userId;
@@ -61,4 +85,5 @@ export const QuoteControllers = {
   createQuotes,
   getDashStats,
   getAllQuoteForSpecContctr,
+  updateQuoteStatus
 };

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // import AppError from '../../errors/AppError';
 
 // import httpStatus from 'http-status';
@@ -20,10 +21,47 @@ const getAllQuoteForSpecContctrFromDB = async (id: string) => {
 };
 
 const addRequestQuoteIntoDB = async (payload: TREquestQuote) => {
-  console.log("Pyload--->",payload);
+  // console.log("Pyload--->",payload);
   const result = await RequestQuoteModel.create(payload);
   return result;
 };
+
+
+
+
+const updateQuoteStatusIntoDB = async (status:string,quoteId:string) => {
+
+
+const result = await RequestQuoteModel.findById(quoteId).select('status');
+  if (!result) {
+    throw new Error("Quote not found");
+  }
+
+  result.status = status as "pending" | "accepted" | "rejected";
+
+  const updatedResult = await result.save();
+
+
+  return updatedResult;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // dashboard stats
 
@@ -81,8 +119,15 @@ const dashboardStatsFromDB = async (id: string) => {
   };
 };
 
+
+
+
+
+
+
 export const QuoteServices = {
   addRequestQuoteIntoDB,
   dashboardStatsFromDB,
   getAllQuoteForSpecContctrFromDB,
+  updateQuoteStatusIntoDB
 };
