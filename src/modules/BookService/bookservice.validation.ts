@@ -3,9 +3,10 @@ import z from "zod";
 
 export const IBookServicesSchema = z.object({
     body:z.object({
-  user: z.string().refine(value => mongoose.Types.ObjectId.isValid(value), {
+
+  serviceId: z.string().refine(value => mongoose.Types.ObjectId.isValid(value), {
     message: 'Invalid ObjectId',
-  }), // Ensure the user is a valid MongoDB ObjectId
+  }),
   serviceType: z.string().min(1, { message: 'Service type is required' }),
   location: z.string().min(1, { message: 'Location is required' }),
   zip: z.string().min(1, { message: 'Zip code is required' }),

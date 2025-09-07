@@ -5,6 +5,7 @@ import { IBookServices } from './bookservice.interface';
 const BookServicesSchema: Schema = new Schema(
   {
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    serviceId: { type: mongoose.Schema.Types.ObjectId, ref: 'Service', required: true },
     serviceType: { type: String, required: true },
     location: { type: String, required: true },
     zip: { type: String, required: true },

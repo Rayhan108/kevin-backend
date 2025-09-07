@@ -3,6 +3,7 @@ import mongoose, { Document } from 'mongoose';
 // Define the interface for the document
 export interface IBookServices extends Document {
   user: mongoose.Types.ObjectId;
+  serviceId: mongoose.Types.ObjectId;
   serviceType: string;
   location: string;
   zip: string;

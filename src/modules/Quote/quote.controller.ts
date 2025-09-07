@@ -17,6 +17,17 @@ const getAllQuoteForSpecContctr = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
+const getSingleQuote = catchAsync(async(req:Request,res:Response)=>{
+  const id = req?.params?.id;
+  const result = await QuoteServices.getSingleQuoteFromDB(id);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Quote retrived succesfully!',
+      data: result,
+    });
+
+})
 
 const createQuotes = async (
   req: Request,
@@ -85,5 +96,6 @@ export const QuoteControllers = {
   createQuotes,
   getDashStats,
   getAllQuoteForSpecContctr,
-  updateQuoteStatus
+  updateQuoteStatus,
+  getSingleQuote
 };

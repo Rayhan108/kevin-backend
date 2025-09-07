@@ -11,11 +11,36 @@ import QueryBuilder from "../../app/builder/QueryBuilder";
 
 
 const getSpecUserBookServiceFromDB = async (userId: string) => {
-  const services = await BookServiceModel.find({ user: userId }) // Find all services for this specific user
-    .populate('user'); // Populate the user details (optional if needed)
+  const services = await BookServiceModel.find({ user: userId }) 
+    .populate('user').populate('serviceId'); 
 
   return services;
 };
+const getAllSingleContrctrOrderFromDB = async (userId: string) => {
+
+  
+        // console.log("userId--->", userId);
+        
+ 
+        const services = await BookServiceModel.find()
+            .populate({
+                path: 'serviceId',  
+                match: { contractorId: userId }, 
+                select: 'contractorId title details'  
+            })
+            .populate('user')  
+            .exec();
+
+       
+        const filteredServices = services.filter(service => service.serviceId !== null);
+
+        return filteredServices;
+
+        
+};
+
+
+
 const getAllOrderedServiceFromDB = async (query: Record<string, unknown>) => {
   const queryBuilder = new QueryBuilder(BookServiceModel.find(),query)
 
@@ -32,19 +57,21 @@ const getAllOrderedServiceFromDB = async (query: Record<string, unknown>) => {
   
 };
 
-const addBookServicesIntoDB = async (payload:IBookServices) => {
+const addBookServicesIntoDB = async (payload:IBookServices,meId:string) => {
     // console.log("Services---------->",payload);
  
-const  userId = payload.user
+const  userId = meId
 
   // ✅ Step 1: Check if user exists
   const user = await UserModel.findById(userId);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND,'User  not found');
   }
-
+const newData={
+  ...payload,user:userId
+}
 // console.log("Pyload--->",payload);
-  const result = (await BookServiceModel.create(payload)).populate('user')
+  const result = (await (await BookServiceModel.create(newData)).populate('user')).populate('serviceId')
   return result;
 };
 
@@ -171,4 +198,4 @@ const rejectProject = async (serviceId: string) => {
 
 
 export const BookServices = {
-addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,rejectProject,updateProjectStatusAsBooked,updateProjectStatusDone,updateProjectStatusStarted,updateProjectStatusOnTheWay,updateAssignedTaskInDB}
+addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,rejectProject,updateProjectStatusAsBooked,updateProjectStatusDone,updateProjectStatusStarted,updateProjectStatusOnTheWay,updateAssignedTaskInDB,getAllSingleContrctrOrderFromDB}

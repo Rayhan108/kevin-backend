@@ -14,7 +14,21 @@ const getAllQuoteForSpecContctrFromDB = async (id: string) => {
   }
   const contractorId = new Types.ObjectId(id);
 
-  const result = await RequestQuoteModel.find({ contractorId }).populate('contractorId').populate('user');
+  const result = await RequestQuoteModel.find({ contractorId })
+    .populate('contractorId')
+    .populate('user');
+  // console.log("res------>",result);
+
+  return result;
+};
+const getSingleQuoteFromDB = async (id: string) => {
+  if (!id || !Types.ObjectId.isValid(id)) {
+    throw new Error('Invalid user id ');
+  }
+
+  const result = await RequestQuoteModel.findById(id)
+    .populate('contractorId')
+    .populate('user');
   // console.log("res------>",result);
 
   return result;
@@ -26,42 +40,18 @@ const addRequestQuoteIntoDB = async (payload: TREquestQuote) => {
   return result;
 };
 
-
-
-
-const updateQuoteStatusIntoDB = async (status:string,quoteId:string) => {
-
-
-const result = await RequestQuoteModel.findById(quoteId).select('status');
+const updateQuoteStatusIntoDB = async (status: string, quoteId: string) => {
+  const result = await RequestQuoteModel.findById(quoteId).select('status');
   if (!result) {
-    throw new Error("Quote not found");
+    throw new Error('Quote not found');
   }
 
-  result.status = status as "pending" | "accepted" | "rejected";
+  result.status = status as 'pending' | 'accepted' | 'rejected';
 
   const updatedResult = await result.save();
 
-
   return updatedResult;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+};
 
 // dashboard stats
 
@@ -119,15 +109,10 @@ const dashboardStatsFromDB = async (id: string) => {
   };
 };
 
-
-
-
-
-
-
 export const QuoteServices = {
   addRequestQuoteIntoDB,
   dashboardStatsFromDB,
   getAllQuoteForSpecContctrFromDB,
-  updateQuoteStatusIntoDB
+  updateQuoteStatusIntoDB,
+  getSingleQuoteFromDB,
 };

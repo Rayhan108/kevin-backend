@@ -35,6 +35,18 @@ const getAllBookedServices = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
+const getAllBookedServicesForSingleContractor = catchAsync(async(req:Request,res:Response)=>{
+const meId = req?.user?.userId
+
+  const result = await BookServices.getAllSingleContrctrOrderFromDB(meId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Order retrived succesfully!',
+      data: result,
+    });
+
+})
 
 const createBookService = async (
   req: Request,
@@ -42,8 +54,9 @@ const createBookService = async (
   next: NextFunction,
 ) => {
 //   console.log("create revieew-->",req.body);
+const meId = req?.user?.userId
   try {
-    const result = await BookServices.addBookServicesIntoDB(req.body)
+    const result = await BookServices.addBookServicesIntoDB(req.body,meId)
 
     sendResponse(res, {
       success: true,
@@ -147,5 +160,5 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 
 export const BookServicesControllers = {
-createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished,updateAssignTask
+createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished,updateAssignTask,getAllBookedServicesForSingleContractor
 };

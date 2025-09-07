@@ -36,6 +36,7 @@ router.patch('/updateTask',
      validateRequest(updateTaskZodSchema),
     BookServicesControllers.updateAssignTask)
     
+router.get('/myOrder',auth(USER_ROLE.contractor,USER_ROLE.vipContractor),BookServicesControllers.getAllBookedServicesForSingleContractor)
 router.patch('/cancelService/:serviceId',BookServicesControllers.rejectSingleProject)
 router.patch('/booked/:serviceId',BookServicesControllers.updateStatusAsBooked)
 router.patch('/onTheWay/:serviceId',BookServicesControllers.updateStatusAsOnTheWay)
