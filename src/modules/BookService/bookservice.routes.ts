@@ -38,6 +38,7 @@ router.patch('/updateTask',
     
 router.get('/myOrder',auth(USER_ROLE.contractor,USER_ROLE.vipContractor),BookServicesControllers.getAllBookedServicesForSingleContractor)
 router.patch('/cancelService/:serviceId',BookServicesControllers.rejectSingleProject)
+router.get('/booked/:id',BookServicesControllers.getSingleBookedOrder)
 router.patch('/booked/:serviceId',BookServicesControllers.updateStatusAsBooked)
 router.patch('/onTheWay/:serviceId',BookServicesControllers.updateStatusAsOnTheWay)
 router.patch('/started/:serviceId',BookServicesControllers.updateStatusAsStarted)

@@ -158,7 +158,18 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 })
 
+const getSingleBookedOrder = catchAsync(async(req:Request,res:Response)=>{
+  const {id}=req.params;
 
+  const result = await BookServices.getSingleBookedOrderFromDB(id);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Order Retrived Success',
+      data: result,
+    });
+
+})
 export const BookServicesControllers = {
-createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished,updateAssignTask,getAllBookedServicesForSingleContractor
+createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished,updateAssignTask,getAllBookedServicesForSingleContractor,getSingleBookedOrder
 };

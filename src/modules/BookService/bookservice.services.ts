@@ -16,6 +16,12 @@ const getSpecUserBookServiceFromDB = async (userId: string) => {
 
   return services;
 };
+const getSingleBookedOrderFromDB = async (id: string) => {
+  const services = await BookServiceModel.findById(id) 
+    .populate('user').populate('serviceId'); 
+
+  return services;
+};
 const getAllSingleContrctrOrderFromDB = async (userId: string) => {
 
   
@@ -26,7 +32,7 @@ const getAllSingleContrctrOrderFromDB = async (userId: string) => {
             .populate({
                 path: 'serviceId',  
                 match: { contractorId: userId }, 
-                select: 'contractorId title details'  
+             
             })
             .populate('user')  
             .exec();
@@ -198,4 +204,4 @@ const rejectProject = async (serviceId: string) => {
 
 
 export const BookServices = {
-addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,rejectProject,updateProjectStatusAsBooked,updateProjectStatusDone,updateProjectStatusStarted,updateProjectStatusOnTheWay,updateAssignedTaskInDB,getAllSingleContrctrOrderFromDB}
+addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,rejectProject,updateProjectStatusAsBooked,updateProjectStatusDone,updateProjectStatusStarted,updateProjectStatusOnTheWay,updateAssignedTaskInDB,getAllSingleContrctrOrderFromDB,getSingleBookedOrderFromDB}
