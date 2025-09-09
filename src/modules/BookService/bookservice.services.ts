@@ -113,7 +113,10 @@ const updateAssignedTaskInDB = async (payload: TUpdateTask, image: string[]) => 
 
   return service;  // Return the updated service
 };
-const updateProjectStatusAsBooked = async (serviceId: string) => {
+
+
+
+const updateProjectStatusAsBooked = async (serviceId: string,status:string) => {
   // Find the service by its _id
   const service = await BookServiceModel.findById(serviceId);
 
@@ -123,64 +126,17 @@ const updateProjectStatusAsBooked = async (serviceId: string) => {
   }
 
   // Update projectStatus to "accepted"
-  service.status = 'booked';
+service.status = status as "booked" | "onTheWay" | "started" | "done";
 
   // Save the updated service
   await service.save();
 
   return service;  // Return the updated service
 };
-const updateProjectStatusOnTheWay = async (serviceId: string) => {
-  // Find the service by its _id
-  const service = await BookServiceModel.findById(serviceId);
 
-  // If no service is found, throw an error
-  if (!service) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
-  }
 
-  // Update projectStatus to "accepted"
-  service.status = 'onTheWay';
 
-  // Save the updated service
-  await service.save();
 
-  return service;  // Return the updated service
-};
-const updateProjectStatusStarted = async (serviceId: string) => {
-  // Find the service by its _id
-  const service = await BookServiceModel.findById(serviceId);
-
-  // If no service is found, throw an error
-  if (!service) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
-  }
-
-  // Update projectStatus to "accepted"
-  service.status = 'started';
-
-  // Save the updated service
-  await service.save();
-
-  return service;  // Return the updated service
-};
-const updateProjectStatusDone = async (serviceId: string) => {
-  // Find the service by its _id
-  const service = await BookServiceModel.findById(serviceId);
-
-  // If no service is found, throw an error
-  if (!service) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
-  }
-
-  // Update projectStatus to "accepted"
-  service.status = 'done';
-
-  // Save the updated service
-  await service.save();
-
-  return service;  // Return the updated service
-};
 const rejectProject = async (serviceId: string) => {
   // Find the service by its _id
   const service = await BookServiceModel.findById(serviceId);
@@ -199,9 +155,25 @@ const rejectProject = async (serviceId: string) => {
   return service;  // Return the updated service
 };
 
+const acceptOrRejectProjectIntoDb = async (status:string,id:string) => {
+  // Find the service by its _id
+  const service = await BookServiceModel.findById(id);
 
+  // If no service is found, throw an error
+  if (!service) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Service not found');
+  }
+
+  // Update projectStatus to "accepted"
+service.projectStatus = status as 'pending'| 'rejected'|'accepted';
+
+  // Save the updated service
+  await service.save();
+
+  return service;  // Return the updated service
+};
 
 
 
 export const BookServices = {
-addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,rejectProject,updateProjectStatusAsBooked,updateProjectStatusDone,updateProjectStatusStarted,updateProjectStatusOnTheWay,updateAssignedTaskInDB,getAllSingleContrctrOrderFromDB,getSingleBookedOrderFromDB}
+addBookServicesIntoDB,getSpecUserBookServiceFromDB,getAllOrderedServiceFromDB,rejectProject,updateProjectStatusAsBooked,updateAssignedTaskInDB,getAllSingleContrctrOrderFromDB,getSingleBookedOrderFromDB,acceptOrRejectProjectIntoDb}

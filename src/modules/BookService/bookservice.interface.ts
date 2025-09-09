@@ -23,3 +23,5 @@ export type TUpdateTask={
   todoList: string[];
   image:string[]
 }
+export type ServiceStatus = "booked" | "onTheWay" | "started" | "done";
+export type projectStatus = 'pending'| 'rejected'|'accepted';
