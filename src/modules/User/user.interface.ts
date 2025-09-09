@@ -21,7 +21,7 @@ export type TBecomeContractorInput = {
   servicesYouProvide: string[];   
   subServices: string[]; 
 };
-
+//
 export interface TUser{
     _id:string;
     userId:string;
