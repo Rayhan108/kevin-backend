@@ -34,6 +34,9 @@ router.post('/changePassword',
     auth(
         USER_ROLE.contractor,
         USER_ROLE.user,
+        USER_ROLE.admin,
+        USER_ROLE.vipContractor,
+        USER_ROLE.vipMember,
       ),
     validateRequest(AuthValidation.changePasswordValidationSchema),
     AuthControllers.changePassword
@@ -47,6 +50,11 @@ router.post(
   '/forgotPass',
   validateRequest(AuthValidation.forgotPasswordSchema),
   AuthControllers.forgotPassword,
+);
+router.post(
+  '/resetPass',
+  validateRequest(AuthValidation.resetPasswordValidationSchema),
+  AuthControllers.resetPassword,
 );
 router.post(
   '/verifyOtp',

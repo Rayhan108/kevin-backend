@@ -59,6 +59,14 @@ export const verifyOtpSchema = z.object({
 });
 const changePasswordValidationSchema = z.object({
   body: z.object({
+
+    oldPassword: z.string().min(1, { message: 'Old password is required' }),
+    newPassword: z.string().min(1, { message: 'New password is required' }),
+  }),
+});
+const resetPasswordValidationSchema = z.object({
+  body: z.object({
+        email: z.string().email("Invalid email address"),
     oldPassword: z.string().min(1, { message: 'Old password is required' }),
     newPassword: z.string().min(1, { message: 'New password is required' }),
   }),
@@ -77,5 +85,7 @@ export const AuthValidation = {
   changePasswordValidationSchema,
   refreshTokenValidationSchema,
   forgotPasswordSchema,
-  verifyOtpSchema
+  verifyOtpSchema,
+  resetPasswordValidationSchema
+  
 };
