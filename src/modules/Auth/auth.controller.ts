@@ -62,9 +62,22 @@ const changePassword = catchAsync(async (req, res) => {
       data: result,
     });
   });
+const resetPassword = catchAsync(async (req, res) => {
+    const { ...passwordData } = req.body;
+  // console.log("request body",req.body);
+    const result = await AuthServices.resetPassword(passwordData);
+    
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Password is updated succesfully!',
+      data: result,
+    });
+  });
+
 const forgotPassword = catchAsync(async (req:Request, res:Response) => {
     const { email}= req.body;
-  console.log("request body",email);
+  // console.log("request body",email);
     const result = await AuthServices.forgotPass(email);
     
     sendResponse(res, {
@@ -100,5 +113,5 @@ const verifyYourOTP = catchAsync(async (req:Request, res:Response) => {
   });
 
 export const AuthControllers = {
-  registerUser,userLogin,changePassword,refreshToken,forgotPassword,verifyYourOTP
+  registerUser,userLogin,changePassword,refreshToken,forgotPassword,verifyYourOTP,resetPassword
 };

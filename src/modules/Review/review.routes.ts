@@ -19,6 +19,9 @@ router.post('/addReview',
 
 );
 
-router.get('/allReview',ReviewControllers.getAllReview)
+router.get('/allReview',auth(
+    USER_ROLE.contractor,
+    USER_ROLE.vipContractor,
+  ),ReviewControllers.getAllReview)
 
 export const reviewRoutes = router;

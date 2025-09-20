@@ -30,6 +30,17 @@ const getSingleArticle = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
+const getSingleUserArticle = catchAsync(async(req:Request,res:Response)=>{
+ const id = req?.user?.userId
+  const result = await ArticleServices.getSingleUserArticleFromDB(id);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Article retrived succesfully!',
+      data: result,
+    });
+
+})
 
 const createArticle = async (
   req: Request,
@@ -69,5 +80,5 @@ const deleteArticle = catchAsync(async (req: Request, res: Response) => {
 
 
 export const ArticleControllers = {
-createArticle,getAllArticle,deleteArticle,getSingleArticle
+createArticle,getAllArticle,deleteArticle,getSingleArticle,getSingleUserArticle
 };

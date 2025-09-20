@@ -5,19 +5,22 @@ import sendResponse from '../../app/utils/sendResponse';
 import httpStatus from 'http-status';
 
 import { ReferServices } from './refferal.services';
+import catchAsync from '../../app/utils/catchAsync';
 
 
-// const getAllReview = catchAsync(async(req:Request,res:Response)=>{
 
-//   const result = await ReviewServices.getAllReviewFromDB();
-//   sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'Review retrived succesfully!',
-//       data: result,
-//     });
 
-// })
+const sendReferCode = catchAsync(async(req:Request,res:Response)=>{
+const payload = req.body
+  const result = await ReferServices.sendReferLink(payload);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Successfully send Mail',
+      data: result,
+    });
+
+})
 
 const createRefer = async (
   req: Request,
@@ -35,7 +38,7 @@ const data = {
 
     sendResponse(res, {
       success: true,
-      message: 'Reffer Create Successfull',
+      message: 'You have successfully get this reward',
       statusCode: httpStatus.CREATED,
       data: result,
     });
@@ -44,6 +47,9 @@ const data = {
   }
 };
 
+
+
+
 export const ReferControllers = {
-createRefer
+createRefer,sendReferCode
 };

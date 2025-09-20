@@ -19,6 +19,14 @@ router.post('/referal',
  ReferControllers.createRefer,
 
 );
+//get reward
+
+
+router.post('/send-referal',
+
+ ReferControllers.sendReferCode,
+
+);
 
 // router.get('/allReview',ReviewControllers.getAllReview)
 

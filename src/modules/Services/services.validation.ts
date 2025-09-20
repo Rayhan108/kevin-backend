@@ -11,6 +11,7 @@ export const serviceValidationSchema = z.object({
   body: z.object({
     contractorId: objectId,
     title: z.string().min(1, { message: 'Title is required' }),
+    location: z.string().min(1, { message: 'Location is required' }),
     details: z.string().min(1, { message: 'Details are required' }),
     categoryName: z
       .array(z.string().trim().min(1, { message: 'Category is required' }))

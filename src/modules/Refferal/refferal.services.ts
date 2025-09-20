@@ -2,8 +2,10 @@
 import httpStatus from 'http-status';
 import AppError from "../../errors/AppError";
 import { UserModel } from "../User/user.model";
-import { IReffer } from "./refferal.interface";
+import { IReffer} from "./refferal.interface";
 import mongoose from 'mongoose';
+
+import { sendMail } from '../../app/utils/sendMail';
 
 
 
@@ -34,7 +36,7 @@ const addReferIntoDB = async (payload: IReffer) => {
     throw new AppError(httpStatus.NOT_FOUND, 'New user not found');
   }
 
-  // ❌ Prevent self-referral
+  //  Prevent self-referral
   if (referrer._id.toString() === newUser._id.toString()) {
     throw new AppError(httpStatus.BAD_REQUEST, 'You cannot refer yourself.');
   }
@@ -66,6 +68,18 @@ const addReferIntoDB = async (payload: IReffer) => {
 };
 
 
+const sendReferLink =async(payload:IReffer)=>{
+  const { code, email} = payload;
+
+  await sendMail(
+    email,
+    `Your Refer code is: ${code}.`,
+    `create account : ${process.env.FRONTEND_URL}`
+  );
+}
+   
+
+
 export const ReferServices = {
-addReferIntoDB,
+addReferIntoDB,sendReferLink
 };

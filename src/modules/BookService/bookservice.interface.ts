@@ -3,6 +3,7 @@ import mongoose, { Document } from 'mongoose';
 // Define the interface for the document
 export interface IBookServices extends Document {
   user: mongoose.Types.ObjectId;
+  serviceId: mongoose.Types.ObjectId;
   serviceType: string;
   location: string;
   zip: string;
@@ -22,3 +23,5 @@ export type TUpdateTask={
   todoList: string[];
   image:string[]
 }
+export type ServiceStatus = "booked" | "onTheWay" | "started" | "done";
+export type projectStatus = 'pending'| 'rejected'|'accepted';

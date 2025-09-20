@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 
 import { BookServices } from './bookservice.services';
 import catchAsync from '../../app/utils/catchAsync';
+import { projectStatus, ServiceStatus } from './bookservice.interface';
 
 
 
@@ -35,6 +36,18 @@ const getAllBookedServices = catchAsync(async(req:Request,res:Response)=>{
     });
 
 })
+const getAllBookedServicesForSingleContractor = catchAsync(async(req:Request,res:Response)=>{
+const meId = req?.user?.userId
+
+  const result = await BookServices.getAllSingleContrctrOrderFromDB(meId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Order retrived succesfully!',
+      data: result,
+    });
+
+})
 
 const createBookService = async (
   req: Request,
@@ -42,8 +55,9 @@ const createBookService = async (
   next: NextFunction,
 ) => {
 //   console.log("create revieew-->",req.body);
+const meId = req?.user?.userId
   try {
-    const result = await BookServices.addBookServicesIntoDB(req.body)
+    const result = await BookServices.addBookServicesIntoDB(req.body,meId)
 
     sendResponse(res, {
       success: true,
@@ -60,51 +74,26 @@ const createBookService = async (
 const updateStatusAsBooked = catchAsync(async(req:Request,res:Response)=>{
   const {serviceId}=req.params;
 
-  const result = await BookServices.updateProjectStatusAsBooked(serviceId);
+
+  const status = req.query?.status as string;
+
+  // Validate status
+  const validStatuses: ServiceStatus[] = ["booked", "onTheWay", "started", "done"];
+  if (!validStatuses.includes(status as ServiceStatus)) {
+    throw new Error("Invalid status provided");
+  }
+
+  const result = await BookServices.updateProjectStatusAsBooked(serviceId,status as ServiceStatus
+);
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Service is Booked succesfully!',
+      message: `Service is ${status}!`,
       data: result,
     });
 
 })
-const updateStatusAsOnTheWay = catchAsync(async(req:Request,res:Response)=>{
-  const {serviceId}=req.params;
 
-  const result = await BookServices.updateProjectStatusOnTheWay(serviceId);
-  sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Contractor is on the way',
-      data: result,
-    });
-
-})
-const updateStatusAsStarted = catchAsync(async(req:Request,res:Response)=>{
-  const {serviceId}=req.params;
-
-  const result = await BookServices.updateProjectStatusStarted(serviceId);
-  sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Contractor is started his work',
-      data: result,
-    });
-
-})
-const updateStatusAsFinished = catchAsync(async(req:Request,res:Response)=>{
-  const {serviceId}=req.params;
-
-  const result = await BookServices.updateProjectStatusDone(serviceId);
-  sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Contractor is finished his work',
-      data: result,
-    });
-
-})
 const updateAssignTask = catchAsync(async(req:Request,res:Response)=>{
   const payload=req.body;
 
@@ -145,7 +134,49 @@ const rejectSingleProject = catchAsync(async(req:Request,res:Response)=>{
 
 })
 
+const getSingleBookedOrder = catchAsync(async(req:Request,res:Response)=>{
+  const {id}=req.params;
+
+  const result = await BookServices.getSingleBookedOrderFromDB(id);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Order Retrived Success',
+      data: result,
+    });
+
+})
+
+const acceptOrRejectProject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  //   console.log("create contractor-->",req.body);
+    const id = req?.params?.id;
+ 
+      const status = req.query?.status as string;
+
+  // Validate status
+  const validStatuses: projectStatus[] = ["pending", "accepted", "rejected"];
+  if (!validStatuses.includes(status as projectStatus)) {
+    throw new Error("Invalid status provided");
+  }
+
+  try {
+    const result = await BookServices.acceptOrRejectProjectIntoDb(status as projectStatus,id);
+
+    sendResponse(res, {
+      success: true,
+      message: `Project Offer ${status}`,
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const BookServicesControllers = {
-createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateStatusAsOnTheWay,updateStatusAsStarted,updateStatusAsFinished,updateAssignTask
+createBookService,getSpecUserBookService,getAllBookedServices,rejectSingleProject,updateStatusAsBooked,updateAssignTask,getAllBookedServicesForSingleContractor,getSingleBookedOrder,acceptOrRejectProject
 };

@@ -5,7 +5,11 @@ import sendResponse from '../../app/utils/sendResponse';
 import { UserServices } from './user.services';
 import httpStatus from 'http-status';
 import AppError from '../../errors/AppError';
-import { TEditProfile, TProfilePictureUpdatePayload } from './user.constant';
+import {
+  TEditContractorProfile,
+  TEditProfile,
+  TProfilePictureUpdatePayload,
+} from './user.constant';
 
 const changeStatus = catchAsync(async (req, res) => {
   const id = req.params.id;
@@ -23,23 +27,23 @@ const changeProPic = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
     const id = req.params.id;
 
-    // 🔍 Check if file is uploaded
+    //  Check if file is uploaded
     if (!req.file) {
       throw new AppError(httpStatus.BAD_REQUEST, 'Image file is required');
     }
 
-    // 🖼️ Get file path or filename from multer
-   const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+    // Get file path or filename from multer
+    const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 
-    // 🧾 Prepare typed payload
+    //  Prepare typed payload
     const payload: TProfilePictureUpdatePayload = {
       image: path,
     };
 
-    // 🔁 Update user's image field
+    //  Update user's image field
     const result = await UserServices.changeProfilePicture(id, payload);
 
-    // 📤 Send response
+    //  Send response
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -50,24 +54,96 @@ const changeProPic = catchAsync(
 );
 const updateProfile = catchAsync(
   async (req: Request, res: Response): Promise<void> => {
-    const id = req.params.id;
+       const id = req.params.id;
 
-    // 🖼️ Get file path or filename from multer
-    // const imageUrl = req?.file?.path || req?.file?.filename;
+    // Prepare payload for the update
+    const payload: TEditProfile = { ...req.body };
 
-    const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`; //for local machine
-    // console.log("image path--->",path);
+    // Only add the image to the payload if a new image was uploaded
+    if (req.file) {
+      const path = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`; // for local machine
+      payload.image = path; // Add the new image URL to the payload
+    }
 
-    // 🧾 Prepare typed payload
-    const payload: TEditProfile = {
-      ...req.body,
-      image: path,
-    };
-
-    // 🔁 Update user's image field
+    // Update user's profile in the database
     const result = await UserServices.updateProfileFromDB(id, payload);
 
-    // 📤 Send response
+    // Send response
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Profile updated successfully',
+      data: result,
+    });
+  },
+);
+const updateContractorProfile = catchAsync(
+  async (req: Request, res: Response): Promise<void> => {
+    const id = req.params.id;
+    // eslint-disable-next-line no-undef
+    const files = req.files as Record<string, Express.Multer.File[]>;
+    // eslint-disable-next-line no-undef
+    const { image } = req.files as { image: Express.Multer.File[] };
+    //  Get file paths or filenames from multer for image, thumbnail, and video
+   const imagePath = image && image.length > 0 
+      ? `${req.protocol}://${req.get('host')}/uploads/${image[0].filename}`
+      : '';
+
+    const thumbnailPaths = files?.thumbnailImage
+      ? files.thumbnailImage.map(
+          (file) =>
+            `${req.protocol}://${req.get('host')}/uploads/${file.filename}`,
+        )
+      : [];
+    const videoPaths = files?.video
+      ? files.video.map(
+          (file) =>
+            `${req.protocol}://${req.get('host')}/uploads/${file.filename}`,
+        )
+      : [];
+
+    // Ensure required fields (image and video) are uploaded
+    if (!imagePath || videoPaths.length === 0) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'Both image and at least one video are required for the slider.',
+      );
+    }
+
+    // Extract titles from the request body (assuming titles are passed as an array)
+    const videoTitles = req.body.videoTitles || [];
+
+    // Ensure the number of titles matches the number of videos
+    if (videoTitles.length !== videoPaths.length) {
+      throw new AppError(
+        httpStatus.BAD_REQUEST,
+        'The number of titles must match the number of videos.',
+      );
+    }
+
+    //  Prepare the profile videos array
+    const profileVideos = videoPaths.map((videoUrl, index) => {
+      return {
+        thumbImageUrl: thumbnailPaths[index] || '',
+        title: videoTitles[index] || '', // Assign the title based on index
+        videoUrl,
+      };
+    });
+
+    //  Prepare the full payload
+    const payload: TEditContractorProfile = {
+      ...req.body, // Spread other data from the request body (like firstName, lastName, etc.)
+      image: imagePath, // Set the profile image path
+      profileVedio: profileVideos, // Multiple profile videos as an array
+    };
+
+    //  Update contractor profile in DB
+    const result = await UserServices.updateContractorProfileFromDB(
+      id,
+      payload,
+    );
+
+    // Send response
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
@@ -81,7 +157,7 @@ const addReport = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId;
   // console.log("request",req.body);
   const reportData = req.body.report;
-const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
   reportData.image = path;
   // console.log("reported data--->",reportData);
   const result = await UserServices.addReportToContractor(userId, reportData);
@@ -97,7 +173,7 @@ const addFeedback = catchAsync(async (req: Request, res: Response) => {
   const userId = req.params.userId;
   // console.log("request",req.file);
   const feedbackData = req.body.feedback;
-const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
   // console.log("request iamge",image);
   feedbackData.image = path;
   // console.log("feedback data--->",feedbackData);
@@ -118,7 +194,7 @@ const replyFeedback = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
 
   const message = req.body.message as string | undefined;
- const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 
   if (!message && !path) {
     return res.status(400).json({ message: 'Nothing to update' });
@@ -203,4 +279,5 @@ export const UserControllers = {
   updateProfile,
   deleteUser,
   replyFeedback,
+  updateContractorProfile,
 };

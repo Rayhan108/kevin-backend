@@ -18,12 +18,28 @@ export const editProfileSchema = z.object({
   body:z.object({
     firstName: z.string().min(1, "First name is required").optional(),
     lastName: z.string().min(1, "Last name is required").optional(),
-    // phone: z
-    //   .string()
-    //   .min(10, "Phone number must be at least 10 digits")
-    //   .max(15, "Phone number can't exceed 15 digits")
-    //   .regex(/^[0-9+\-() ]+$/, "Invalid phone number format"),
     bio: z.string().max(500, "Bio can't be longer than 500 characters").optional(),
+  })
+});
+
+export const editContractorProfileSchema = z.object({
+  body: z.object({
+    firstName: z.string().min(1, "First name is required").optional(),
+    lastName: z.string().min(1, "Last name is required").optional(),
+    phone: z.string().min(1, "Phone number is required").optional(), // Optional phone validation
+    bio: z.string().max(500, "Bio can't be longer than 500 characters").optional(),
+    
+    // Image path validation
+    image: z.string().url("Profile image URL is required and must be a valid URL").optional(),
+
+    // Profile video validation (array of objects)
+    profileVedio: z.array(
+      z.object({
+        thumbImageUrl: z.string().url("Thumbnail image URL must be a valid URL").optional(),
+        title: z.string().min(1, "Title is required for each video").optional(),
+        videoUrl: z.string().url("Video URL must be a valid URL").optional(),
+      })
+    ).optional(),
   })
 });
 

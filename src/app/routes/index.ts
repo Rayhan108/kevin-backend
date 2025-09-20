@@ -13,7 +13,9 @@ import { PlatformRoutes } from '../../modules/ManagePlatform/platform.routes';
 import { CategoryRoutes } from '../../modules/Category/category.routes';
 import { notificationRoutes } from '../../modules/Notification/notification.routes';
 import { conversationRoutes } from '../../modules/Conversation/conversation.routes';
-import { messageRoutes } from '../../modules/message/message.routes';
+import { messageRoutes } from '../../modules/message/message.route';
+import { ReferClaimRoutes } from '../../modules/ReferClaim/referclaim.route';
+import { documentVerificationRoutes } from '../../modules/DocumentVerification/verification.routes';
 
 
 const router = Router();
@@ -28,58 +30,65 @@ const moduleRoutes = [
     route: UserRoutes,
   },
   {
-    path:'/quotes',
+    path: '/quotes',
     route: quoteRoutes,
   },
   {
-    path:'/review',
+    path: '/review',
     route: reviewRoutes,
   },
   {
-    path:'/service', 
+    path: '/service',
     route: servicesRoutes,
   },
   {
-    path:'/book',
+    path: '/book',
     route: BookServicesRoutes,
   },
   {
-    path:'/article',
+    path: '/article',
     route: ArticleRoutes,
   },
   {
-    path:'/refer',
-    route:referRoutes,
+    path: '/refer',
+    route: referRoutes,
   },
   {
-    path:'/vipMember',
-    route:vipMemberRoutes,
+    path: '/refer-claim',
+    route: ReferClaimRoutes,
   },
   {
-    path:'/flag',
-    route:FlagRoutes,
+    path: '/vipMember',
+    route: vipMemberRoutes,
   },
   {
-    path:'/platform',
-    route:PlatformRoutes,
+    path: '/flag',
+    route: FlagRoutes,
   },
   {
-    path:'/category',
-    route:CategoryRoutes,
+    path: '/platform',
+    route: PlatformRoutes,
   },
   {
-    path:'/notification',
-    route:notificationRoutes,
+    path: '/category',
+    route: CategoryRoutes,
   },
   {
-    path:'/conversation',
-    route:conversationRoutes,
+    path: '/notification',
+    route: notificationRoutes,
   },
   {
-    path:'/message',
-    route:messageRoutes,
+    path: '/conversation',
+    route: conversationRoutes,
   },
-
+  {
+    path: '/message',
+    route: messageRoutes,
+  },
+  {
+    path: '/verify',
+    route: documentVerificationRoutes,
+  },
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

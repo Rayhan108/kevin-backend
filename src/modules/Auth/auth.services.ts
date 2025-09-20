@@ -101,6 +101,40 @@ const changePassword = async (
   //   console.log('pass change 89 line',result);
   return null;
 };
+// forgot password api
+const resetPassword = async (
+
+  payload: {email:string, oldPassword: string; newPassword: string },
+) => {
+  // checking if the user is exist
+  // console.log("payload->",payload);
+  const user = await UserModel.isUserExistsByEmail(payload.email);
+  //   console.log('change pass user',user);
+  if (!user) {
+    throw new AppError(httpStatus.NOT_FOUND, 'This user is not found !');
+  }
+
+  //checking if the password is correct
+
+  if (!(await UserModel.isPasswordMatched(payload.oldPassword, user?.password)))
+    throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
+
+  //hash new password
+  const newHashedPassword = await bcrypt.hash(
+    payload.newPassword,
+    Number(config.bcrypt_salt_rounds),
+  );
+  //   console.log('user data chnge pass 78 line',userData);
+  await UserModel.findOneAndUpdate(
+   { email: payload.email },
+    {
+      password: newHashedPassword,
+      passwordChangedAt: new Date(),
+    },
+  );
+  //   console.log('pass change 89 line',result);
+  return null;
+};
 
 // refresh token
 
@@ -212,5 +246,6 @@ export const AuthServices = {
   changePassword,
   refreshToken,
   forgotPass,
-  verifyOTP
+  verifyOTP,
+  resetPassword
 };

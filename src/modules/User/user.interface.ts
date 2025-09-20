@@ -21,7 +21,7 @@ export type TBecomeContractorInput = {
   servicesYouProvide: string[];   
   subServices: string[]; 
 };
-
+//
 export interface TUser{
     _id:string;
     userId:string;
@@ -31,6 +31,7 @@ export interface TUser{
   lastName: string;
   bio?: string;
   image: string;
+  getReward:boolean;
   email: string;
   phone: string;
 verification?: {
@@ -51,10 +52,16 @@ verification?: {
     image?:string,
     }
   };
+
   password: string;
     passwordChangedAt?: Date;
   role: 'user' | 'contractor'|'vipContractor'|'vipMember'|'admin';
   status: 'in-progress' | 'blocked';
+  profileVedio:[
+{  thumbImageUrl: string;
+  title: string;
+  videoUrl: string;}
+  ];
   address: string;
   createdAt: Date;
   updatedAt: Date;

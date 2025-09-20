@@ -4,27 +4,44 @@ import sendResponse from '../../app/utils/sendResponse';
 
 import httpStatus from 'http-status';
 import { QuoteServices } from './quote.services';
+import catchAsync from '../../app/utils/catchAsync';
 
-// const getAllUser = catchAsync(async(req:Request,res:Response)=>{
+const getAllQuoteForSpecContctr = catchAsync(async(req:Request,res:Response)=>{
+  const meId = req?.user?.userId;
+  const result = await QuoteServices.getAllQuoteForSpecContctrFromDB(meId);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Quotes retrived succesfully!',
+      data: result,
+    });
 
-//   const result = await UserServices.getAllUserFromDB();
-//   sendResponse(res, {
-//       statusCode: httpStatus.OK,
-//       success: true,
-//       message: 'User retrived succesfully!',
-//       data: result,
-//     });
+})
+const getSingleQuote = catchAsync(async(req:Request,res:Response)=>{
+  const id = req?.params?.id;
+  const result = await QuoteServices.getSingleQuoteFromDB(id);
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Quote retrived succesfully!',
+      data: result,
+    });
 
-// })
+})
 
 const createQuotes = async (
   req: Request,
   res: Response,
   next: NextFunction,
 ) => {
-//   console.log("create contractor-->",req.body);
+  //   console.log("create contractor-->",req.body);
+    const userId = req?.user?.userId;
+    const data= req?.body
+    const payload={
+...data,user:userId
+    }
   try {
-    const result = await QuoteServices.addRequestQuoteIntoDB(req.body);
+    const result = await QuoteServices.addRequestQuoteIntoDB(payload);
 
     sendResponse(res, {
       success: true,
@@ -37,6 +54,48 @@ const createQuotes = async (
   }
 };
 
+const updateQuoteStatus = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  //   console.log("create contractor-->",req.body);
+    const quoteId = req?.params?.id;
+ 
+    const status = req?.body?.status
+
+  try {
+    const result = await QuoteServices.updateQuoteStatusIntoDB(status,quoteId);
+
+    sendResponse(res, {
+      success: true,
+      message: `Quotes Offer ${status}`,
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// dashboard stats
+const getDashStats = catchAsync(async (req: Request, res: Response) => {
+  const meId = req?.user?.userId;
+
+  const result = await QuoteServices.dashboardStatsFromDB(meId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Dashboard stats retrive successfully',
+    data: result,
+  });
+});
+
 export const QuoteControllers = {
-createQuotes
+  createQuotes,
+  getDashStats,
+  getAllQuoteForSpecContctr,
+  updateQuoteStatus,
+  getSingleQuote
 };

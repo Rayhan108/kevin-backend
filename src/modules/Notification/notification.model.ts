@@ -1,11 +1,11 @@
-import mongoose, { model, Schema} from 'mongoose';
-
+import mongoose, { model, Schema } from 'mongoose';
 import { INotification } from './notification.interface';
 import { ENUM_NOTIFICATION_TYPE } from './notification.constant';
+import config from '../../app/config';
 
 const notificationSchema = new Schema<INotification>(
   {
-    title:{
+    title: {
       type: String,
       required: true,
     },
@@ -15,10 +15,11 @@ const notificationSchema = new Schema<INotification>(
     },
     isRead: {
       type: Boolean,
-      default: false,
+      default: false, // default
     },
     receiver: {
       type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
       required: true,
     },
     type: {
@@ -26,17 +27,19 @@ const notificationSchema = new Schema<INotification>(
       enum: Object.values(ENUM_NOTIFICATION_TYPE),
       required: true,
     },
-    redirectId: {
+    redirectURL: {
       type: String,
-      default: null,
+      default: '', // default
     },
   },
-
-  {
-    timestamps: true,
-  },
+  { timestamps: true, versionKey: false },
 );
 
-const NotificationModel = model<INotification>('Notification', notificationSchema);
+notificationSchema.index({ receiver: 1, isRead: 1 });
+
+const NotificationModel = model<INotification>(
+  'Notification',
+  notificationSchema,
+);
 
 export default NotificationModel;

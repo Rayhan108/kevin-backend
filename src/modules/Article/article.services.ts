@@ -20,6 +20,18 @@ const getSingleArticleFromDB = async (id: string) => {
   const result = await ArticleModel.findById(id).populate('user');
   return result;
 };
+const getSingleUserArticleFromDB = async (id:string) => {
+
+  // console.log("query----->",id);
+ 
+    const queryBuilder = new QueryBuilder(ArticleModel.find({user:id}), {});
+  queryBuilder.search(['title', 'content']).filter().sort().paginate();
+  // const result = await ArticleModel.find({user:id}).populate('user');
+    const result = await queryBuilder.modelQuery.populate('user');
+   const meta = await queryBuilder.countTotal();
+
+  return { meta, result };
+};
 
 const addArticleIntoDB = async (payload: IArticle) => {
   const userId = payload.user;
@@ -47,4 +59,5 @@ export const ArticleServices = {
   addArticleIntoDB,
   deleteArticleFromDB,
   getSingleArticleFromDB,
+  getSingleUserArticleFromDB
 };
