@@ -47,7 +47,7 @@ const deleteCategory = async (
 
     sendResponse(res, {
       success: true,
-      message: 'Category Added Succesfull',
+      message: 'Category delete Succesfull',
       statusCode: httpStatus.CREATED,
       data: result,
     });
@@ -87,7 +87,7 @@ const editCategory = async (
 
     sendResponse(res, {
       success: true,
-      message: 'category  Succesfully Updated',
+      message: 'category   Updated',
       statusCode: httpStatus.CREATED,
       data: result,
     });
