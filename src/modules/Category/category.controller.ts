@@ -74,10 +74,32 @@ const createSubCategory = async (
     next(err);
   }
 };
+const editCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  //   console.log("create contractor-->",req.body);
+  const {id}=req.params
+  const payload = req.body
+  try {
+    const result = await CategoryServices.editCategoryFromDB(payload,id);
+
+    sendResponse(res, {
+      success: true,
+      message: 'category  Succesfully Updated',
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const CategoryControllers = {
   createCategory,
   getAllCategory,
   createSubCategory,
-  deleteCategory
+  deleteCategory,
+  editCategory
 };

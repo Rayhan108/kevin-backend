@@ -19,6 +19,13 @@ router.post('/add-category',
 CategoryControllers.createCategory,
 
 );
+router.patch('/edit-category/:id',
+
+  auth(USER_ROLE.admin),
+//   validateRequest(createFlagUserSchema),
+CategoryControllers.editCategory,
+
+);
 router.post('/add-sub-category',
 
   auth(USER_ROLE.admin),

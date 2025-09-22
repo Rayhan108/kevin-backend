@@ -32,6 +32,20 @@ const addSubCategoryIntoDB = async (payload:TCategory) => {
   const result = await CategoryModel.create(payload)
   return result;
 };
+const editCategoryFromDB = async (payload:TCategory,id:string) => {
+const category = await CategoryModel.findById(id)
+if(!category){
+  throw new AppError(httpStatus.NOT_FOUND,'Category Not Found')
+}
+  const result = await CategoryModel.findByIdAndUpdate(
+    id,
+    { $set: payload },
+    { new: true, runValidators: true } // new:true মানে updated data return করবে
+  );
+
+  return result;
+
+};
 const deleteCateFromDB = async (id: string) => {
   const category = await CategoryModel.findByIdAndDelete(id);
 
@@ -41,6 +55,10 @@ const deleteCateFromDB = async (id: string) => {
 
   return category; // return deleted user if needed
 };
+
+
+
+
 export const CategoryServices = {
-addCategoryIntoDB,getAllCategoryFromDB,addSubCategoryIntoDB,deleteCateFromDB
+addCategoryIntoDB,getAllCategoryFromDB,addSubCategoryIntoDB,deleteCateFromDB,editCategoryFromDB
 };
