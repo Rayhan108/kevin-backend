@@ -7,7 +7,7 @@ import { CategoryServices } from './category.services';
 import catchAsync from '../../app/utils/catchAsync';
 
 const getAllCategory = catchAsync(async (req: Request, res: Response) => {
-  const result = await CategoryServices.getAllCategoryFromDB();
+  const result = await CategoryServices.getAllCategoryFromDB(req?.query);
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -24,6 +24,26 @@ const createCategory = async (
   //   console.log("create contractor-->",req.body);
   try {
     const result = await CategoryServices.addCategoryIntoDB(req.body);
+
+    sendResponse(res, {
+      success: true,
+      message: 'Category Added Succesfull',
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+const deleteCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const {id}=req.params
+  //   console.log("create contractor-->",req.body);
+  try {
+    const result = await CategoryServices.deleteCateFromDB(id);
 
     sendResponse(res, {
       success: true,
@@ -59,4 +79,5 @@ export const CategoryControllers = {
   createCategory,
   getAllCategory,
   createSubCategory,
+  deleteCategory
 };

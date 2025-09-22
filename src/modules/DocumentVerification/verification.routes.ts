@@ -33,6 +33,7 @@ router.post(
 );
 
 router.get('/single-user-doc',auth(USER_ROLE.contractor,USER_ROLE.vipContractor),VerificationControllers.getSingleDoc)
-router.get('/all-doc',auth(USER_ROLE.contractor,USER_ROLE.vipContractor),VerificationControllers.getAllDoc)
+router.get('/all-doc',auth(USER_ROLE.contractor,USER_ROLE.vipContractor,USER_ROLE.admin),VerificationControllers.getAllDoc)
+router.patch('/updateStatus',auth(USER_ROLE.contractor,USER_ROLE.vipContractor,USER_ROLE.admin),VerificationControllers.approveOrReject)
 
 export const documentVerificationRoutes = router;

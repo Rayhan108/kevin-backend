@@ -26,6 +26,13 @@ router.post('/add-sub-category',
 CategoryControllers.createSubCategory,
 
 );
+router.delete('/delete-category/:id',
+
+  auth(USER_ROLE.admin),
+//   validateRequest(createFlagUserSchema),
+CategoryControllers.deleteCategory,
+
+);
 
 router.get('/all-category',CategoryControllers.getAllCategory)
 
