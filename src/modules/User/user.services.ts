@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import QueryBuilder from '../../app/builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import { FeedbackReplyUpdate, TEditContractorProfile, TEditProfile } from './user.constant';
@@ -158,6 +159,62 @@ const addFeedbackToContractor = async (
 
   return updatedUser;
 };
+
+
+
+
+const getAllFeedbackFromDB = async (
+  query: Record<string, unknown>
+) => {
+  const queryBuilder = new QueryBuilder(UserModel.find(), query);
+  queryBuilder.filter().sort(); // paginate নিচে
+
+  const users = await queryBuilder.modelQuery;
+
+  // Step 1: Collect all feedbacks
+  const allFeedbacks: any[] = [];
+
+  users.forEach((user) => {
+    if (user.feedback) {
+      const feedbackObj = {
+        userId: user._id,
+        message: user.feedback.message || null,
+        image: user.feedback.image || null,
+        reply: user.feedback.reply || null,
+      };
+
+      // ✅ Check if this feedback has any actual data
+      const hasMessage = !!feedbackObj.message;
+      const hasImage = !!feedbackObj.image;
+      const hasReplyMessage = !!feedbackObj.reply?.message;
+      const hasReplyImage = !!feedbackObj.reply?.image;
+
+      if (hasMessage || hasImage || hasReplyMessage || hasReplyImage) {
+        allFeedbacks.push(feedbackObj);
+      }
+    }
+  });
+
+  // Step 2: Pagination logic
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const paginatedFeedbacks = allFeedbacks.slice(skip, skip + limit);
+
+  // Step 3: Meta info
+  const meta = {
+    total: allFeedbacks.length,
+    page,
+    limit,
+    totalPages: Math.ceil(allFeedbacks.length / limit),
+  };
+
+  return { meta, data: paginatedFeedbacks };
+};
+
+
+
 export const replyFeedbackByAdmin = async (
   userId: string,
   update: FeedbackReplyUpdate
@@ -204,5 +261,5 @@ const deleteUserFromDB = async (id: string) => {
 
 export const UserServices = {
   changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB,replyFeedbackByAdmin,getSpecificUserByCustomerId
-  ,updateContractorProfileFromDB
+  ,updateContractorProfileFromDB,getAllFeedbackFromDB
 };

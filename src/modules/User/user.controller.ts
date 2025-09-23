@@ -224,6 +224,15 @@ const getAllUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getAllFeedback = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserServices.getAllFeedbackFromDB(req?.query);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Feedback retrived succesfully!',
+    data: result,
+  });
+});
 
 const getSingleUser = catchAsync(async (req: Request, res: Response) => {
   const { userId } = req.params;
@@ -280,4 +289,5 @@ export const UserControllers = {
   deleteUser,
   replyFeedback,
   updateContractorProfile,
+  getAllFeedback
 };

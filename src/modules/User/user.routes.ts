@@ -98,5 +98,6 @@ router.patch(
 
 router.delete('/deleteUser/:userId',UserControllers.deleteUser)
 router.get('/allUser',UserControllers.getAllUser)
+router.get('/allFeedback',UserControllers.getAllFeedback)
 
 export const UserRoutes = router;
