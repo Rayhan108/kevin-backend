@@ -13,5 +13,9 @@ export const articleZodSchema = z.object({
       .max(5000, 'Content cannot exceed 5000 characters'),
     isPopular: z.boolean().optional(),
     isFeatured: z.boolean().optional(),
+         blogStatus: z
+      .enum(['pending', 'rejected', 'approved'])
+      .default('pending'),
+
   }),
 });

@@ -6,5 +6,6 @@ export interface IArticle extends Document {
   content: string;
   isPopular: boolean;
   isFeatured: boolean;
+   blogStatus?:'pending'| 'rejected'|'approved';
   image?:string;
 }

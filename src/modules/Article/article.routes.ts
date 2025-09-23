@@ -46,5 +46,6 @@ router.get('/single-user-article',auth(
   ), ArticleControllers.getSingleUserArticle);
 
 router.delete('/delete-article/:id', ArticleControllers.deleteArticle);
+router.patch('/update-status', ArticleControllers.approveOrReject);
 
 export const ArticleRoutes = router;
