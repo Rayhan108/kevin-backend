@@ -1,8 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import QueryBuilder from '../../app/builder/QueryBuilder';
 import AppError from '../../errors/AppError';
-import { FeedbackReplyUpdate, TEditContractorProfile, TEditProfile } from './user.constant';
-import {  TBecomeContractorInput } from './user.interface';
+import {
+  FeedbackReplyUpdate,
+  TEditContractorProfile,
+  TEditProfile,
+} from './user.constant';
+import { TBecomeContractorInput } from './user.interface';
 import { UserModel } from './user.model';
 import httpStatus from 'http-status';
 const changeStatus = async (id: string, payload: { status: string }) => {
@@ -13,7 +17,7 @@ const changeStatus = async (id: string, payload: { status: string }) => {
 };
 const changeProfilePicture = async (
   id: string,
-  payload: { image: string }  // ✅ changed from status to image
+  payload: { image: string }, // ✅ changed from status to image
 ) => {
   // console.log('payload--->', payload);
 
@@ -22,11 +26,8 @@ const changeProfilePicture = async (
   });
 
   return result;
-}
-const updateProfileFromDB = async (
-  id: string,
-  payload: TEditProfile 
-) => {
+};
+const updateProfileFromDB = async (id: string, payload: TEditProfile) => {
   // console.log('payload--->', payload);
 
   const result = await UserModel.findByIdAndUpdate(id, payload, {
@@ -34,10 +35,10 @@ const updateProfileFromDB = async (
   });
 
   return result;
-}
+};
 const updateContractorProfileFromDB = async (
   id: string,
-  payload: TEditContractorProfile 
+  payload: TEditContractorProfile,
 ) => {
   // console.log('payload--->', payload);
 
@@ -46,23 +47,30 @@ const updateContractorProfileFromDB = async (
   });
 
   return result;
-}
+};
 
-const getSingleUserFromDB = async(id:string)=>{
-    const result = await UserModel.findById(id);
-    return result;
-}
-const getAllUserFromDB = async(query: Record<string, unknown>)=>{
-  const queryBuilder = new QueryBuilder(UserModel.find(),query)
+const getSingleUserFromDB = async (id: string) => {
+  const result = await UserModel.findById(id);
+  return result;
+};
+const getAllUserFromDB = async (query: Record<string, unknown>) => {
+  const queryBuilder = new QueryBuilder(UserModel.find(), query);
   queryBuilder
-    .search(['phone', 'email', 'lastName','firstName','servicesYouProvide','subServices'])
+    .search([
+      'phone',
+      'email',
+      'lastName',
+      'firstName',
+      'servicesYouProvide',
+      'subServices',
+    ])
     .filter()
     .sort()
     .paginate();
-    const result = await queryBuilder.modelQuery;
-      const meta = await queryBuilder.countTotal();
-    return {meta,result};
-}
+  const result = await queryBuilder.modelQuery;
+  const meta = await queryBuilder.countTotal();
+  return { meta, result };
+};
 
 const updateUserToContractor = async (payload: TBecomeContractorInput) => {
   const user = await UserModel.isUserExistsByEmail(payload.email);
@@ -72,7 +80,10 @@ const updateUserToContractor = async (payload: TBecomeContractorInput) => {
   }
 
   if (user.role === 'contractor') {
-    throw new AppError(httpStatus.CONFLICT, 'This user is already a contractor!');
+    throw new AppError(
+      httpStatus.CONFLICT,
+      'This user is already a contractor!',
+    );
   }
 
   // Update fields
@@ -86,7 +97,7 @@ const updateUserToContractor = async (payload: TBecomeContractorInput) => {
       servicesYouProvide: payload.servicesYouProvide,
       subServices: payload.subServices || [],
     },
-    { new: true } // return the updated document
+    { new: true }, // return the updated document
   );
 
   return updatedUser;
@@ -97,7 +108,7 @@ const addReportToContractor = async (
     reason?: string;
     feedback?: string;
     image?: string;
-  }
+  },
 ) => {
   // console.log("report--->",report);
   // console.log("id--->",userId);
@@ -109,7 +120,7 @@ const addReportToContractor = async (
   }
 
   if (user.role == 'user') {
-    throw new AppError(httpStatus.CONFLICT,'Only users can be reported');
+    throw new AppError(httpStatus.CONFLICT, 'Only users can be reported');
   }
 
   // Update the report field only
@@ -120,7 +131,7 @@ const addReportToContractor = async (
         report, // this will overwrite any existing report object
       },
     },
-    { new: true }
+    { new: true },
   );
 
   return updatedUser;
@@ -131,7 +142,7 @@ const addFeedbackToContractor = async (
     reason?: string;
     feedback?: string;
     image?: string;
-  }
+  },
 ) => {
   // console.log("report--->",report);
   // console.log("id--->",userId);
@@ -143,7 +154,7 @@ const addFeedbackToContractor = async (
   }
 
   if (user.role == 'admin') {
-    throw new AppError(httpStatus.CONFLICT,'Only admin can gave feedback');
+    throw new AppError(httpStatus.CONFLICT, 'Only admin can gave feedback');
   }
 
   // Update the report field only
@@ -154,20 +165,15 @@ const addFeedbackToContractor = async (
         feedback, // this will overwrite any existing report object
       },
     },
-    { new: true }
+    { new: true },
   );
 
   return updatedUser;
 };
 
-
-
-
-const getAllFeedbackFromDB = async (
-  query: Record<string, unknown>
-) => {
+const getAllFeedbackFromDB = async (query: Record<string, unknown>) => {
   const queryBuilder = new QueryBuilder(UserModel.find(), query);
-  queryBuilder.filter().sort(); // paginate নিচে
+  queryBuilder.filter().sort();
 
   const users = await queryBuilder.modelQuery;
 
@@ -178,6 +184,10 @@ const getAllFeedbackFromDB = async (
     if (user.feedback) {
       const feedbackObj = {
         userId: user._id,
+        name: user.firstName,
+        userImg:user.image,
+        email: user.email,
+        role: user.role,
         message: user.feedback.message || null,
         image: user.feedback.image || null,
         reply: user.feedback.reply || null,
@@ -213,16 +223,13 @@ const getAllFeedbackFromDB = async (
   return { meta, data: paginatedFeedbacks };
 };
 
-
-
 export const replyFeedbackByAdmin = async (
   userId: string,
-  update: FeedbackReplyUpdate
+  update: FeedbackReplyUpdate,
 ) => {
   if (!update || Object.keys(update).length === 0) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Nothing to update');
   }
-
 
   const user = await UserModel.findById(userId).select('_id');
   if (!user) {
@@ -231,8 +238,8 @@ export const replyFeedbackByAdmin = async (
 
   const updatedUser = await UserModel.findByIdAndUpdate(
     userId,
-    { $set: update },          
-    { new: true, runValidators: true, projection: { feedback: 1 } }
+    { $set: update },
+    { new: true, runValidators: true, projection: { feedback: 1 } },
   );
 
   return updatedUser;
@@ -245,7 +252,7 @@ const getSpecificUserByCustomerId = async (id: string) => {
       select: '',
     })
     .select('-password -verification');
-    return result
+  return result;
 };
 const deleteUserFromDB = async (id: string) => {
   const user = await UserModel.findByIdAndDelete(id);
@@ -257,9 +264,18 @@ const deleteUserFromDB = async (id: string) => {
   return user; // return deleted user if needed
 };
 
-
-
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB,replyFeedbackByAdmin,getSpecificUserByCustomerId
-  ,updateContractorProfileFromDB,getAllFeedbackFromDB
+  changeStatus,
+  getSingleUserFromDB,
+  getAllUserFromDB,
+  updateUserToContractor,
+  changeProfilePicture,
+  addReportToContractor,
+  addFeedbackToContractor,
+  updateProfileFromDB,
+  deleteUserFromDB,
+  replyFeedbackByAdmin,
+  getSpecificUserByCustomerId,
+  updateContractorProfileFromDB,
+  getAllFeedbackFromDB,
 };

@@ -210,7 +210,7 @@ const replyFeedback = catchAsync(async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: 200,
     success: true,
-    message: 'Admin reply added to feedback',
+    message: 'Feedback Send Successfull',
     data: result,
   });
 });
