@@ -16,6 +16,8 @@ import { conversationRoutes } from '../../modules/Conversation/conversation.rout
 import { messageRoutes } from '../../modules/message/message.route';
 import { ReferClaimRoutes } from '../../modules/ReferClaim/referclaim.route';
 import { documentVerificationRoutes } from '../../modules/DocumentVerification/verification.routes';
+import privacyPolicyRouter from '../../modules/PrivacyPolicy/privacyPolicy.routes';
+import termsRouter from '../../modules/Terms/terms.route';
 
 
 const router = Router();
@@ -88,6 +90,14 @@ const moduleRoutes = [
   {
     path: '/verify',
     route: documentVerificationRoutes,
+  },
+  {
+    path: '/privacy',
+    route: privacyPolicyRouter,
+  },
+  {
+    path: '/terms',
+    route: termsRouter,
   },
 ];
 

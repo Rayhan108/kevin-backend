@@ -28,7 +28,8 @@ const changeProfilePicture = async (
   return result;
 };
 const updateProfileFromDB = async (id: string, payload: TEditProfile) => {
-  // console.log('payload--->', payload);
+  console.log('payload--->', payload);
+  console.log('payload id--->', id);
 
   const result = await UserModel.findByIdAndUpdate(id, payload, {
     new: true,
