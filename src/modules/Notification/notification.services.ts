@@ -33,6 +33,7 @@ const markANotificationAsReadIntoDB = async (notificationId: string) => {
     { new: true },
   );
 
+  // eslint-disable-next-line @typescript-eslint/no-extra-non-null-assertion
   const receiverSocketId = getReceiverSocketId(result!?.receiver.toString());
   const ioInstance = getIO();
 

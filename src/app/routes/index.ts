@@ -18,6 +18,7 @@ import { ReferClaimRoutes } from '../../modules/ReferClaim/referclaim.route';
 import { documentVerificationRoutes } from '../../modules/DocumentVerification/verification.routes';
 import privacyPolicyRouter from '../../modules/PrivacyPolicy/privacyPolicy.routes';
 import termsRouter from '../../modules/Terms/terms.route';
+import { MembershipRoutes } from '../../modules/Membership/membership.route';
 
 
 const router = Router();
@@ -98,6 +99,10 @@ const moduleRoutes = [
   {
     path: '/terms',
     route: termsRouter,
+  },
+  {
+    path: '/membership',
+    route:MembershipRoutes,
   },
 ];
 

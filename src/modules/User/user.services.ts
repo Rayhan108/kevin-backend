@@ -28,8 +28,7 @@ const changeProfilePicture = async (
   return result;
 };
 const updateProfileFromDB = async (id: string, payload: TEditProfile) => {
-  console.log('payload--->', payload);
-  console.log('payload id--->', id);
+
 
   const result = await UserModel.findByIdAndUpdate(id, payload, {
     new: true,
@@ -186,7 +185,7 @@ const getAllFeedbackFromDB = async (query: Record<string, unknown>) => {
       const feedbackObj = {
         userId: user._id,
         name: user.firstName,
-        userImg:user.image,
+        userImg: user.image,
         email: user.email,
         role: user.role,
         message: user.feedback.message || null,
@@ -265,6 +264,55 @@ const deleteUserFromDB = async (id: string) => {
   return user; // return deleted user if needed
 };
 
+
+
+
+const getDashboardStatsFromDB = async () => {
+  const users = await UserModel.find();
+
+  // total user count
+  const totalUsers = users.length;
+
+  // role-wise stats
+  const stats = users.reduce(
+    (acc, user) => {
+      if (user.role === "user") acc.totalClient++;
+      if (user.role === "contractor") acc.totalContractor++;
+      if (user.role === "vipContractor") acc.totalVipContractor++;
+      if (user.role === "vipMember") acc.totalVipMember++;
+      if (user.role === "admin") acc.totalAdmin++;
+      return acc;
+    },
+    {
+      totalClient: 0,
+      totalContractor: 0,
+      totalVipContractor: 0,
+      totalVipMember: 0,
+      totalAdmin: 0,
+    }
+  );
+
+  const finalStats = {
+    totalUsers,
+    ...stats,
+  };
+
+  // console.log("Dashboard Stats ---->", finalStats);
+  return finalStats;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const UserServices = {
   changeStatus,
   getSingleUserFromDB,
@@ -279,4 +327,5 @@ export const UserServices = {
   getSpecificUserByCustomerId,
   updateContractorProfileFromDB,
   getAllFeedbackFromDB,
+  getDashboardStatsFromDB
 };

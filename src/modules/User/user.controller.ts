@@ -244,6 +244,8 @@ const getSingleUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+
+
 const createContractor = async (
   req: Request,
   res: Response,
@@ -276,6 +278,18 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
+
+
+  const result = await UserServices.getDashboardStatsFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Dashboard stats retrive successfully!',
+    data: result,
+  });
+});
 
 export const UserControllers = {
   changeStatus,
@@ -289,5 +303,6 @@ export const UserControllers = {
   deleteUser,
   replyFeedback,
   updateContractorProfile,
-  getAllFeedback
+  getAllFeedback,
+  getDashboardStats
 };

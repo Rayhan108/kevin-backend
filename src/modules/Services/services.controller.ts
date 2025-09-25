@@ -147,8 +147,8 @@ const createServices = async (
 // });
 const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
   const { item, customerEmail } = req.body; // use item, not items
-const {id}=req.params
-console.log("book service id--->",id);
+  const { id } = req.params;
+  console.log('book service id--->', id);
   if (!item) {
     throw new AppError(httpStatus.BAD_REQUEST, 'No item in the order.');
   }
@@ -169,7 +169,6 @@ console.log("book service id--->",id);
       unit_amount: Math.round(basePrice * 100),
     },
     quantity: item.hour,
-  
   };
 
   const baseUrl = (config.frontend_url || '').replace(/\/+$/, '');
@@ -182,9 +181,9 @@ console.log("book service id--->",id);
     customer_email: customerEmail,
     success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${baseUrl}/cancel`,
-         metadata: {
-        bookServiceId: String(id),
-      },
+    metadata: {
+      bookServiceId: String(id),
+    },
   });
 
   sendResponse(res, {
