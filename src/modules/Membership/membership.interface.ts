@@ -1,8 +1,9 @@
 
 export interface IFee {
   label: "VIP Member Fee" | "Premium Member Fee"|"Premium Contractor Fee"|"VIP Contractor Fee"
-  monthlyPrice: number
-  annuallyPrice: number
+  monthlyValue: number
+  yearlyValue: number
+//   monthlyPrice: string
+//   annuallyPrice: string
 
-  timestamp: string
 }

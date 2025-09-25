@@ -7,12 +7,13 @@ const MembershipSchema = new Schema<IFee>(
   {
     label: {
       type: String,
-      enum: ["VIP Member Fee" , "Premium Member Fee","Premium Contractor Fee","VIP Contractor Fee"],
+      enum: ["VIP Member Fee" ,"Premium Member Fee","Premium Contractor Fee","VIP Contractor Fee"],
       required: true,
     },
-    monthlyPrice: { type: Number, required: true },
-    annuallyPrice: { type: Number, required: true },
-
+    monthlyValue: { type: Number, required: true },
+    yearlyValue: { type: Number, required: true },
+    // monthlyPrice: { type: String, required: true },
+    // annuallyPrice: { type: String, required: true },
   },
   {
     timestamps: true, 
