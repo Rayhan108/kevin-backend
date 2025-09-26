@@ -21,7 +21,7 @@ MembershipControllers.addFee,
 );
 router.get('/getFees',
 
-  auth(USER_ROLE.admin),
+//   auth(USER_ROLE.admin),
 //   validateRequest(createFlagUserSchema),
 MembershipControllers.getFees,
 

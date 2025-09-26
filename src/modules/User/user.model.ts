@@ -68,7 +68,14 @@ const userSchema = new Schema<TUser, User, IUserMethods>(
       type: String,
       default: null,
     },
-
+  subscription: {
+    membershipId: { type: Schema.Types.ObjectId, ref: 'Membership' },
+    plan: { type: String,enum:['monthly','yearly'] },
+    price: { type: Number },
+    startedAt: { type: Date },
+    expiryDate: { type: Date },
+    status: { type: String,  enum: ['active', 'expired', 'cancel'], default: 'expired' },
+  },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 

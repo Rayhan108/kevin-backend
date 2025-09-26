@@ -73,6 +73,14 @@ verification?: {
   subServices: string[]; 
  stripeCustomerId?: string;
   stripePaymentMethodId?: string;
+    subscription?: {
+    membershipId: string; // MembershipModel _id
+    plan: 'monthly' | 'yearly';
+    price: number;
+    startedAt: Date;
+    expiryDate: Date;
+    status: 'active' | 'expired' | 'cancelled';
+  };
 }
 
 // export interface IUser extends TUser, Document{

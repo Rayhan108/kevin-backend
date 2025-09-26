@@ -19,6 +19,7 @@ import { documentVerificationRoutes } from '../../modules/DocumentVerification/v
 import privacyPolicyRouter from '../../modules/PrivacyPolicy/privacyPolicy.routes';
 import termsRouter from '../../modules/Terms/terms.route';
 import { MembershipRoutes } from '../../modules/Membership/membership.route';
+import { vipContractorRoutes } from '../../modules/VipContractor/vipcontractor.routes';
 
 
 const router = Router();
@@ -104,6 +105,11 @@ const moduleRoutes = [
     path: '/membership',
     route:MembershipRoutes,
   },
+  {
+    path: '/vipContractor',
+    route:vipContractorRoutes,
+  },
+ 
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

@@ -13,6 +13,7 @@ import { CURRENCY_ENUM } from './service.const';
 
 import config from '../../app/config';
 import { stripe } from '../../utils/stripeClient';
+import { UserModel } from '../User/user.model';
 
 const getAllServices = catchAsync(async (req: Request, res: Response) => {
   const result = await ServicesService.getAllServicesFromDB(req?.query);
@@ -146,7 +147,11 @@ const createServices = async (
 //   });
 // });
 const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
-  const { item, customerEmail } = req.body; // use item, not items
+    const meId = req?.user?.userId
+    const user = await UserModel.findById(meId);
+    // console.log("user------>",user?.email);
+    const email = user?.email
+  const { item} = req.body; // use item, not items
   const { id } = req.params;
   console.log('book service id--->', id);
   if (!item) {
@@ -178,7 +183,7 @@ const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
     payment_method_types: ['card'],
     line_items: [lineItem], // wrap single item into array for Stripe
     mode: 'payment',
-    customer_email: customerEmail,
+    customer_email:email,
     success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${baseUrl}/cancel`,
     metadata: {

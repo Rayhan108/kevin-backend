@@ -29,7 +29,7 @@ router.post('/askApro/:id',
  VipMemberControllers.askAProQues,
 
 );
-
+router.post('/checkout',auth(USER_ROLE.user,USER_ROLE.vipMember),VipMemberControllers.initiateOrderPayment)
 // router.get('/allReview',ReviewControllers.getAllReview)
 
 export const vipMemberRoutes = router;
