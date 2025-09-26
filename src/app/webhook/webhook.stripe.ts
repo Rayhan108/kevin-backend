@@ -118,6 +118,7 @@ export const stripeWebhookHandler = catchAsync(
 
             const expiryDate = addPeriodToDate(startedAt, plan);
 
+   
             user.subscription = {
               membershipId:
                 (metadata.membershipId as string) ||
@@ -130,10 +131,17 @@ export const stripeWebhookHandler = catchAsync(
             };
             if (session.customer)
               user.stripeCustomerId = String(session.customer);
+     //  Update role logic
+ if (user.role === 'user' || user.role === 'vipMember') {
+  user.role = 'vipMember';
+} else if (user.role === 'contractor' || user.role === 'vipContractor') {
+  user.role = 'vipContractor';
+}
 
-            await user.save();
+
+      await user.save();
             console.log(
-              `Subscription activated for ${user.email} until ${expiryDate}`,
+              `Subscription activated for ${user.email} until ${expiryDate} with role ${user.role}`,
             );
 
             try {

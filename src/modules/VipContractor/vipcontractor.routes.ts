@@ -12,7 +12,7 @@ import auth from '../../app/middleware/auth';
 const router = express.Router();
 
 
-router.post('/checkout',auth(USER_ROLE.user,USER_ROLE.vipMember),VipMemberControllers.initiateOrderPayment)
+router.post('/checkout',auth(USER_ROLE.contractor,USER_ROLE.vipContractor),VipMemberControllers.initiateOrderPayment)
 
 // router.get('/allReview',ReviewControllers.getAllReview)
 

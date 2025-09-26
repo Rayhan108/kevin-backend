@@ -52,8 +52,8 @@ const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
     line_items: [lineItem], // wrap single item into array for Stripe
     mode: 'payment',
     customer_email:email,
-    success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${baseUrl}/cancel`,
+    success_url: `${baseUrl}/subscriptionSuccess?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}/subscriptionCancel`,
     metadata: {
      membershipId: String(membersip._id),
       plan,
