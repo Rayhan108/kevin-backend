@@ -103,7 +103,6 @@ export const getReferralHistory = async (meId: string) => {
 
 
 
-
 const getAllReferClaimedFromDB = async (userId: string) => {
   // console.log("userId----->",userId);
   const result = await ReferralClaimModel.find({ rewardFor: userId }).lean();
@@ -112,8 +111,12 @@ const getAllReferClaimedFromDB = async (userId: string) => {
   return result;
 };
 
+
+
+
 export const ReferClaimServices = {
   claimReferralReward,
   getReferralHistory,
   getAllReferClaimedFromDB,
+
 };
