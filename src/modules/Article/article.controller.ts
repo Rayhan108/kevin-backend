@@ -78,7 +78,32 @@ const deleteArticle = catchAsync(async (req: Request, res: Response) => {
   });
 })
 
+const approveOrReject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+//   console.log("create revieew-->",req.body);
+  try {
+      const payload = req?.body; 
+const id = payload?.id;
+const status = payload?.status
+
+
+    // console.log("Data with file paths: ", data);
+    
+    const result = await ArticleServices.updateBlogApproveStatusFromDB(id,status)
+    sendResponse(res, {
+      success: true,
+      message: `Blog ${status}`,
+      statusCode: httpStatus.OK,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 export const ArticleControllers = {
-createArticle,getAllArticle,deleteArticle,getSingleArticle,getSingleUserArticle
+createArticle,getAllArticle,deleteArticle,getSingleArticle,getSingleUserArticle,approveOrReject
 };

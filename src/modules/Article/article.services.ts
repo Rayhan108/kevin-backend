@@ -54,10 +54,31 @@ const deleteArticleFromDB = async (id: string) => {
   return article; // return deleted user if needed
 };
 
+const updateBlogApproveStatusFromDB = async (id:string,status:string)=>{
+
+    // console.log("id----->", id);
+    
+    // Query the database to find all document verification entries for the given user ID
+    const documents = await ArticleModel.findById(id)
+  // If no service is found, throw an error
+  if (!documents) {
+    throw new AppError(httpStatus.NOT_FOUND, 'documents not found');
+  }
+
+  // Update projectStatus to "accepted"
+documents.blogStatus = status as 'pending'| 'rejected'|'approved';
+
+  // Save the updated service
+  await documents.save();
+    return documents;
+  
+}
+
 export const ArticleServices = {
   getAllArticleFromDB,
   addArticleIntoDB,
   deleteArticleFromDB,
   getSingleArticleFromDB,
-  getSingleUserArticleFromDB
+  getSingleUserArticleFromDB,
+  updateBlogApproveStatusFromDB
 };

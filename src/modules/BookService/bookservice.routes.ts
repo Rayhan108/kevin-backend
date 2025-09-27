@@ -16,7 +16,7 @@ import { upload } from '../../app/middleware/upload';
 const router = express.Router();
 
 router.post('/bookServices',
-  auth(USER_ROLE.user),
+  auth(USER_ROLE.user,USER_ROLE.vipMember),
   validateRequest(IBookServicesSchema),
   BookServicesControllers.createBookService,
 

@@ -25,6 +25,7 @@ router.get('/history',auth(
 
 
 
+
 router.get('/all-claimed',auth(
     USER_ROLE.user,
     USER_ROLE.vipMember,

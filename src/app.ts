@@ -29,6 +29,8 @@ app.use(
       'http://10.10.20.13:5000',
       'http://10.10.20.13:3000',
       'http://localhost:5173',
+      'http://localhost:5174',
+      'https://kevin-admin-dashboard.vercel.app'
     ],
     //  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     credentials: true,

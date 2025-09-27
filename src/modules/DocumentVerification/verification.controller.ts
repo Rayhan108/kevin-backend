@@ -54,6 +54,7 @@ const createVerification = async (
     next(err);
   }
 };
+
 const getSingleDoc = async (
   req: Request,
   res: Response,
@@ -78,6 +79,40 @@ const getSingleDoc = async (
     next(err);
   }
 };
+const approveOrReject = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+//   console.log("create revieew-->",req.body);
+  try {
+      const payload = req?.body; 
+const id = payload?.id;
+const status = payload?.status
+
+
+    // console.log("Data with file paths: ", data);
+    
+    const result = await verificationServices.updateDocApproveStatusFromDB(id,status)
+    sendResponse(res, {
+      success: true,
+      message: `Document ${status}`,
+      statusCode: httpStatus.OK,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
+
+
+
+
+
+
 const getAllDoc = async (
   req: Request,
   res: Response,
@@ -107,5 +142,5 @@ const getAllDoc = async (
 
 
 export const VerificationControllers = {
-createVerification,getSingleDoc,getAllDoc
+createVerification,getSingleDoc,getAllDoc,approveOrReject
 };

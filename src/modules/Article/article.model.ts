@@ -22,6 +22,11 @@ const ArticleSchema: Schema = new Schema<IArticle>({
     type: Boolean, 
     default: false,
   },
+    blogStatus: {
+      type: String,
+      enum: ['pending', 'rejected', 'approved'],
+      default: 'pending',
+    },
   image: { type:String },
   isFeatured: { 
     type: Boolean, 

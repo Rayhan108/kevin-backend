@@ -16,6 +16,10 @@ import { conversationRoutes } from '../../modules/Conversation/conversation.rout
 import { messageRoutes } from '../../modules/message/message.route';
 import { ReferClaimRoutes } from '../../modules/ReferClaim/referclaim.route';
 import { documentVerificationRoutes } from '../../modules/DocumentVerification/verification.routes';
+import privacyPolicyRouter from '../../modules/PrivacyPolicy/privacyPolicy.routes';
+import termsRouter from '../../modules/Terms/terms.route';
+import { MembershipRoutes } from '../../modules/Membership/membership.route';
+import { vipContractorRoutes } from '../../modules/VipContractor/vipcontractor.routes';
 
 
 const router = Router();
@@ -89,6 +93,23 @@ const moduleRoutes = [
     path: '/verify',
     route: documentVerificationRoutes,
   },
+  {
+    path: '/privacy',
+    route: privacyPolicyRouter,
+  },
+  {
+    path: '/terms',
+    route: termsRouter,
+  },
+  {
+    path: '/membership',
+    route:MembershipRoutes,
+  },
+  {
+    path: '/vipContractor',
+    route:vipContractorRoutes,
+  },
+ 
 ];
 
 moduleRoutes.forEach((route) => router.use(route.path, route.route));

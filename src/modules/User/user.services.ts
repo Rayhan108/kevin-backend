@@ -1,7 +1,12 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import QueryBuilder from '../../app/builder/QueryBuilder';
 import AppError from '../../errors/AppError';
-import { FeedbackReplyUpdate, TEditContractorProfile, TEditProfile } from './user.constant';
-import {  TBecomeContractorInput } from './user.interface';
+import {
+  FeedbackReplyUpdate,
+  TEditContractorProfile,
+  TEditProfile,
+} from './user.constant';
+import { TBecomeContractorInput } from './user.interface';
 import { UserModel } from './user.model';
 import httpStatus from 'http-status';
 const changeStatus = async (id: string, payload: { status: string }) => {
@@ -12,7 +17,7 @@ const changeStatus = async (id: string, payload: { status: string }) => {
 };
 const changeProfilePicture = async (
   id: string,
-  payload: { image: string }  // ✅ changed from status to image
+  payload: { image: string }, // ✅ changed from status to image
 ) => {
   // console.log('payload--->', payload);
 
@@ -21,47 +26,51 @@ const changeProfilePicture = async (
   });
 
   return result;
-}
-const updateProfileFromDB = async (
-  id: string,
-  payload: TEditProfile 
-) => {
-  // console.log('payload--->', payload);
+};
+const updateProfileFromDB = async (id: string, payload: TEditProfile) => {
+
 
   const result = await UserModel.findByIdAndUpdate(id, payload, {
     new: true,
   });
 
   return result;
-}
+};
 const updateContractorProfileFromDB = async (
   id: string,
-  payload: TEditContractorProfile 
+  payload: TEditContractorProfile,
 ) => {
   // console.log('payload--->', payload);
 
   const result = await UserModel.findByIdAndUpdate(id, payload, {
     new: true,
   });
-
+console.log("result----->",result);
   return result;
-}
+};
 
-const getSingleUserFromDB = async(id:string)=>{
-    const result = await UserModel.findById(id);
-    return result;
-}
-const getAllUserFromDB = async(query: Record<string, unknown>)=>{
-  const queryBuilder = new QueryBuilder(UserModel.find(),query)
+const getSingleUserFromDB = async (id: string) => {
+  const result = await UserModel.findById(id);
+  return result;
+};
+const getAllUserFromDB = async (query: Record<string, unknown>) => {
+  const queryBuilder = new QueryBuilder(UserModel.find(), query);
   queryBuilder
-    .search(['phone', 'email', 'lastName','firstName','servicesYouProvide','subServices'])
+    .search([
+      'phone',
+      'email',
+      'lastName',
+      'firstName',
+      'servicesYouProvide',
+      'subServices',
+    ])
     .filter()
     .sort()
     .paginate();
-    const result = await queryBuilder.modelQuery;
-      const meta = await queryBuilder.countTotal();
-    return {meta,result};
-}
+  const result = await queryBuilder.modelQuery;
+  const meta = await queryBuilder.countTotal();
+  return { meta, result };
+};
 
 const updateUserToContractor = async (payload: TBecomeContractorInput) => {
   const user = await UserModel.isUserExistsByEmail(payload.email);
@@ -71,7 +80,10 @@ const updateUserToContractor = async (payload: TBecomeContractorInput) => {
   }
 
   if (user.role === 'contractor') {
-    throw new AppError(httpStatus.CONFLICT, 'This user is already a contractor!');
+    throw new AppError(
+      httpStatus.CONFLICT,
+      'This user is already a contractor!',
+    );
   }
 
   // Update fields
@@ -85,7 +97,7 @@ const updateUserToContractor = async (payload: TBecomeContractorInput) => {
       servicesYouProvide: payload.servicesYouProvide,
       subServices: payload.subServices || [],
     },
-    { new: true } // return the updated document
+    { new: true }, // return the updated document
   );
 
   return updatedUser;
@@ -96,7 +108,7 @@ const addReportToContractor = async (
     reason?: string;
     feedback?: string;
     image?: string;
-  }
+  },
 ) => {
   // console.log("report--->",report);
   // console.log("id--->",userId);
@@ -108,7 +120,7 @@ const addReportToContractor = async (
   }
 
   if (user.role == 'user') {
-    throw new AppError(httpStatus.CONFLICT,'Only users can be reported');
+    throw new AppError(httpStatus.CONFLICT, 'Only users can be reported');
   }
 
   // Update the report field only
@@ -119,7 +131,7 @@ const addReportToContractor = async (
         report, // this will overwrite any existing report object
       },
     },
-    { new: true }
+    { new: true },
   );
 
   return updatedUser;
@@ -130,7 +142,7 @@ const addFeedbackToContractor = async (
     reason?: string;
     feedback?: string;
     image?: string;
-  }
+  },
 ) => {
   // console.log("report--->",report);
   // console.log("id--->",userId);
@@ -142,7 +154,7 @@ const addFeedbackToContractor = async (
   }
 
   if (user.role == 'admin') {
-    throw new AppError(httpStatus.CONFLICT,'Only admin can gave feedback');
+    throw new AppError(httpStatus.CONFLICT, 'Only admin can gave feedback');
   }
 
   // Update the report field only
@@ -153,19 +165,71 @@ const addFeedbackToContractor = async (
         feedback, // this will overwrite any existing report object
       },
     },
-    { new: true }
+    { new: true },
   );
 
   return updatedUser;
 };
+
+const getAllFeedbackFromDB = async (query: Record<string, unknown>) => {
+  const queryBuilder = new QueryBuilder(UserModel.find(), query);
+  queryBuilder.filter().sort();
+
+  const users = await queryBuilder.modelQuery;
+
+  // Step 1: Collect all feedbacks
+  const allFeedbacks: any[] = [];
+
+  users.forEach((user) => {
+    if (user.feedback) {
+      const feedbackObj = {
+        userId: user._id,
+        name: user.firstName,
+        userImg: user.image,
+        email: user.email,
+        role: user.role,
+        message: user.feedback.message || null,
+        image: user.feedback.image || null,
+        reply: user.feedback.reply || null,
+      };
+
+      // ✅ Check if this feedback has any actual data
+      const hasMessage = !!feedbackObj.message;
+      const hasImage = !!feedbackObj.image;
+      const hasReplyMessage = !!feedbackObj.reply?.message;
+      const hasReplyImage = !!feedbackObj.reply?.image;
+
+      if (hasMessage || hasImage || hasReplyMessage || hasReplyImage) {
+        allFeedbacks.push(feedbackObj);
+      }
+    }
+  });
+
+  // Step 2: Pagination logic
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const skip = (page - 1) * limit;
+
+  const paginatedFeedbacks = allFeedbacks.slice(skip, skip + limit);
+
+  // Step 3: Meta info
+  const meta = {
+    total: allFeedbacks.length,
+    page,
+    limit,
+    totalPages: Math.ceil(allFeedbacks.length / limit),
+  };
+
+  return { meta, data: paginatedFeedbacks };
+};
+
 export const replyFeedbackByAdmin = async (
   userId: string,
-  update: FeedbackReplyUpdate
+  update: FeedbackReplyUpdate,
 ) => {
   if (!update || Object.keys(update).length === 0) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Nothing to update');
   }
-
 
   const user = await UserModel.findById(userId).select('_id');
   if (!user) {
@@ -174,8 +238,8 @@ export const replyFeedbackByAdmin = async (
 
   const updatedUser = await UserModel.findByIdAndUpdate(
     userId,
-    { $set: update },          
-    { new: true, runValidators: true, projection: { feedback: 1 } }
+    { $set: update },
+    { new: true, runValidators: true, projection: { feedback: 1 } },
   );
 
   return updatedUser;
@@ -188,7 +252,7 @@ const getSpecificUserByCustomerId = async (id: string) => {
       select: '',
     })
     .select('-password -verification');
-    return result
+  return result;
 };
 const deleteUserFromDB = async (id: string) => {
   const user = await UserModel.findByIdAndDelete(id);
@@ -202,7 +266,66 @@ const deleteUserFromDB = async (id: string) => {
 
 
 
+
+const getDashboardStatsFromDB = async () => {
+  const users = await UserModel.find();
+
+  // total user count
+  const totalUsers = users.length;
+
+  // role-wise stats
+  const stats = users.reduce(
+    (acc, user) => {
+      if (user.role === "user") acc.totalClient++;
+      if (user.role === "contractor") acc.totalContractor++;
+      if (user.role === "vipContractor") acc.totalVipContractor++;
+      if (user.role === "vipMember") acc.totalVipMember++;
+      if (user.role === "admin") acc.totalAdmin++;
+      return acc;
+    },
+    {
+      totalClient: 0,
+      totalContractor: 0,
+      totalVipContractor: 0,
+      totalVipMember: 0,
+      totalAdmin: 0,
+    }
+  );
+
+  const finalStats = {
+    totalUsers,
+    ...stats,
+  };
+
+  // console.log("Dashboard Stats ---->", finalStats);
+  return finalStats;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const UserServices = {
-  changeStatus,getSingleUserFromDB,getAllUserFromDB,updateUserToContractor,changeProfilePicture,addReportToContractor,addFeedbackToContractor,updateProfileFromDB,deleteUserFromDB,replyFeedbackByAdmin,getSpecificUserByCustomerId
-  ,updateContractorProfileFromDB
+  changeStatus,
+  getSingleUserFromDB,
+  getAllUserFromDB,
+  updateUserToContractor,
+  changeProfilePicture,
+  addReportToContractor,
+  addFeedbackToContractor,
+  updateProfileFromDB,
+  deleteUserFromDB,
+  replyFeedbackByAdmin,
+  getSpecificUserByCustomerId,
+  updateContractorProfileFromDB,
+  getAllFeedbackFromDB,
+  getDashboardStatsFromDB
 };

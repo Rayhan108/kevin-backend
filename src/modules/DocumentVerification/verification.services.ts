@@ -39,6 +39,25 @@ const getAllDocumentForSingleUserFromDB = async (id:string)=>{
     return documents;
   
 }
+const updateDocApproveStatusFromDB = async (id:string,status:string)=>{
+
+    // console.log("id----->", id);
+    
+    // Query the database to find all document verification entries for the given user ID
+    const documents = await DocumentVerification.findById(id)
+  // If no service is found, throw an error
+  if (!documents) {
+    throw new AppError(httpStatus.NOT_FOUND, 'documents not found');
+  }
+
+  // Update projectStatus to "accepted"
+documents.licenseStatus = status as 'pending'| 'rejected'|'approved';
+
+  // Save the updated service
+  await documents.save();
+    return documents;
+  
+}
 const getAllDocumentFromDB = async ()=>{
 
     // console.log("id----->", id);
@@ -56,5 +75,5 @@ const getAllDocumentFromDB = async ()=>{
 
 
 export const verificationServices = {
-    addDocumentIntoDB,getAllDocumentForSingleUserFromDB,getAllDocumentFromDB
+    addDocumentIntoDB,getAllDocumentForSingleUserFromDB,getAllDocumentFromDB,updateDocApproveStatusFromDB
 }
