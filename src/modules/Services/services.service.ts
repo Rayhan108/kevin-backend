@@ -46,9 +46,10 @@ const addServicesIntoDB = async (payload: IServices, image: string) => {
   }
 
   // ✅ Step 2: Check if user is actually a contractor (optional but safe)
-  if (user.role !== 'contractor') {
-    throw new Error('Only contractors can create services');
-  }
+if (user.role !== 'contractor' && user.role !== 'vipContractor') {
+  throw new Error('Only contractors can create services');
+}
+
   // console.log("Pyload--->",payload);
   payload.image = image;
 

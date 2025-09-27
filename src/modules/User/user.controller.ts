@@ -82,12 +82,7 @@ const updateContractorProfile = catchAsync(
     const id = req.params.id;
     // eslint-disable-next-line no-undef
     const files = req.files as Record<string, Express.Multer.File[]>;
-    // eslint-disable-next-line no-undef
-    const { image } = req.files as { image: Express.Multer.File[] };
-    //  Get file paths or filenames from multer for image, thumbnail, and video
-   const imagePath = image && image.length > 0 
-      ? `${req.protocol}://${req.get('host')}/uploads/${image[0].filename}`
-      : '';
+
 
     const thumbnailPaths = files?.thumbnailImage
       ? files.thumbnailImage.map(
@@ -102,13 +97,7 @@ const updateContractorProfile = catchAsync(
         )
       : [];
 
-    // Ensure required fields (image and video) are uploaded
-    if (!imagePath || videoPaths.length === 0) {
-      throw new AppError(
-        httpStatus.BAD_REQUEST,
-        'Both image and at least one video are required for the slider.',
-      );
-    }
+  
 
     // Extract titles from the request body (assuming titles are passed as an array)
     const videoTitles = req.body.videoTitles || [];
@@ -132,9 +121,9 @@ const updateContractorProfile = catchAsync(
 
     //  Prepare the full payload
     const payload: TEditContractorProfile = {
-      ...req.body, // Spread other data from the request body (like firstName, lastName, etc.)
-      image: imagePath, // Set the profile image path
-      profileVedio: profileVideos, // Multiple profile videos as an array
+      ...req.body,
+      // image: imagePath, 
+      profileVedio: profileVideos,
     };
 
     //  Update contractor profile in DB
@@ -147,7 +136,7 @@ const updateContractorProfile = catchAsync(
     sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Profile updated successfully',
+      message: 'Contractor Profile updated successfully',
       data: result,
     });
   },

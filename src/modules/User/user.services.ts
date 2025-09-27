@@ -45,7 +45,7 @@ const updateContractorProfileFromDB = async (
   const result = await UserModel.findByIdAndUpdate(id, payload, {
     new: true,
   });
-
+console.log("result----->",result);
   return result;
 };
 

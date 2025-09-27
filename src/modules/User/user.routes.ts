@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import express, { NextFunction, Request, Response } from 'express';
 
@@ -97,17 +99,22 @@ router.patch(
 router.patch(
   '/edit-contractor-profile/:id',
   upload.fields([
-    { name: 'image', maxCount: 1 },
+    // { name: 'image', maxCount: 1 },
     { name: 'thumbnailImage', maxCount: 3 },
     { name: 'video', maxCount: 3 },
   ]),
   (req: Request, res: Response, next: NextFunction) => {
-    if (req.body.data) {
+  if (req.body.data) {
+
+
       req.body = JSON.parse(req.body.data);
-    }
+
+ 
+  }
     next();
   },
-  validateRequest(editContractorProfileSchema),
+  // validateRequest(editContractorProfileSchema),
+  auth(USER_ROLE.vipContractor,USER_ROLE.contractor),
   UserControllers.updateContractorProfile,
 );
 
