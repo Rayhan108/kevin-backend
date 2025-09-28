@@ -24,16 +24,17 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use(
   cors({
     origin: [
+       "https://kevin-livid.vercel.app",
+      'https://kevin-admin-dashboard.vercel.app',
       'http://localhost:3000',
       'http://localhost:3001',
       'http://10.10.20.13:5000',
       'http://10.10.20.13:3000',
       'http://localhost:5173',
       'http://localhost:5174',
-      'https://kevin-admin-dashboard.vercel.app',
-      "https://kevin-livid.vercel.app/"
+     
     ],
-    //  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
   }),
 );
