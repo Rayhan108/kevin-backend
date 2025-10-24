@@ -82,14 +82,14 @@ const updateStatusAsBooked = catchAsync(async(req:Request,res:Response)=>{
   if (!validStatuses.includes(status as ServiceStatus)) {
     throw new Error("Invalid status provided");
   }
-
   const result = await BookServices.updateProjectStatusAsBooked(serviceId,status as ServiceStatus
 );
+
   sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: `Service is ${status}!`,
-      data: result,
+      statusCode:httpStatus.OK,
+      success:true,
+      message:`Service is ${status}!`,
+      data:result,
     });
 
 })

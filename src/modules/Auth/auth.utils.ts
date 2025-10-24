@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import jwt, { JwtPayload, Secret, SignOptions } from 'jsonwebtoken';
 import AppError from '../../errors/AppError';
 import httpStatus from 'http-status';
