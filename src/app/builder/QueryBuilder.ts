@@ -41,39 +41,70 @@ class QueryBuilder<T> {
   //   return this;
   // }
 
-  filter() {
-    const queryObj: Record<string, unknown> = { ...this.query };
-    const exclude = ['search', 'sort', 'limit', 'page', 'fields'];
-    exclude.forEach((k) => delete queryObj[k]);
+  // filter() {
+  //   const queryObj: Record<string, unknown> = { ...this.query };
+  //   const exclude = ['search', 'sort', 'limit', 'page', 'fields'];
+  //   exclude.forEach((k) => delete queryObj[k]);
 
-    const mongo: Record<string, unknown> = {};
-    for (const [key, raw] of Object.entries(queryObj)) {
-      if (raw == null) continue;
-      if (typeof raw === 'string') {
-        // boolean normalize
-        if (/^(true|false)$/i.test(raw)) {
-          mongo[key] = /^true$/i.test(raw);
-          continue;
-        }
-        // objectId normalize (optional)
-        // if (key.toLowerCase().endsWith('id') && mongoose.isValidObjectId(raw)) {
-        //   mongo[key] = new mongoose.Types.ObjectId(raw);
-        //   continue;
-        // }
-        // default: case-insensitive exact string match
-        mongo[key] = {
-          $regex: `^${raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
-          $options: 'i',
-        };
-      } else {
-        mongo[key] = raw;
+  //   const mongo: Record<string, unknown> = {};
+  //   for (const [key, raw] of Object.entries(queryObj)) {
+  //     if (raw == null) continue;
+  //     if (typeof raw === 'string') {
+  //       // boolean normalize
+  //       if (/^(true|false)$/i.test(raw)) {
+  //         mongo[key] = /^true$/i.test(raw);
+  //         continue;
+  //       }
+  //       // objectId normalize (optional)
+  //       // if (key.toLowerCase().endsWith('id') && mongoose.isValidObjectId(raw)) {
+  //       //   mongo[key] = new mongoose.Types.ObjectId(raw);
+  //       //   continue;
+  //       // }
+  //       // default: case-insensitive exact string match
+  //       mongo[key] = {
+  //         $regex: `^${raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+  //         $options: 'i',
+  //       };
+  //     } else {
+  //       mongo[key] = raw;
+  //     }
+  //   }
+
+  //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   this.modelQuery = this.modelQuery.find(mongo as FilterQuery<any>);
+  //   return this;
+  // }
+filter() {
+  const queryObj: Record<string, unknown> = { ...this.query };
+  const exclude = ['search', 'sort', 'limit', 'page', 'fields'];
+  exclude.forEach((k) => delete queryObj[k]);
+
+  const mongo: Record<string, unknown> = {};
+
+  for (const [key, raw] of Object.entries(queryObj)) {
+    if (raw == null) continue;
+
+    if (typeof raw === 'string') {
+      // Handle boolean normalization
+      if (/^(true|false)$/i.test(raw)) {
+        mongo[key] = /^true$/i.test(raw);
+        continue;
       }
-    }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.modelQuery = this.modelQuery.find(mongo as FilterQuery<any>);
-    return this;
+      // Partial, case-insensitive match (A-z flexible)
+      mongo[key] = {
+        $regex: raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), // escape regex chars
+        $options: 'i', // case-insensitive
+      };
+    } else {
+      mongo[key] = raw;
+    }
   }
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  this.modelQuery = this.modelQuery.find(mongo as FilterQuery<any>);
+  return this;
+}
 
   // Sorting functionality
   sort() {
