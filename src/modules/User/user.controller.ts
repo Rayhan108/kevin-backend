@@ -280,6 +280,23 @@ const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateUserStatus = async (req: Request, res: Response) => {
+
+    const  userId  =req?.user?.userId
+    const { status } = req.body;
+
+
+    // Call the service to update the user's status
+    const updatedUser = await UserServices.updateUserStatusService(userId, status);
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Dashboard stats retrive successfully!',
+    data: updatedUser,
+})};
+
+
+
 export const UserControllers = {
   changeStatus,
   getSingleUser,
@@ -293,5 +310,6 @@ export const UserControllers = {
   replyFeedback,
   updateContractorProfile,
   getAllFeedback,
-  getDashboardStats
+  getDashboardStats,
+  updateUserStatus
 };

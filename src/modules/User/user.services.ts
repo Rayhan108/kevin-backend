@@ -303,7 +303,26 @@ const getDashboardStatsFromDB = async () => {
 
 
 
+ const updateUserStatusService = async (userId: string, status: string) => {
+  // console.log(userId,status);
+  try {
+    // Find the user and update the status
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+     { 'subscription.status': status }, 
+      { new: true, runValidators: true }
+    );
 
+    if (!updatedUser) {
+      throw new Error('User not found');
+    }
+
+    return updatedUser;
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, no-unused-vars
+  } catch (error) {
+    throw new Error('Error updating user status: ');
+  }
+};
 
 
 
@@ -327,5 +346,6 @@ export const UserServices = {
   getSpecificUserByCustomerId,
   updateContractorProfileFromDB,
   getAllFeedbackFromDB,
-  getDashboardStatsFromDB
+  getDashboardStatsFromDB,
+  updateUserStatusService
 };

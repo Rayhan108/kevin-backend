@@ -119,6 +119,11 @@ router.patch(
 );
 
 router.delete('/deleteUser/:userId', UserControllers.deleteUser);
+router.patch('/updateSubscriptionStatus',auth(USER_ROLE.contractor,
+    USER_ROLE.vipContractor,
+    USER_ROLE.vipMember,), UserControllers.updateUserStatus);
+
+
 router.get('/allUser', UserControllers.getAllUser);
 router.get('/allFeedback', UserControllers.getAllFeedback);
 router.get('/dashboard/stats', UserControllers.getDashboardStats);
