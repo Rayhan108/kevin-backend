@@ -121,7 +121,7 @@ router.patch(
 router.delete('/deleteUser/:userId', UserControllers.deleteUser);
 router.patch('/updateSubscriptionStatus',auth(USER_ROLE.contractor,
     USER_ROLE.vipContractor,
-    USER_ROLE.vipMember,), UserControllers.updateUserStatus);
+    USER_ROLE.vipMember,USER_ROLE.user), UserControllers.updateUserStatus);
 
 
 router.get('/allUser', UserControllers.getAllUser);

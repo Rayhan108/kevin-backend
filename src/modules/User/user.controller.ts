@@ -291,7 +291,7 @@ const updateUserStatus = async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Dashboard stats retrive successfully!',
+    message: 'Supscription Purchase successfull',
     data: updatedUser,
 })};
 
