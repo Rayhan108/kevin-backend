@@ -2,8 +2,46 @@ import { model, Schema } from 'mongoose';
 
 import bcrypt from 'bcrypt';
 import config from '../../app/config';
-import { IUserMethods, TUser, User } from './user.interface';
+import { IUserMethods, TReviews, TUser, User } from './user.interface';
 import { UserStatus } from '../Auth/auth.constant';
+import mongoose from 'mongoose';
+
+
+
+
+
+const ReviewSchema: Schema = new Schema<TReviews>({
+  reviewBy: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref:'User', 
+    required: [true, 'User reference is required'] 
+  },
+userId: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Service', 
+    required: [true, 'Service reference is required'] 
+  },
+  
+  rating: { 
+    type: Number, 
+    required: [true, 'Rating is required'], 
+    min: [1, 'Rating must be at least 1'], 
+    max: [5, 'Rating cannot be more than 5'] 
+  },
+  comment: { 
+    type: String, 
+    maxlength: [500, 'Comment cannot exceed 500 characters']
+  },
+},
+ {
+    timestamps: true, // Automatically create createdAt and updatedAt fields
+  },
+);
+
+
+
+
+
 
 const userSchema = new Schema<TUser, User, IUserMethods>(
   {
@@ -20,6 +58,7 @@ const userSchema = new Schema<TUser, User, IUserMethods>(
     phone: { type: String, required: true },
   refercode: { type: String, unique: true, sparse: true },
     password: { type: String, required: true, select: false },
+    review: { type: [ReviewSchema], default: [] },
     role: {
       type: String,
       enum: ['user', 'contractor', 'vipContractor', 'vipMember', 'admin'],
