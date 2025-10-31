@@ -81,9 +81,35 @@ export const editContractorProfileSchema = z.object({
 
 
 
+
+
+
+export const UserReviewValidationSchema = z.object({
+  body: z.object({
+
+    userId: z.string().regex(/^[0-9a-fA-F]{24}$/, 'Invalid user ID'),
+
+    rating: z
+      .number()
+      .min(1, 'Rating must be at least 1')
+      .max(5, 'Rating cannot be more than 5'), // Rating validation
+    comment: z
+      .string()
+      .max(500, 'Comment cannot exceed 500 characters')
+      .optional(),
+  }),
+});
+
+
+
+
+
+
+
 export const userValidation = {
     changeStatusValidationSchema,
     becomeContractorValidationSchema,
-    changeProfilePictureValidationSchema
+    changeProfilePictureValidationSchema,
+    UserReviewValidationSchema
 
 }

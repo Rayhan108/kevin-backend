@@ -8,6 +8,7 @@ import validateRequest from '../../app/middleware/validateRequest';
 import {
   editContractorProfileSchema,
   editProfileSchema,
+  UserReviewValidationSchema,
   userValidation,
 } from './user.validation';
 import { USER_ROLE } from '../Auth/auth.constant';
@@ -121,11 +122,36 @@ router.patch(
 router.delete('/deleteUser/:userId', UserControllers.deleteUser);
 router.patch('/updateSubscriptionStatus',auth(USER_ROLE.contractor,
     USER_ROLE.vipContractor,
-    USER_ROLE.vipMember,), UserControllers.updateUserStatus);
+    USER_ROLE.vipMember,USER_ROLE.user), UserControllers.updateUserStatus);
 
 
 router.get('/allUser', UserControllers.getAllUser);
 router.get('/allFeedback', UserControllers.getAllFeedback);
 router.get('/dashboard/stats', UserControllers.getDashboardStats);
 
+
+
+
+router.post('/addReview',
+
+  auth(USER_ROLE.contractor,USER_ROLE.vipContractor),
+  validateRequest(UserReviewValidationSchema),
+  UserControllers.createReview,
+
+);
+
+router.get('/allReview/:id',auth(
+    USER_ROLE.contractor,
+    USER_ROLE.vipContractor,
+    USER_ROLE.vipMember,
+    USER_ROLE.user,
+  ),UserControllers.getAllReview)
+
+
+
+
+
+
+
 export const UserRoutes = router;
+ 

@@ -291,9 +291,58 @@ const updateUserStatus = async (req: Request, res: Response) => {
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Dashboard stats retrive successfully!',
+    message: 'Supscription Purchase successfull',
     data: updatedUser,
 })};
+
+const createReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  // console.log("create revieew-->",req.body);
+const  reviewBy  =req?.user?.userId
+// console.log("reviewBy----->",reviewBy);
+const data =  req?.body
+const payload ={
+  reviewBy,
+  userId:data?.userId,
+  rating :data.rating,
+  comment:data.comment
+
+
+}
+  try {
+    const result = await UserServices.addReviewIntoDB(payload);
+
+    sendResponse(res, {
+      success: true,
+      message: 'Review Sent Successfull',
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+const getAllReview = catchAsync(async(req:Request,res:Response)=>{
+ const userId = req?.params?.id
+ console.log("userId--->",userId);
+  const result = await UserServices.getAllReviewFromDB({userId});
+  sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Review retrived succesfully!',
+      data: result,
+    });
+
+})
+
+
+
+
 
 
 
@@ -311,5 +360,5 @@ export const UserControllers = {
   updateContractorProfile,
   getAllFeedback,
   getDashboardStats,
-  updateUserStatus
+  updateUserStatus,createReview,getAllReview
 };

@@ -2,7 +2,18 @@
 import mongoose, {  Model } from 'mongoose';
 import { USER_ROLE } from '../Auth/auth.constant';
 
-
+export type TReviews ={
+  reviewBy: mongoose.Types.ObjectId; 
+  userId: mongoose.Types.ObjectId; 
+  rating: number;           
+  comment?: string;    
+}
+export type TReviewsPayload = {
+  reviewBy: string;
+  userId: string;
+  rating: number;
+  comment?: string;
+};
 export type TCreateUserInput = {
   firstName: string;
   lastName: string;
@@ -44,6 +55,7 @@ verification?: {
     feedback:string,
     image?:string
   };
+    review?:TReviews[]
   feedback?:{
     message:string,
     image?:string,

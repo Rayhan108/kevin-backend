@@ -9,7 +9,7 @@ const userSocketMap: { [userId: string]: string } = {};
 export function initializeSocket(server: Server) {
   const io = new IOServer(server, {
     cors: {
-      origin: ['http://localhost:3000', 'http://10.10.20.41:5000',"https://kevin-livid.vercel.app",
+      origin: ['http://localhost:3000', 'http://10.10.20.13:5000',"https://kevin-livid.vercel.app",
       'https://kevin-admin-dashboard.vercel.app',],
       // origin: '*', // Adjust for production
       methods: ['GET', 'POST'],

@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import mongoose, { Types } from 'mongoose';
 import QueryBuilder from '../../app/builder/QueryBuilder';
 import AppError from '../../errors/AppError';
 import {
@@ -6,7 +7,7 @@ import {
   TEditContractorProfile,
   TEditProfile,
 } from './user.constant';
-import { TBecomeContractorInput } from './user.interface';
+import { TBecomeContractorInput, TReviewsPayload } from './user.interface';
 import { UserModel } from './user.model';
 import httpStatus from 'http-status';
 const changeStatus = async (id: string, payload: { status: string }) => {
@@ -324,8 +325,82 @@ const getDashboardStatsFromDB = async () => {
   }
 };
 
+export const addReviewIntoDB = async (payload: TReviewsPayload) => {
+  const { reviewBy, userId, rating, comment } = payload;
 
+  // Basic validation
+  if (!Types.ObjectId.isValid(userId)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid userId');
+  }
+  if (!Types.ObjectId.isValid(reviewBy)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Invalid reviewBy');
+  }
 
+  const userObjId = new Types.ObjectId(userId);
+  const reviewerObjId = new Types.ObjectId(reviewBy);
+
+  // Ensure doc exists & normalize review field if needed (one-time guard)
+  const doc = await UserModel.findById(userObjId).select('review').lean();
+  if (!doc) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+
+  if (!Array.isArray(doc.review)) {
+    const normalized = doc.review && typeof doc.review === 'object' ? [doc.review] : [];
+    await UserModel.updateOne({ _id: userObjId }, { $set: { review: normalized } });
+  }
+
+  // Easy: always push (multiple reviews allowed)
+  const reviewDoc = {
+    reviewBy: reviewerObjId,  
+    userId: userObjId,     
+    rating,
+    comment: comment ?? '',
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  const pushed = await UserModel.findByIdAndUpdate(
+    userObjId,
+    { $push: { review: reviewDoc } },
+    { new: true, runValidators: true },
+  );
+
+  if (!pushed) throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+  return pushed;
+};
+
+const getAllReviewFromDB = async (query: Record<string, unknown>) => {
+  const userId = query.userId as string;
+
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    throw new Error('Invalid userId');
+  }
+
+  const userObjectId = new mongoose.Types.ObjectId(userId);
+
+  // ✅ Fix: fetch by _id (not userId)
+  const user = await UserModel.findById(userObjectId)
+    .populate({ path: 'review.reviewBy', model: 'User' })
+    .lean();
+
+  if (!user) {
+    return { meta: { page: 1, limit: 10, total: 0, totalPage: 0 }, reviews: [] };
+  }
+
+  const reviews = Array.isArray(user.review) ? user.review : [];
+
+  // simple pagination (in-memory)
+  const page = Number(query.page) || 1;
+  const limit = Number(query.limit) || 10;
+  const total = reviews.length;
+  const totalPage = Math.ceil(total / limit);
+
+  const paginated = reviews.slice((page - 1) * limit, page * limit);
+
+  return {
+    meta: { page, limit, total, totalPage },
+    reviews: paginated,
+  };
+};
 
 
 
@@ -347,5 +422,5 @@ export const UserServices = {
   updateContractorProfileFromDB,
   getAllFeedbackFromDB,
   getDashboardStatsFromDB,
-  updateUserStatusService
+  updateUserStatusService,addReviewIntoDB,getAllReviewFromDB
 };
