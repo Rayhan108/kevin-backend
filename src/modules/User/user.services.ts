@@ -68,7 +68,14 @@ const getAllUserFromDB = async (query: Record<string, unknown>) => {
     .filter()
     .sort()
     .paginate();
-  const result = await queryBuilder.modelQuery;
+
+      queryBuilder.modelQuery = queryBuilder.modelQuery.populate({
+    path: 'review.reviewBy',
+    model: 'User',
+    select: 'firstName lastName image email', // optional
+    options: { /* you can add limit/sort on populated docs if needed */ },
+  }); 
+  const result = await queryBuilder.modelQuery.lean();
   const meta = await queryBuilder.countTotal();
   return { meta, result };
 };
@@ -377,7 +384,7 @@ const getAllReviewFromDB = async (query: Record<string, unknown>) => {
 
   const userObjectId = new mongoose.Types.ObjectId(userId);
 
-  // ✅ Fix: fetch by _id (not userId)
+  //  Fix: fetch by _id (not userId)
   const user = await UserModel.findById(userObjectId)
     .populate({ path: 'review.reviewBy', model: 'User' })
     .lean();
