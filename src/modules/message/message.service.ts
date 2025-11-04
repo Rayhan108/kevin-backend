@@ -58,6 +58,7 @@ const getUsersForSidebarFromDB = async (userData: JwtPayload) => {
     {
       $project: {
         _id: '$user._id',
+        role:'$user.role',
         firstName: '$user.firstName',
         lastName: '$user.lastName',
         image: '$user.image',

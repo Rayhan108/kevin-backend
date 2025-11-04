@@ -1,11 +1,12 @@
-import { Server } from 'http';
+
 import { INotification } from '../modules/Notification/notification.interface';
 import NotificationModel from '../modules/Notification/notification.model';
-import { getIO } from '../socket';
+
 import getUserNotificationsWithUnReadCount from './getUserNotificationCount';
-import { DefaultEventsMap } from 'socket.io';
+
 
 const createAndSendNotification = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ioInstance: any,
   notificationData: INotification,
   receiverSocketId: string,
