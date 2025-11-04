@@ -89,7 +89,7 @@ const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
-    line_items: [lineItem], // wrap single item into array for Stripe
+    line_items: [lineItem], // wrap single item into array for Stripee
     mode: 'payment',
     customer_email:email,
     success_url: `${baseUrl}/subscriptionSuccess?session_id={CHECKOUT_SESSION_ID}`,
