@@ -313,11 +313,22 @@ const getDashboardStatsFromDB = async () => {
 
  const updateUserStatusService = async (userId: string, status: string) => {
   // console.log(userId,status);
+  const user = await UserModel.findById(userId)
+  const role = user?.role
+  let newRole = ''
+  // console.log("user role----->",role);
+  if(role === 'contractor'){
+     newRole = 'vipContractor'
+  }else{
+    newRole = 'vipMember'
+  }
+  // console.log("new role",newRole);
   try {
     // Find the user and update the status
     const updatedUser = await UserModel.findByIdAndUpdate(
       userId,
-     { 'subscription.status': status }, 
+     { 'subscription.status': status,role:newRole}, 
+
       { new: true, runValidators: true }
     );
 
