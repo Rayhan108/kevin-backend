@@ -2,6 +2,10 @@
 
 import QueryBuilder from '../../app/builder/QueryBuilder';
 import AppError from '../../errors/AppError';
+import { getIO, getReceiverSocketId } from '../../socket';
+import createAndSendNotification from '../../utils/sendNotification';
+
+import { INotification } from '../Notification/notification.interface';
 import { UserModel } from '../User/user.model';
 import { IArticle } from './article.interface';
 import ArticleModel from './article.model';
@@ -40,8 +44,24 @@ const addArticleIntoDB = async (payload: IArticle) => {
   if (!user) {
     throw new Error('User not found');
   }
-
   const result = (await ArticleModel.create(payload)).populate('user');
+  const receiverId = userId;
+    const receiverSocketId = getReceiverSocketId(receiverId.toString());
+
+  const ioInstance = getIO();
+  const notificationData: INotification = {
+    title: 'Article',
+    message: 'New Article Posted',
+    receiver: receiverId,
+
+  };
+  if (receiverSocketId && ioInstance) {
+    await createAndSendNotification(
+      ioInstance,
+      notificationData,
+      receiverSocketId,
+    );
+  }
   return result;
 };
 const deleteArticleFromDB = async (id: string) => {

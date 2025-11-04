@@ -6,6 +6,6 @@ export interface INotification {
   message: string;
   isRead?: boolean;
   receiver: Types.ObjectId;
-  type: (typeof ENUM_NOTIFICATION_TYPE)[keyof typeof ENUM_NOTIFICATION_TYPE];
+  type?: (typeof ENUM_NOTIFICATION_TYPE)[keyof typeof ENUM_NOTIFICATION_TYPE];
   redirectURL?: string;
 }
