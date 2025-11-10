@@ -32,6 +32,8 @@ app.use(
       'http://10.10.20.13:3000',
       'http://localhost:5173',
       'http://localhost:5174',
+      'https://dashboard.desertlaila.com',
+      'https://desertlaila.com'
      
     ],
      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
