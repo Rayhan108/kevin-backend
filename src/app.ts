@@ -33,9 +33,7 @@ app.use(
       'http://localhost:5173',
       'http://localhost:5174',
       'https://dashboard.yourtradesource.com',
-      'https://backend.yourtradesource.com',
-      'https://api.yourtradesource.com',
-      'https://www.yourtradesource.com',
+      'https://yourtradesource.com',
       
      
     ],
