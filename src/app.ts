@@ -35,7 +35,7 @@ app.use(
       'https://dashboard.yourtradesource.com',
       'https://backend.yourtradesource.com',
       'https://api.yourtradesource.com',
-      'https://yourtradesource.com',
+      'https://www.yourtradesource.com',
       
      
     ],
